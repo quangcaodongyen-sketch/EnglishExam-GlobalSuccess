@@ -452,6 +452,10 @@ const App = {
       const curT = this.getWizardTermKey ? this.getWizardTermKey() : 'GK1';
       this.syncWizardOfficialTemplate(curG, curT);
     }
+    if (!document.getElementById('page-content')) {
+      this.render();
+      return;
+    }
     this.renderPage();
     document.querySelectorAll('.nav-item').forEach(el => {
       el.classList.toggle('active', el.dataset.view === view);
@@ -1856,20 +1860,26 @@ const App = {
   },
 
   // ── Step 1, 2, 3 Wizard ─────────────────────────────────────────
+  setWizardStep(step) {
+    if (step === 1) this.goStep1();
+    else if (step === 2) this.goStep2();
+    else if (step === 3) this.goStep3();
+  },
+
   renderGenerate() {
     const wiz = this.state.wizard;
     return `
     <div class="page-body slide-up">
       <div class="steps-bar mb-24 no-print">
-        <div class="step-item ${wiz.step >= 1 ? 'active' : ''} ${wiz.step > 1 ? 'done' : ''}">
+        <div class="step-item ${wiz.step >= 1 ? 'active' : ''} ${wiz.step > 1 ? 'done' : ''}" style="cursor:pointer" onclick="App.setWizardStep(1)" title="Chuyển đến Bước 1">
           <div class="step-num">${wiz.step > 1 ? '✓' : '1'}</div>
           <div class="step-label">1. Cấu hình & Audio</div>
         </div>
-        <div class="step-item ${wiz.step >= 2 ? 'active' : ''} ${wiz.step > 2 ? 'done' : ''}">
+        <div class="step-item ${wiz.step >= 2 ? 'active' : ''} ${wiz.step > 2 ? 'done' : ''}" style="cursor:pointer" onclick="App.setWizardStep(2)" title="Chuyển đến Bước 2">
           <div class="step-num">${wiz.step > 2 ? '✓' : '2'}</div>
           <div class="step-label">2. Ma trận 4 Kỹ năng</div>
         </div>
-        <div class="step-item ${wiz.step >= 3 ? 'active' : ''}">
+        <div class="step-item ${wiz.step >= 3 ? 'active' : ''}" style="cursor:pointer" onclick="App.setWizardStep(3)" title="Chuyển đến Bước 3">
           <div class="step-num">3</div>
           <div class="step-label">3. Xem trước & Xuất Word</div>
         </div>
@@ -2398,25 +2408,98 @@ const App = {
     return this.renderPreview();
   },
 
+  switchPreviewTab(tab) {
+    const wiz = this.state.wizard;
+    if (tab === 'code1') {
+      wiz.previewCodeIndex = 1;
+      wiz.selectedPreviewCode = 1;
+      wiz.previewMode = 'student';
+    } else if (tab === 'code2') {
+      wiz.previewCodeIndex = 2;
+      wiz.selectedPreviewCode = 2;
+      wiz.previewMode = 'student';
+    } else if (tab === 'teacher') {
+      wiz.previewMode = 'teacher';
+    } else if (tab === 'matrix') {
+      wiz.previewMode = 'matrix';
+    }
+    this.renderPage();
+  },
+
   setPreviewCode(codeIdx) {
     this.state.wizard.previewCodeIndex = codeIdx;
+    this.state.wizard.selectedPreviewCode = codeIdx;
+    this.state.wizard.previewMode = 'student';
     this.renderPage();
   },
 
   assignWizardExamOnline() {
     const wiz = this.state.wizard;
+    const isCode2 = (wiz.selectedPreviewCode === 2 || wiz.previewCodeIndex === 2);
+    const curG = String(wiz.grade || 7);
+    const curT = this.getWizardTermKey ? this.getWizardTermKey() : 'GK1';
+    const suite = this.getOfficialExamSuite(curG, curT);
+
+    const code = isCode2 ? (wiz.code2 || `${curG}02`) : (wiz.code1 || `${curG}01`);
+    const secs = isCode2 && wiz.sections_code2 && wiz.sections_code2.length 
+      ? wiz.sections_code2 
+      : (isCode2 && wiz.sectionsCode2 && wiz.sectionsCode2.length 
+          ? wiz.sectionsCode2 
+          : (wiz.selectedSections || wiz.sections || (suite ? suite.sections_code1 : [])));
+
+    wiz.id = wiz.id || ('eng-' + Date.now());
+
+    const examRecord = {
+      id: wiz.id,
+      title: wiz.examTitle ? `${wiz.examTitle} (Mã đề ${code})` : `BÀI KIỂM TRA TIẾNG ANH ${curG} GLOBAL SUCCESS (Mã đề ${code})`,
+      grade: parseInt(curG),
+      subject: 'english',
+      examFormat: 'cv7991',
+      examTime: wiz.examTime || 60,
+      examClass: wiz.examClass || `${curG}A1`,
+      schoolName: wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+      teacherName: wiz.teacherName || 'Thầy Đinh Văn Thành',
+      audioTitle: wiz.audioTitle || `Track 1: Listening Comprehension - Tiếng Anh ${curG}`,
+      audioScript: wiz.audioScript || (suite ? suite.fullAudioScript : ''),
+      audioUrl: wiz.audioUrl || (suite ? suite.audioUrl : `audio/listening_${curG}_${curT.toLowerCase()}.mp3`),
+      sections: JSON.parse(JSON.stringify(secs)),
+      isOpen: true,
+      publishedAt: new Date().toISOString()
+    };
+
+    if (typeof Auth !== 'undefined') {
+      Auth.publishExam(examRecord);
+      Auth.saveExamRecord({
+        id: wiz.id,
+        userId: this.state.user?.id || 'dinhvanthanh',
+        title: examRecord.title,
+        grade: examRecord.grade,
+        subject: 'english',
+        examType: curT,
+        questionCount: secs.reduce((s, sec) => s + (sec.questions ? sec.questions.length : 0), 0),
+        createdAt: new Date().toISOString()
+      });
+    }
+
     const url = `${window.location.origin}${window.location.pathname}?mode=student&examId=${wiz.id}`;
     UI.showModal('🚀 Giao Bài Thi Tiếng Anh Online Cho Học Sinh', `
       <div class="stack gap-14">
+        <div style="background:#eff6ff;padding:12px 16px;border-radius:10px;border-left:4px solid #2563eb">
+          <strong style="color:#1e40af;font-size:14px">✅ Đã kích hoạt phòng thi trực tuyến cho Học sinh!</strong>
+          <p style="font-size:12.5px;color:#334155;margin-top:4px">
+            Đề thi: <b>${esc(examRecord.title)}</b> · Trường: <b>${esc(examRecord.schoolName)}</b>
+          </p>
+        </div>
         <div style="font-size:13.5px;color:#1e293b">
           Học sinh có thể mở link này trên điện thoại hoặc máy tính để làm bài thi trực tiếp:
         </div>
         <div class="input-group">
-          <input type="text" id="share-wiz-url" value="${url}" readonly style="font-weight:600;font-size:13px;width:100%" />
+          <input type="text" id="share-wiz-url" value="${url}" readonly style="font-weight:700;font-size:13px;width:100%;color:#2563eb" />
         </div>
-        <div style="display:flex;gap:10px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('share-wiz-url').value); UI.toast('Đã copy link bài thi!', 'success');">📋 Copy Link</button>
-          <button class="btn btn-outline" onclick="window.open('${url}', '_blank')">🌐 Mở trang thi thử</button>
+          <button class="btn btn-success" onclick="window.open('${url}', '_blank')">🌐 Mở trang thi trực tuyến</button>
+          <button class="btn btn-outline" onclick="App.navigate('submissions'); UI.closeModal();">📥 Xem Bảng Thu Bài</button>
         </div>
       </div>
     `, [{ label: 'Đóng', cls: 'btn-outline', action: () => UI.closeModal() }]);
@@ -3012,14 +3095,14 @@ const App = {
     const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
     const schoolName = (wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
     const examYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
-    const isCode2 = (wiz.selectedPreviewCode === 2);
+    const isCode2 = (wiz.selectedPreviewCode === 2 || wiz.previewCodeIndex === 2);
     const curCode = isCode2 ? (wiz.code2 || `${curG}02`) : (wiz.code1 || `${curG}01`);
-    const secs = isCode2 && wiz.sectionsCode2 && wiz.sectionsCode2.length ? wiz.sectionsCode2 : (wiz.sections || []);
+    const secs = isCode2 ? (wiz.sections_code2 || wiz.sectionsCode2 || (suite ? suite.sections_code2 : wiz.sections)) : (wiz.selectedSections || wiz.sections || (suite ? suite.sections_code1 : []));
     const hasAudio = !!(wiz.audioUrl || wiz.audioScript);
 
     // Dữ liệu đáp án và bổ trợ
-    const sec1 = wiz.sections || [];
-    const sec2 = wiz.sectionsCode2 && wiz.sectionsCode2.length ? wiz.sectionsCode2 : sec1;
+    const sec1 = wiz.selectedSections || wiz.sections || (suite ? suite.sections_code1 : []);
+    const sec2 = wiz.sections_code2 || wiz.sectionsCode2 || (suite ? suite.sections_code2 : sec1);
     const ans1 = sec1.flatMap(s => (s.questions || []).map((q, idx) => ({ num: idx + 1, ans: q.correctAnswer || 'A' })));
     const ans2 = sec2.flatMap(s => (s.questions || []).map((q, idx) => ({ num: idx + 1, ans: q.correctAnswer || 'A' })));
     const p8q = sec1.flatMap(s => s.questions || []).find(q => q.type === 'essay');
@@ -3036,10 +3119,10 @@ const App = {
         <button class="btn btn-outline" onclick="App.goStep2()">← Sửa ma trận</button>
         <div class="row" style="flex-wrap:wrap;gap:8px">
           <div class="tabs" style="padding:3px">
-            <button class="tab-btn ${(!isCode2 && wiz.previewMode !== 'teacher' && wiz.previewMode !== 'matrix') ? 'active' : ''}" onclick="App.setPreviewCode(1); App.setPreviewMode('student')">👨‍🎓 Đề Mã 1 (${wiz.code1 || (curG + '01')})</button>
-            <button class="tab-btn ${(isCode2 && wiz.previewMode !== 'teacher' && wiz.previewMode !== 'matrix') ? 'active' : ''}" onclick="App.setPreviewCode(2); App.setPreviewMode('student')">🔀 Đề Mã 2 (${wiz.code2 || (curG + '02')})</button>
-            <button class="tab-btn ${wiz.previewMode === 'teacher' ? 'active' : ''}" onclick="App.setPreviewMode('teacher')">👩‍🏫 Kèm Đáp án & HDG</button>
-            <button class="tab-btn ${wiz.previewMode === 'matrix' ? 'active' : ''}" onclick="App.setPreviewMode('matrix')">📊 Ma Trận & Bản Đặc Tả 7991</button>
+            <button class="tab-btn ${(!isCode2 && wiz.previewMode !== 'teacher' && wiz.previewMode !== 'matrix') ? 'active' : ''}" onclick="App.switchPreviewTab('code1')">👨‍🎓 Đề Mã 1 (${wiz.code1 || (curG + '01')})</button>
+            <button class="tab-btn ${(isCode2 && wiz.previewMode !== 'teacher' && wiz.previewMode !== 'matrix') ? 'active' : ''}" onclick="App.switchPreviewTab('code2')">🔀 Đề Mã 2 (${wiz.code2 || (curG + '02')})</button>
+            <button class="tab-btn ${wiz.previewMode === 'teacher' ? 'active' : ''}" onclick="App.switchPreviewTab('teacher')">👩‍🏫 Kèm Đáp án & HDG</button>
+            <button class="tab-btn ${wiz.previewMode === 'matrix' ? 'active' : ''}" onclick="App.switchPreviewTab('matrix')">📊 Ma Trận & Bản Đặc Tả 7991</button>
           </div>
           <button class="btn btn-warn" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" title="Bốc một đề thi hoàn toàn khác từ kho tổ hợp 10^28 đề">🎲 Bốc Đề Khác</button>
           <button class="btn btn-primary" onclick="App.exportWord(null, null, '${esc(curCode)}', false)">📄 Xuất Đề Mã ${isCode2 ? '2' : '1'} (.doc)</button>
@@ -5333,6 +5416,79 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
     const curCode = tab === 'exam2' ? suite.code2 : suite.code1;
     const examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`;
 
+    // ĐỀ CƯƠNG ÔN TẬP 6 TRANG A4
+    if (term === 'DECUONG') {
+      return `
+      <div class="exam-preview-wrap">
+        <div class="exam-sheet" style="font-family:'Times New Roman',serif;font-size:13pt;line-height:1.35">
+          <table style="width:100%;border:none;margin-bottom:12pt;font-family:'Times New Roman',serif">
+            <tr>
+              <td style="width:40%;text-align:center;vertical-align:top;border:none;line-height:1.2">
+                <div style="font-size:11.5pt;font-weight:bold">${esc(parentAgency.toUpperCase())}</div>
+                <div style="font-size:11.5pt;font-weight:bold;text-decoration:underline">${esc(schoolName.toUpperCase())}</div>
+              </td>
+              <td style="width:60%;text-align:center;vertical-align:top;border:none;line-height:1.25">
+                <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a">ĐỀ CƯƠNG ÔN TẬP TRỌNG TÂM</div>
+                <div style="font-size:12pt;font-weight:bold">MÔN: TIẾNG ANH ${grade} (GLOBAL SUCCESS)</div>
+                <div style="font-size:11pt;font-style:italic">Tài liệu chuẩn 6 trang A4 – Mục tiêu bứt phá điểm 6.0+ đến 9.0+</div>
+              </td>
+            </tr>
+          </table>
+
+          <div style="background:#eff6ff;border:1.5px solid #3b82f6;border-radius:8px;padding:12px 16px;margin-bottom:16pt;font-size:11.5pt">
+            <b>📌 LƯU Ý DÀNH CHO HỌC SINH:</b> Đề cương gồm các phần trọng tâm bám sát ma trận và cấu trúc đề thi chính thức của Trường THCS Đồng Yên (Thầy Đinh Văn Thành). Học sinh cần ôn kỹ các quy tắc phát âm, từ vựng theo chủ điểm, các dạng bài đọc và viết lại câu.
+          </div>
+
+          <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a;margin-bottom:8pt;border-bottom:1.5px solid #1e3a8a;padding-bottom:4pt">
+            PHẦN I. LÝ THUYẾT NGỮ ÂM & QUY TẮC PHÁT ÂM KINH ĐIỂN
+          </div>
+          <div style="margin-bottom:14pt;font-size:12pt">
+            <p><b>1. Quy tắc phát âm đuôi -s / -es:</b></p>
+            <ul style="margin:4pt 0 8pt 24pt">
+              <li><b>/s/:</b> Khi từ tận cùng bằng âm vô thanh: /p/, /k/, /f/, /t/, /θ/ (mẹo: <i>thời phong kiến phương tây</i>).</li>
+              <li><b>/ɪz/:</b> Khi từ tận cùng bằng: /s/, /z/, /ʃ/, /ʒ/, /tʃ/, /dʒ/ (đuôi: -s, -ss, -ch, -sh, -x, -z, -ge, -ce).</li>
+              <li><b>/z/:</b> Các trường hợp còn lại (nguyên âm và phụ âm hữu thanh).</li>
+            </ul>
+            <p><b>2. Quy tắc phát âm đuôi -ed:</b></p>
+            <ul style="margin:4pt 0 8pt 24pt">
+              <li><b>/ɪd/:</b> Khi từ tận cùng bằng âm /t/ hoặc /d/ (ví dụ: wanted, decided).</li>
+              <li><b>/t/:</b> Khi từ tận cùng bằng phụ âm vô thanh: /p/, /k/, /f/, /s/, /ʃ/, /tʃ/ (mẹo: <i>chính phủ pháp sang không thích</i>).</li>
+              <li><b>/d/:</b> Các trường hợp còn lại.</li>
+            </ul>
+          </div>
+
+          <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a;margin-bottom:8pt;border-bottom:1.5px solid #1e3a8a;padding-bottom:4pt">
+            PHẦN II. TỔNG HỢP KIẾN THỨC NGỮ PHÁP TRỌNG TÂM SGK LỚP ${grade}
+          </div>
+          <div style="margin-bottom:14pt;font-size:12pt;line-height:1.5">
+            <p><b>1. Các thì cơ bản:</b> Present Simple, Present Continuous, Past Simple, Future Simple.</p>
+            <p><b>2. Cấu trúc so sánh:</b> Comparative & Superlative adjectives (ngắn & dài).</p>
+            <p><b>3. Giới từ chỉ nơi chốn & thời gian:</b> in, on, at, under, behind, next to...</p>
+            <p><b>4. Mẫu câu liên từ nối:</b> and, but, so, because, although / even though.</p>
+          </div>
+
+          <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a;margin-bottom:8pt;border-bottom:1.5px solid #1e3a8a;padding-bottom:4pt">
+            PHẦN III. BÀI TẬP VẬN DỤNG CÂU HỎI THI & BÀI ĐỌC MẪU
+          </div>
+          <div style="margin-bottom:14pt;font-size:12pt;line-height:1.5">
+            ${(suite.sections_code1 || []).map((sec, si) => `
+              <div style="margin-bottom:10pt">
+                <b>${si + 1}. ${esc(sec.title || sec.name)}</b> (${(sec.questions || []).length} câu hỏi chuẩn)
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="text-align:center;font-weight:bold;font-size:12pt;margin-top:20pt">
+            ------ CHÚC CÁC EM ÔN TẬP VÀ ĐẠT KẾT QUẢ XUẤT SẮC! ------
+          </div>
+          <div style="margin-top:20pt;border-top:1pt solid #000;padding-top:8pt;font-size:10.5pt;display:flex;justify-content:space-between;color:#475569">
+            <span>Tác giả: <b>Thầy Đinh Văn Thành – THCS Đồng Yên (0915.213717)</b></span>
+            <span>Tài liệu Đề cương Ôn tập Tiếng Anh ${grade} Global Success</span>
+          </div>
+        </div>
+      </div>`;
+    }
+
     // TAB 1 & 2: Đề thi Mã 1 hoặc Mã 2
     if (tab === 'exam1' || tab === 'exam2') {
       let globalQNum = 1;
@@ -5787,9 +5943,15 @@ ${esc(suite.fullAudioScript)}
       oState.audioPlaying = false;
       this.renderPage();
     } else {
-      AudioEngine.playScript(suite.fullAudioScript, 0.88, () => {
+      const audioUrl = suite.audioUrl || `audio/listening_${curG}_${curT.toLowerCase()}.mp3`;
+      AudioEngine.playAudioUrl(audioUrl, () => {
         oState.audioPlaying = false;
         this.renderPage();
+      }, () => {
+        AudioEngine.playScript(suite.fullAudioScript || 'Listening Comprehension', 0.88, () => {
+          oState.audioPlaying = false;
+          this.renderPage();
+        });
       });
       oState.audioPlaying = true;
       this.renderPage();
@@ -5972,25 +6134,28 @@ ${esc(suite.fullAudioScript)}
       return;
     }
 
-    const examId = `official-${curG}-${curT.toLowerCase()}-${Date.now()}`;
-    const clonedSections = JSON.parse(JSON.stringify(suite.sections_code1 || []));
+    const isCode2 = (oState.activeTab === 'exam2');
+    const examCode = isCode2 ? (suite.code2 || `${curG}02`) : (suite.code1 || `${curG}01`);
+    const sourceSections = isCode2 ? (suite.sections_code2 || suite.sections_code1 || []) : (suite.sections_code1 || []);
+    const examId = `official-${curG}-${curT.toLowerCase()}-${isCode2 ? 'c2' : 'c1'}-${Date.now()}`;
+    const clonedSections = JSON.parse(JSON.stringify(sourceSections));
     let qCount = 0;
     clonedSections.forEach((sec, sIdx) => {
       (sec.questions || []).forEach((q, qIdx) => {
         qCount++;
-        q.id = `q_${curG}_${curT.toLowerCase()}_s${sIdx + 1}_${qCount}`;
+        q.id = `q_${curG}_${curT.toLowerCase()}_${isCode2 ? 'c2' : 'c1'}_s${sIdx + 1}_${qCount}`;
       });
     });
 
     const examRecord = {
       id: examId,
-      title: `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${curG} GLOBAL SUCCESS`,
+      title: `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${curG} GLOBAL SUCCESS (Mã đề ${examCode})`,
       grade: parseInt(curG),
       subject: 'english',
       examFormat: 'cv7991',
       examTime: suite.timeMinutes || 60,
       examClass: curG + 'A1',
-      schoolName: oState.school || 'TRƯỜNG THCS ĐỒNG YÊN',
+      schoolName: oState.school || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
       teacherName: 'Thầy Đinh Văn Thành',
       audioTitle: `Audio Script Tiếng Anh ${curG} (${suite.termTitle})`,
       audioScript: suite.fullAudioScript,
@@ -6113,11 +6278,23 @@ ${esc(suite.fullAudioScript)}
           </div>
         </div>
 
+        <div class="field" style="background:#f8fafc;padding:12px;border-radius:10px;border:1.5px solid #cbd5e1">
+          <label class="label" style="color:#1e3a8a;font-weight:800">5. 🎯 Chọn Mẫu Đề Thi Giao Cho Học Sinh</label>
+          <select id="modal-assign-code" class="select" style="font-weight:700;background:#ffffff">
+            <option value="code1" selected>🎯 Đề Mã 1 (Đúng mẫu đề chuẩn 100% THCS Đồng Yên - Thầy Đinh Văn Thành)</option>
+            <option value="code2">🔀 Đề Mã 2 (Đúng mẫu đề chuẩn 100% THCS Đồng Yên - Thầy Đinh Văn Thành)</option>
+            <option value="random">🎲 Đề bốc ngẫu nhiên (Kho tổ hợp 10²⁸ biến thể độc bản)</option>
+          </select>
+          <div style="font-size:12px;color:#059669;font-weight:600;margin-top:4px">
+            ✓ Giữ nguyên 100% cấu trúc 8 phần, 37 câu hỏi, thang điểm 10.0 & Audio MP3 phòng thu bản ngữ
+          </div>
+        </div>
+
         <div id="modal-assign-result-box" style="display:none"></div>
       </div>
     `, [
       {
-        label: '🚀 Sinh Đề Độc Bản & Giao Bài Ngay',
+        label: '🚀 Giao Bài Đúng Mẫu Đề Chuẩn 100% Cho Học Sinh',
         cls: 'btn-primary',
         action: () => App.executeAssignExam()
       },
@@ -6134,50 +6311,62 @@ ${esc(suite.fullAudioScript)}
     const term = document.getElementById('modal-assign-term')?.value || 'GK1';
     const targetClass = document.getElementById('modal-assign-class')?.value || '7A1';
     const examTime = parseInt(document.getElementById('modal-assign-time')?.value || '60');
+    const assignCode = document.getElementById('modal-assign-code')?.value || 'code1';
 
     let examId = '';
     let examTitle = '';
     let sections = [];
     let audioScript = '';
+    let audioUrl = '';
 
     if (term === '15M') {
       examId = `15m-g${grade}-u1-${Date.now()}`;
       examTitle = `ĐỀ KIỂM TRA 15 PHÚT TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+      audioUrl = `audio/listening_${grade}_gk1.mp3`;
     } else {
-      let synthExam = null;
-      if (typeof ExamGeneratorEngine !== 'undefined') {
+      const suite = this.getOfficialExamSuite(grade, term);
+
+      if (assignCode === 'random' && typeof ExamGeneratorEngine !== 'undefined') {
         try {
-          synthExam = ExamGeneratorEngine.generateUniqueExam(parseInt(grade), term, {
+          const synthExam = ExamGeneratorEngine.generateUniqueExam(parseInt(grade), term, {
             schoolName: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
             teacherName: 'Thầy Đinh Văn Thành'
           });
+          if (synthExam) {
+            examId = synthExam.id;
+            examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${synthExam.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS (Mã ${synthExam.code1})`;
+            sections = synthExam.sections_code1;
+            audioScript = synthExam.audioScript || '';
+            audioUrl = synthExam.audioUrl || `audio/listening_${grade}_${(term || 'gk1').toLowerCase()}.mp3`;
+          }
         } catch (e) {
-          console.warn('Assign synthesis note:', e);
+          console.warn('Assign random synthesis notice:', e);
         }
       }
 
-      if (synthExam) {
-        examId = synthExam.id;
-        examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${synthExam.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS (Mã ${synthExam.code1})`;
-        sections = synthExam.sections_code1;
-        audioScript = synthExam.audioScript || '';
-      } else {
-        const suite = this.getOfficialExamSuite(grade, term);
+      // Default: Đúng 100% Mẫu đề chuẩn của trường THCS Đồng Yên
+      if (!sections.length) {
         if (suite) {
-          examId = `official-${grade}-${term.toLowerCase()}-${Date.now()}`;
-          examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS`;
-          sections = JSON.parse(JSON.stringify(suite.sections_code1 || []));
+          const isCode2 = (assignCode === 'code2');
+          const examCode = isCode2 ? (suite.code2 || `${grade}02`) : (suite.code1 || `${grade}01`);
+          const sourceSections = isCode2 ? (suite.sections_code2 || suite.sections_code1 || []) : (suite.sections_code1 || []);
+
+          examId = `official-${grade}-${term.toLowerCase()}-${isCode2 ? 'c2' : 'c1'}-${Date.now()}`;
+          examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS (Mã đề ${examCode})`;
+          sections = JSON.parse(JSON.stringify(sourceSections));
           let qCount = 0;
           sections.forEach((sec, sIdx) => {
             (sec.questions || []).forEach((q, qIdx) => {
               qCount++;
-              q.id = `q_${grade}_${term.toLowerCase()}_s${sIdx + 1}_${qCount}`;
+              q.id = `q_${grade}_${term.toLowerCase()}_${isCode2 ? 'c2' : 'c1'}_s${sIdx + 1}_${qCount}`;
             });
           });
           audioScript = suite.fullAudioScript || '';
+          audioUrl = suite.audioUrl || `audio/listening_${grade}_${(term || 'gk1').toLowerCase()}.mp3`;
         } else {
           examId = `exam-${grade}-${Date.now()}`;
           examTitle = `BÀI KIỂM TRA TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+          audioUrl = `audio/listening_${grade}_${(term || 'gk1').toLowerCase()}.mp3`;
         }
       }
     }
@@ -6194,7 +6383,7 @@ ${esc(suite.fullAudioScript)}
       teacherName: 'Thầy Đinh Văn Thành',
       audioTitle: `Audio Script Tiếng Anh ${grade}`,
       audioScript: audioScript,
-      audioUrl: `audio/listening_${grade}_${(term || 'gk1').toLowerCase()}.mp3`,
+      audioUrl: audioUrl || `audio/listening_${grade}_${(term || 'gk1').toLowerCase()}.mp3`,
       sections: sections,
       isOpen: true,
       publishedAt: new Date().toISOString()
@@ -6209,7 +6398,7 @@ ${esc(suite.fullAudioScript)}
         grade: parseInt(grade),
         subject: 'english',
         examType: term,
-        questionCount: sections.length > 0 ? 37 : 20,
+        questionCount: sections.reduce((s, sec) => s + (sec.questions ? sec.questions.length : 0), 0) || 37,
         createdAt: new Date().toISOString()
       });
     }
