@@ -2100,9 +2100,9 @@ const App = {
           <div class="section-title mb-12">🎯 1. Chọn Khối lớp (SGK Global Success)</div>
           <div class="grid grid-4 gap-10">
             ${[6, 7, 8, 9].map(g => `
-            <div class="grade-card ${wiz.grade === g ? 'active' : ''}" onclick="App.setWizardGrade(${g})" style="cursor:pointer;text-align:center;padding:12px;border:2px solid ${wiz.grade === g ? '#2563eb' : '#e2e8f0'};border-radius:12px;background:${wiz.grade === g ? '#eff6ff' : '#fff'}">
-              <div style="font-size:22px;font-weight:900;color:${wiz.grade === g ? '#2563eb' : '#1e293b'}">${g}</div>
-              <div style="font-size:11px;font-weight:700;color:#64748b">LỚP ${g}</div>
+            <div class="grade-card ${wiz.grade === g ? 'active' : ''}" onclick="App.setWizardGrade(${g})" style="cursor:pointer;text-align:center;padding:12px;border:2.5px solid ${wiz.grade === g ? '#1d4ed8' : '#cbd5e1'};border-radius:12px;background:${wiz.grade === g ? '#eff6ff' : '#ffffff'};box-shadow:${wiz.grade === g ? '0 4px 12px rgba(29,78,216,0.2)' : 'none'}">
+              <div style="font-size:24px;font-weight:900;color:${wiz.grade === g ? '#1d4ed8' : '#0f172a'}">${g}</div>
+              <div style="font-size:12px;font-weight:800;color:${wiz.grade === g ? '#1e40af' : '#475569'}">LỚP ${g}</div>
             </div>`).join('')}
           </div>
         </div>
@@ -2170,21 +2170,29 @@ const App = {
         </div>
 
         <!-- 3 Primary Action Paths -->
-        <div class="card" style="border:2px solid #2563eb;background:#ffffff">
-          <div class="section-title mb-14" style="color:#1d4ed8;display:flex;align-items:center;justify-content:space-between">
-            <span>🚀 CHỌN HÌNH THỨC TẠO ĐỀ:</span>
-            <span class="badge" style="background:#dbeafe;color:#1e40af;font-size:11px">Kho tổ hợp > 10²⁸ Đề</span>
+        <div class="card" style="border:2px solid #2563eb;background:#ffffff;box-shadow:0 6px 20px rgba(37,99,235,0.12);border-radius:16px;padding:20px">
+          <div class="section-title mb-14" style="color:#0f172a;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:15px;font-weight:900;color:#1e3a8a">🚀 CHỌN HÌNH THỨC TẠO ĐỀ:</span>
+            <span class="badge" style="background:#dbeafe;color:#1e40af;font-size:11.5px;font-weight:800;padding:4px 10px;border:1px solid #bfdbfe">Kho tổ hợp > 10²⁸ Đề</span>
           </div>
           <div class="stack gap-12">
-            <button class="btn btn-success btn-lg" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" style="width:100%;font-weight:800;padding:14px;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(135deg, #10b981, #059669);box-shadow:0 4px 12px rgba(16,185,129,0.3)">
-              <span style="font-size:16px">🎲 BỐC ĐỀ MỚI ĐỘC BẢN (KHÔNG LẶP LẠI)</span>
-              <span style="font-size:11.5px;font-weight:600;opacity:0.95">✨ Động cơ tổ hợp 10²⁸ đề: Tự động đổi câu hỏi Ngữ pháp, Từ vựng, Biển báo & Đọc hiểu</span>
+            <!-- Nút 1: Bốc đề độc bản -->
+            <button class="btn btn-success btn-lg" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')"
+              style="width:100%;padding:14px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg, #047857, #065f46) !important;color:#ffffff !important;border:1.5px solid #064e3b !important;border-radius:12px;box-shadow:0 4px 14px rgba(4,120,87,0.4);cursor:pointer">
+              <span style="font-size:16px;font-weight:900;color:#ffffff !important;letter-spacing:0.3px;text-shadow:0 1px 3px rgba(0,0,0,0.5)">🎲 BỐC ĐỀ MỚI ĐỘC BẢN (KHÔNG LẶP LẠI)</span>
+              <span style="font-size:12px;font-weight:700;color:#a7f3d0 !important;text-shadow:0 1px 2px rgba(0,0,0,0.4)">✨ Động cơ tổ hợp 10²⁸ đề: Tự động đổi câu hỏi Ngữ pháp, Từ vựng, Biển báo & Đọc hiểu</span>
             </button>
-            <button class="btn btn-primary btn-lg" onclick="App.syncWizardOfficialTemplate('${curG}', '${curT}'); App.goStep3();" style="width:100%;font-weight:800;padding:12px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px">
-              <span>🎯 NẠP MẪU ĐỀ CHUẨN THCS ĐỒNG YÊN</span>
-              <span style="font-size:12px;opacity:0.9">(37 câu chuẩn CV 7991)</span>
+
+            <!-- Nút 2: Nạp mẫu đề chuẩn -->
+            <button class="btn btn-primary btn-lg" onclick="App.syncWizardOfficialTemplate('${curG}', '${curT}'); App.goStep3();"
+              style="width:100%;padding:13px 16px;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #1d4ed8, #1e40af) !important;color:#ffffff !important;border:1.5px solid #1e3a8a !important;border-radius:12px;box-shadow:0 4px 14px rgba(29,78,216,0.35);cursor:pointer">
+              <span style="color:#ffffff !important;font-weight:900;font-size:14.5px;text-shadow:0 1px 2px rgba(0,0,0,0.3)">🎯 NẠP MẪU ĐỀ CHUẨN THCS ĐỒNG YÊN</span>
+              <span style="font-size:12px;color:#bfdbfe !important;font-weight:700">(37 câu chuẩn CV 7991)</span>
             </button>
-            <button class="btn btn-outline btn-lg" onclick="App.goStep2()" style="width:100%;font-weight:700;padding:12px">
+
+            <!-- Nút 3: Xem & tùy biến -->
+            <button class="btn btn-outline btn-lg" onclick="App.goStep2()"
+              style="width:100%;font-weight:800;padding:12px 16px;font-size:13.5px;background:#f8fafc;color:#0f172a !important;border:2px solid #64748b;border-radius:12px;cursor:pointer">
               📊 Xem & Tùy biến chi tiết Ma trận 8 Phần →
             </button>
           </div>

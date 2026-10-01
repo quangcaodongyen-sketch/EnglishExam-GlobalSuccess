@@ -311,26 +311,64 @@ html[data-theme="dark"] u, body[data-theme="dark"] u {
 .btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
 
-.btn-primary { background: var(--grad-primary); color: #fff; box-shadow: 0 4px 12px #4f46e535; }
-.btn-primary:hover { box-shadow: 0 6px 20px #4f46e545; transform: translateY(-1px); }
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff !important;
+  border: 1px solid #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+  font-weight: 700;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
 
-.btn-secondary { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); }
+.btn-secondary { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-soft); font-weight: 700; }
 .btn-secondary:hover { border-color: var(--accent); }
 
-.btn-outline { background: transparent; color: var(--ink); border-color: var(--line-strong); }
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.btn-outline {
+  background: #ffffff;
+  color: #0f172a !important;
+  border: 1.5px solid #94a3b8;
+  font-weight: 700;
+}
+.btn-outline:hover {
+  border-color: #2563eb;
+  color: #1d4ed8 !important;
+  background: #eff6ff;
+}
 
 .btn-ghost { background: transparent; color: var(--ink-soft); border-color: transparent; }
 .btn-ghost:hover { background: var(--surface-2); color: var(--ink); }
 
-.btn-danger { background: var(--red-soft); color: var(--red); border-color: #fecaca; }
-.btn-danger:hover { background: #fecaca; }
+.btn-danger { background: #dc2626; color: #ffffff !important; border: 1px solid #b91c1c; font-weight: 700; }
+.btn-danger:hover { background: #b91c1c; color: #ffffff !important; }
 
-.btn-success { background: var(--green-soft); color: var(--green); border-color: #a7f3d0; }
-.btn-success:hover { background: #a7f3d0; }
+.btn-success {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  color: #ffffff !important;
+  border: 1px solid #047857 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+.btn-success:hover {
+  background: linear-gradient(135deg, #047857, #065f46) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(5, 150, 105, 0.35);
+}
 
-.btn-warn { background: var(--yellow-soft); color: #92400e; border-color: #fde68a; }
-.btn-warn:hover { background: #fde68a; }
+.btn-warn {
+  background: #fef3c7;
+  color: #92400e !important;
+  border: 1.5px solid #f59e0b;
+  font-weight: 700;
+}
+.btn-warn:hover {
+  background: #fde68a;
+  color: #78350f !important;
+}
 
 .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: var(--r-sm); }
 .btn-lg { padding: 13px 28px; font-size: 15px; border-radius: var(--r-lg); }
@@ -544,17 +582,23 @@ tbody tr:hover { background: var(--surface-2); }
 .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px;
-  border: 1.5px solid var(--line);
+  padding: 8px 16px;
+  border: 1.5px solid #cbd5e1;
   border-radius: var(--r-full);
-  font-size: 13px; font-weight: 500;
+  font-size: 13px; font-weight: 700;
   cursor: pointer; transition: all var(--t-fast);
-  background: var(--surface);
-  color: var(--ink-soft);
+  background: #ffffff;
+  color: #1e293b;
   user-select: none;
 }
-.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-.chip.selected { background: var(--grad-primary); color: #fff; border-color: transparent; box-shadow: var(--shadow-color); }
+.chip:hover { border-color: #2563eb; color: #1e40af; background: #eff6ff; }
+.chip.selected {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+  color: #ffffff !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+  font-weight: 800;
+}
 
 /* ── Empty state ── */
 .empty {
