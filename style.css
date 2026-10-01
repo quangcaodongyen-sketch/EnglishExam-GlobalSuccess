@@ -124,6 +124,19 @@ html[data-theme="dark"], body[data-theme="dark"] {
   }
 }
 
+/* Global typography for underlined phonetic target sounds */
+u {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.8px;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+html[data-theme="dark"] u, body[data-theme="dark"] u {
+  color: #60a5fa;
+}
+
 /* ================================================================
    SPLASH SCREEN
    ================================================================ */

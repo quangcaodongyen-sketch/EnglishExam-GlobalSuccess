@@ -57,15 +57,22 @@ function esc(s) {
 
 function formatExamText(s) {
   if (!s) return '';
-  let safe = esc(s);
+  let str = String(s);
+  str = str
+    .replace(/&amp;lt;/gi, '&lt;')
+    .replace(/&amp;gt;/gi, '&gt;')
+    .replace(/&amp;quot;/gi, '&quot;');
+  let safe = esc(str);
   return safe
-    .replace(/&lt;u&gt;/gi, '<u>')
+    .replace(/&lt;u&gt;/gi, '<u style="text-decoration:underline;text-underline-offset:3px;font-weight:700;color:#1e40af">')
     .replace(/&lt;\/u&gt;/gi, '</u>')
     .replace(/&lt;b&gt;/gi, '<b>')
     .replace(/&lt;\/b&gt;/gi, '</b>')
     .replace(/&lt;i&gt;/gi, '<i>')
     .replace(/&lt;\/i&gt;/gi, '</i>')
-    .replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
+    .replace(/&lt;br\s*\/?&gt;/gi, '<br/>')
+    .replace(/&lt;mark&gt;/gi, '<mark>')
+    .replace(/&lt;\/mark&gt;/gi, '</mark>');
 }
 
 function shuffle(arr) {
@@ -3216,7 +3223,7 @@ const App = {
                 return `
                 <div class="student-card" id="st-q-${qId}">
                   <div style="font-size:14.5px;font-weight:700;color:#0f172a;line-height:1.6">
-                    Câu ${qi}: ${esc(q.content)}
+                    Câu ${qi}: ${formatExamText(q.content)}
                   </div>
                   ${isMC ? `
                   <div class="student-opt-list">
@@ -3226,7 +3233,7 @@ const App = {
                       return `
                       <div class="student-opt-btn ${isSel ? 'selected' : ''}" onclick="App.selectStudentMCOption('${qId}','${letter}')">
                         <div class="student-opt-indicator">${letter}</div>
-                        <div>${esc(opt.slice(2).trim())}</div>
+                        <div>${formatExamText(opt.slice(2).trim() || opt)}</div>
                       </div>`;
                     }).join('')}
                   </div>` : ''}
@@ -3237,7 +3244,7 @@ const App = {
                       const curVal = this.state.studentAnswers[qId + '_' + it.label];
                       return `
                       <div class="student-tf-row" data-tf-label="${it.label}">
-                        <div style="font-size:13.5px;flex:1"><b>${it.label})</b> ${esc(it.text)}</div>
+                        <div style="font-size:13.5px;flex:1"><b>${it.label})</b> ${formatExamText(it.text)}</div>
                         <div class="student-tf-pills">
                           <button class="student-tf-pill btn-tf-true ${curVal === true ? 'active-true' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',true)">Đúng</button>
                           <button class="student-tf-pill btn-tf-false ${curVal === false ? 'active-false' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',false)">Sai</button>
@@ -3569,14 +3576,16 @@ const App = {
         <div class="section-title">📚 Ngân hàng câu hỏi Global Success (Lớp 6–9)</div>
       </div>
       <div class="stack gap-12">
-        ${allQ.slice(0, 20).map((q, idx) => `
+        ${allQ.slice(0, 50).map((q, idx) => `
         <div class="card p-16">
           <div class="row gap-8">
             <span class="badge badge-g${q.grade}">Lớp ${q.grade}</span>
             <span class="tag tag-nb">${esc(q.topic || 'Chủ đề')}</span>
+            ${q.skill ? `<span class="tag" style="background:#e0f2fe;color:#0284c7;font-weight:700">${esc(q.skill.toUpperCase())}</span>` : ''}
           </div>
-          <div style="font-weight:700;margin:8px 0">${idx + 1}. ${esc(q.content)}</div>
-          ${q.options ? `<div class="grid grid-2 gap-6">${q.options.map(opt => `<div>${esc(opt)}</div>`).join('')}</div>` : ''}
+          <div style="font-weight:700;margin:8px 0;font-size:14.5px;color:#0f172a">${idx + 1}. ${formatExamText(q.content)}</div>
+          ${q.options ? `<div class="grid grid-2 gap-8">${q.options.map(opt => `<div style="background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0;font-size:13.5px">${formatExamText(opt)}</div>`).join('')}</div>` : ''}
+          ${q.solution ? `<div style="font-size:13px;color:#15803d;margin-top:8px;background:#f0fdf4;padding:8px 12px;border-radius:6px;border-left:3px solid #22c55e">💡 ${formatExamText(q.solution)}</div>` : ''}
         </div>`).join('')}
       </div>
     </div>`;
