@@ -153,6 +153,60 @@ const AudioEngine = {
       this.audioEl.currentTime = 0;
     }
     this.speaking = false;
+  },
+
+  playChime(type = 'success') {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (type === 'success') {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.08);
+          osc.stop(ctx.currentTime + idx * 0.08 + 0.35);
+        });
+      } else if (type === 'celebrate') {
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.5);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.1);
+          osc.stop(ctx.currentTime + idx * 0.1 + 0.5);
+        });
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+        }
+      } else {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.22);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.22);
+      }
+    } catch (e) {
+      // AudioContext not started
+    }
   }
 };
 
@@ -300,6 +354,25 @@ const App = {
       examTitle: 'BÀI KIỂM TRA ĐỊNH KỲ TIẾNG ANH THCS',
       examCode: '701'
     },
+
+    // ── Đấu Trường Luyện Tập (5 Dạng Bài Thực Hành) ──
+    practiceArena: {
+      activeTab: 'scramble',
+      grade: 7,
+      scrambleIndex: 0,
+      scramblePicked: [],
+      scrambleChecked: false,
+      scrambleIsCorrect: false,
+      mistakeIndex: 0,
+      mistakeSelected: null,
+      transformIndex: 0,
+      transformSelected: null,
+      matchSelected: null,
+      matchPairsDone: [],
+      matchShuffledTiles: null,
+      clozeSelections: {},
+      clozeChecked: false,
+    },
   },
 
   init() {
@@ -389,6 +462,7 @@ const App = {
     // Menu cho Giáo viên
     const teacherNav = [
       { view: 'dashboard', icon: '🏠', label: 'Bàn làm việc' },
+      { view: 'practice-arena', icon: '🎮', label: 'Đấu Trường Luyện Tập (5 Dạng)' },
       { view: 'quiz-15m', icon: '⚡', label: 'Tạo Đề 15 Phút (48 Units)' },
       { view: 'official-exams', icon: '🏛️', label: 'Bộ Đề Chuẩn (GK, CK, KSCL)' },
       { view: 'generate', icon: '📝', label: 'Soạn đề Tùy biến (CV 7991)', badge: remaining === Infinity ? null : remaining },
@@ -406,6 +480,7 @@ const App = {
     // Menu cho Học sinh
     const studentNav = [
       { view: 'student-hub', icon: '🌟', label: 'Góc học tập' },
+      { view: 'practice-arena', icon: '🎮', label: 'Đấu Trường Luyện Tập (5 Dạng)' },
       { view: 'student-15m-practice', icon: '⚡', label: 'Luyện Đề 15 Phút (48 Units)' },
       { view: 'grammar-studio', icon: '⚡', label: 'Cẩm nang Ngữ pháp Thần tốc' },
       { view: 'phonetics-lab', icon: '🎯', label: 'Bí kíp Ngữ âm & Trọng âm' },
@@ -517,6 +592,7 @@ const App = {
   renderPage() {
     const el = document.getElementById('page-content');
     const titles = {
+      'practice-arena': '🎮 Đấu Trường Luyện Tập 5 Dạng Bài Thực Hành – Global Success',
       'quiz-15m': '⚡ Tạo Đề 15 Phút Chuẩn 2 Mã Đề (48 Units) – Thầy Đinh Văn Thành',
       'official-exams': '🏛️ Bộ Đề Thi Chuẩn Định Kỳ (GK, CK, KSCL) CV 7991',
       'student-15m-practice': '⚡ Luyện Đề 15 Phút (48 Units) Global Success',
@@ -545,7 +621,8 @@ const App = {
     if (!el) return;
 
     const view = this.state.view;
-    if (view === 'quiz-15m') el.innerHTML = this.renderQuiz15m();
+    if (view === 'practice-arena') el.innerHTML = this.renderPracticeArena();
+    else if (view === 'quiz-15m') el.innerHTML = this.renderQuiz15m();
     else if (view === 'official-exams') el.innerHTML = this.renderOfficialExams();
     else if (view === 'student-15m-practice') el.innerHTML = this.renderStudent15mPractice();
     else if (view === 'grammar-studio') el.innerHTML = this.renderGrammarStudio();
@@ -858,6 +935,29 @@ const App = {
         </button>
       </div>
 
+      <!-- Đấu Trường Luyện Tập Thực Hành 5 Dạng Bài -->
+      <div class="card mb-24" style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4338ca 70%,#6366f1 100%);color:#fff;border:none;padding:26px 30px;border-radius:18px;box-shadow:0 12px 30px rgba(67,56,202,0.3);position:relative;overflow:hidden">
+        <div style="position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px">
+          <div>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:10px">
+              <span>🔥 TÍNH NĂNG MỚI ĐẶC SẮC</span>
+              <span>•</span>
+              <span>5 DẠNG BÀI TẬP THỰC HÀNH TƯƠNG TÁC</span>
+            </div>
+            <h2 style="font-size:24px;font-weight:900;color:#fff;margin:0 0 6px">🎮 Đấu Trường Luyện Tập Thực Hành</h2>
+            <p style="color:#e0e7ff;font-size:14px;max-width:580px;line-height:1.5;margin:0">
+              Đa dạng hóa bài tập: <b>Ghép từ thành câu</b>, <b>Bắt lỗi sai ngữ pháp</b>, <b>Viết lại câu tương đương</b>, <b>Ghép thẻ bài tương tác</b> và <b>Điền từ đoạn văn</b> kèm âm thanh hiệu ứng & pháo hoa rực rỡ!
+            </p>
+          </div>
+          <div class="row gap-10">
+            <button class="btn btn-xl" onclick="App.navigate('practice-arena')"
+              style="background:#f59e0b;color:#1e1b4b;font-weight:900;border:none;box-shadow:0 6px 16px rgba(245,158,11,0.4);border-radius:12px">
+              ⚡ Vào Đấu Trường Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Feature Grid for Student -->
       <div class="grid grid-3 gap-16 mb-24">
         <!-- 1. Luyện Đề 15 Phút -->
@@ -949,11 +1049,11 @@ const App = {
     const currWord = words[this.state.vocabCardIndex % (words.length || 1)] || words[0];
 
     return `
-    <div class="page-body slide-up" style="max-width:850px;margin:0 auto">
+    <div class="page-body slide-up" style="max-width:900px;margin:0 auto">
       <div class="section-header">
         <div>
-          <div class="section-title">📖 Flashcard Học Từ vựng SGK Global Success</div>
-          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Chọn lớp và bấm để lật thẻ ghi nhớ, nghe phát âm chuẩn bản ngữ</div>
+          <div class="section-title">📖 Flashcard Học Từ Vựng SGK Global Success (12 Units)</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Chọn lớp và bấm để lật thẻ ghi nhớ, nghe phát âm chuẩn bản ngữ AI Voice</div>
         </div>
         <div class="row gap-8">
           ${[6, 7, 8, 9].map(g => `
@@ -963,28 +1063,50 @@ const App = {
         </div>
       </div>
 
+      <!-- Shortcut to Practice Arena -->
+      <div class="card p-14 mb-20" style="background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1.5px solid #c7d2fe;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-radius:14px">
+        <div class="row gap-10 align-center">
+          <span style="font-size:24px">🎮</span>
+          <div>
+            <strong style="color:#312e81;font-size:14px">Muốn thực hành áp dụng ngay từ vựng này?</strong>
+            <div style="font-size:12.5px;color:#4338ca">Thử sức tại Đấu Trường Luyện Tập với Ghép câu, Bắt lỗi sai, Ghép thẻ bài 3D và Điền từ!</div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="App.navigate('practice-arena')">
+          🚀 Mở Đấu Trường Luyện Tập
+        </button>
+      </div>
+
       <!-- Flashcard Interactive 3D Card -->
-      <div class="card text-center mb-24" style="padding:48px 32px;cursor:pointer;border:2px solid #3b82f6;background:linear-gradient(135deg,#ffffff,#eff6ff);box-shadow:var(--shadow-lg);min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center"
+      <div class="card text-center mb-24"
+           style="padding:48px 32px;cursor:pointer;border:3px solid ${currWord.color || '#3b82f6'};background:linear-gradient(135deg,#ffffff,${(currWord.color || '#3b82f6')}11);box-shadow:0 12px 28px ${(currWord.color || '#3b82f6')}22;min-height:330px;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:20px;transition:transform .2s"
            onclick="App.toggleVocabFlip()">
-        <span class="tag tag-nb mb-12">${esc(currWord.unit)}</span>
+        <div class="row gap-8 mb-14 align-center">
+          <span class="tag tag-nb">${esc(currWord.unit)}</span>
+          <span style="background:${currWord.color || '#3b82f6'};color:#fff;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700">Lớp ${currWord.grade}</span>
+        </div>
 
         ${!this.state.vocabFlipped ? `
           <!-- Front Side -->
+          <div style="font-size:64px;margin-bottom:12px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.1))">
+            ${currWord.icon || '📘'}
+          </div>
           <div style="font-size:42px;font-weight:900;color:#1e3a8a;margin-bottom:8px">
             ${esc(currWord.word)}
           </div>
-          <div style="font-size:18px;color:#0284c7;font-family:monospace;font-weight:600">
-            ${esc(currWord.ipa)} &nbsp;<span style="font-size:13px;color:#64748b">(${esc(currWord.pos)})</span>
+          <div style="font-size:18px;color:${currWord.color || '#0284c7'};font-family:monospace;font-weight:700">
+            ${esc(currWord.ipa)} &nbsp;<span style="font-size:13.5px;color:#64748b;font-weight:600">(${esc(currWord.pos)})</span>
           </div>
           <div style="margin-top:20px;font-size:13px;color:#64748b">
             👉 Bấm vào thẻ để xem Nghĩa tiếng Việt & Câu ví dụ trong SGK
           </div>
         ` : `
           <!-- Back Side -->
-          <div style="font-size:28px;font-weight:800;color:#059669;margin-bottom:12px">
+          <div style="font-size:48px;margin-bottom:8px">${currWord.icon || '✨'}</div>
+          <div style="font-size:30px;font-weight:900;color:#059669;margin-bottom:12px">
             ${esc(currWord.meaning)}
           </div>
-          <div style="font-size:14.5px;color:#334155;max-width:500px;line-height:1.6;font-style:italic;background:#f8fafc;padding:12px 18px;border-radius:12px;border:1px dashed #cbd5e1">
+          <div style="font-size:15px;color:#334155;max-width:540px;line-height:1.6;font-style:italic;background:#ffffff;padding:14px 20px;border-radius:14px;border:1.5px dashed ${(currWord.color || '#cbd5e1')}">
             "${esc(currWord.example)}"
           </div>
           <div style="margin-top:16px;font-size:12.5px;color:#64748b">
@@ -994,7 +1116,7 @@ const App = {
       </div>
 
       <!-- Controls Bar -->
-      <div class="card flex-between" style="padding:16px 24px">
+      <div class="card flex-between" style="padding:16px 24px;border-radius:14px">
         <button class="btn btn-outline" onclick="App.prevVocabCard()">
           ← Từ trước
         </button>
@@ -1012,8 +1134,8 @@ const App = {
       </div>
 
       <!-- Full Vocabulary List -->
-      <div class="card mt-24">
-        <div class="section-title mb-16">📋 Danh sách từ vựng trọng tâm Lớp ${grade}</div>
+      <div class="card mt-24" style="border-radius:14px">
+        <div class="section-title mb-16">📋 Kho Từ vựng trọng tâm SGK Lớp ${grade} Global Success</div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -1028,8 +1150,12 @@ const App = {
             <tbody>
               ${words.map(w => `
               <tr>
-                <td><strong style="color:#1e3a8a;font-size:14px">${esc(w.word)}</strong> <small style="color:#64748b">(${w.pos})</small></td>
-                <td style="font-family:monospace;color:#0284c7">${esc(w.ipa)}</td>
+                <td>
+                  <span style="font-size:18px;margin-right:6px">${w.icon || '🔹'}</span>
+                  <strong style="color:#1e3a8a;font-size:14.5px">${esc(w.word)}</strong>
+                  <small style="color:#64748b;font-weight:600">(${w.pos})</small>
+                </td>
+                <td style="font-family:monospace;color:${w.color || '#0284c7'};font-weight:600">${esc(w.ipa)}</td>
                 <td><b style="color:#059669">${esc(w.meaning)}</b></td>
                 <td style="font-size:12.5px;color:#475569"><i>${esc(w.example)}</i></td>
                 <td>
@@ -5947,6 +6073,743 @@ ${esc(suite.fullAudioScript)}
 
   printAnswerSheet() {
     window.print();
+  },
+
+  // ================================================================
+  // ĐẤU TRƯỜNG LUYỆN TẬP THỰC HÀNH 5 DẠNG BÀI (PRACTICE ARENA)
+  // Tác giả & Bản quyền: Thầy Đinh Văn Thành – THCS Đồng Yên
+  // ================================================================
+  renderPracticeArena() {
+    const pa = this.state.practiceArena;
+    const grade = pa.grade || 7;
+    const tab = pa.activeTab || 'scramble';
+
+    const tabs = [
+      { id: 'scramble', name: 'Ghép từ thành câu', icon: '🧩', badge: 'Word Scramble' },
+      { id: 'mistake', name: 'Tìm & Sửa lỗi sai', icon: '🔍', badge: 'Mistake Hunter' },
+      { id: 'transform', name: 'Viết lại câu', icon: '🔄', badge: 'Sentence Transform' },
+      { id: 'match', name: 'Ghép thẻ bài 3D', icon: '🃏', badge: 'Match Game' },
+      { id: 'cloze', name: 'Điền từ đoạn văn', icon: '📝', badge: 'Cloze Test' }
+    ];
+
+    return `
+    <div class="page-body slide-up" style="max-width:1050px;margin:0 auto">
+      <!-- Arena Hero Header -->
+      <div class="arena-hero">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.18);padding:5px 14px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:12px">
+          <span>🏆 ĐẤU TRƯỜNG THỰC HÀNH TƯƠNG TÁC</span>
+          <span>•</span>
+          <span>GLOBAL SUCCESS (LỚP 6, 7, 8, 9)</span>
+        </div>
+        <h1 style="font-size:26px;font-weight:900;margin:0 0 8px;color:#fff">
+          🎮 Đấu Trường Luyện Tập Tiếng Anh Thực Hành
+        </h1>
+        <p style="color:#e0e7ff;font-size:14px;max-width:720px;line-height:1.5;margin:0 0 18px">
+          Hệ sinh thái bài tập thực hành tương tác chuyên sâu của <b>Thầy Đinh Văn Thành</b> (THCS Đồng Yên). Bứt phá tư duy ngữ pháp, từ vựng và kỹ năng làm bài thi thông qua 5 dạng bài tập hiện đại nhất có âm thanh và pháo hoa khen thưởng.
+        </p>
+
+        <!-- Grade Selection Bar -->
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:13px;font-weight:700;color:#cbd5e1">Khối lớp thực hành:</span>
+          ${[6, 7, 8, 9].map(g => `
+          <button class="btn btn-sm" onclick="App.setArenaGrade(${g})"
+            style="${grade === g ? 'background:#f59e0b;color:#1e1b4b;font-weight:900;border:none;box-shadow:0 4px 12px rgba(245,158,11,0.4)' : 'background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)'}">
+            Lớp ${g}
+          </button>`).join('')}
+        </div>
+      </div>
+
+      <!-- 5 Dạng Tab Navigation -->
+      <div class="row gap-8 mb-20" style="overflow-x:auto;padding-bottom:6px">
+        ${tabs.map(t => `
+        <button class="btn ${tab === t.id ? 'btn-primary' : 'btn-outline'}" onclick="App.setArenaTab('${t.id}')"
+          style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-weight:700;white-space:nowrap">
+          <span style="font-size:18px">${t.icon}</span>
+          <span>${t.name}</span>
+          <span style="font-size:10.5px;padding:2px 8px;border-radius:999px;background:${tab === t.id ? 'rgba(255,255,255,0.25)' : 'var(--surface-2)'};color:${tab === t.id ? '#fff' : 'var(--ink-soft)'}">
+            ${t.badge}
+          </span>
+        </button>`).join('')}
+      </div>
+
+      <!-- Tab Content Renderers -->
+      ${tab === 'scramble' ? this.renderArenaScramble(grade) : ''}
+      ${tab === 'mistake' ? this.renderArenaMistake(grade) : ''}
+      ${tab === 'transform' ? this.renderArenaTransform(grade) : ''}
+      ${tab === 'match' ? this.renderArenaMatch(grade) : ''}
+      ${tab === 'cloze' ? this.renderArenaCloze(grade) : ''}
+    </div>`;
+  },
+
+  // ── Dạng 1: Word Scramble / Sentence Builder ──────────────────────
+  renderArenaScramble(grade) {
+    const list = (typeof PRACTICE_SCRAMBLE_DATA !== 'undefined' ? PRACTICE_SCRAMBLE_DATA : []).filter(item => item.grade === grade);
+    if (!list.length) return `<div class="card p-24 text-center">Đang cập nhật dữ liệu Ghép từ Lớp ${grade}...</div>`;
+
+    const pa = this.state.practiceArena;
+    const curIdx = pa.scrambleIndex % list.length;
+    const curItem = list[curIdx];
+
+    const pickedIndices = pa.scramblePicked || [];
+    const unpickedIndices = curItem.words.map((w, idx) => idx).filter(idx => !pickedIndices.includes(idx));
+
+    return `
+    <div class="card p-24" style="border-radius:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="row gap-8 align-center">
+          <span class="tag tag-nb">Lớp ${grade} · ${esc(curItem.unit)}</span>
+          <span style="font-size:13px;font-weight:700;color:var(--ink-soft)">Câu ${curIdx + 1} / ${list.length}</span>
+        </div>
+        <div class="row gap-8">
+          <button class="btn btn-sm btn-outline" onclick="App.prevScramble()" ${curIdx === 0 ? 'disabled' : ''}>← Câu trước</button>
+          <button class="btn btn-sm btn-outline" onclick="App.nextScramble()">Câu tiếp →</button>
+        </div>
+      </div>
+
+      <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:12px">
+        🧩 ${esc(curItem.hint)}
+      </div>
+
+      <!-- Scramble Target Tray -->
+      <div class="scramble-target-tray ${pa.scrambleChecked ? (pa.scrambleIsCorrect ? 'correct' : 'incorrect') : ''}" id="scramble-tray">
+        ${pickedIndices.length === 0 ? `
+          <div style="color:#94a3b8;font-size:13px;font-style:italic;padding:8px">
+            👉 Bấm vào các thẻ từ vựng bên dưới theo đúng thứ tự để xếp thành câu hoàn chỉnh...
+          </div>
+        ` : pickedIndices.map((origIdx, trayIdx) => `
+          <div class="scramble-chip in-tray" onclick="App.unpickScrambleChip(${trayIdx})">
+            ${esc(curItem.words[origIdx])} ✕
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Word Pool -->
+      <div style="font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:8px">Kho từ khả dụng (nhấp để đưa vào câu):</div>
+      <div class="scramble-pool mb-20">
+        ${unpickedIndices.length === 0 ? `
+          <span style="color:#10b981;font-size:13px;font-weight:600;padding:6px">✓ Đã đưa hết các từ lên khay sắp xếp</span>
+        ` : unpickedIndices.map(origIdx => `
+          <div class="scramble-chip" onclick="App.pickScrambleChip(${origIdx})">
+            ${esc(curItem.words[origIdx])}
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="row gap-12 align-center flex-wrap mb-16">
+        <button class="btn btn-primary" onclick="App.checkScramble()" ${pickedIndices.length === 0 ? 'disabled' : ''}>
+          ✓ Kiểm tra đáp án
+        </button>
+        <button class="btn btn-outline" onclick="App.resetScramble()">
+          🔄 Xếp lại từ đầu
+        </button>
+        <button class="btn btn-ghost" onclick="AudioEngine.playScript('${esc(curItem.correctSentence)}', 0.85)">
+          🔊 Nghe đọc câu mẫu chuẩn
+        </button>
+      </div>
+
+      <!-- Feedback / Grammar Rule Box -->
+      ${pa.scrambleChecked ? `
+        <div class="p-16 border-radius-12 mt-12"
+          style="border-radius:12px;background:${pa.scrambleIsCorrect ? '#f0fdf4' : '#fef2f2'};border:1.5px solid ${pa.scrambleIsCorrect ? '#22c55e' : '#ef4444'}">
+          <div style="font-weight:800;font-size:15px;color:${pa.scrambleIsCorrect ? '#166534' : '#991b1b'};margin-bottom:6px">
+            ${pa.scrambleIsCorrect ? '🎉 Xuất sắc! Bạn đã sắp xếp câu hoàn toàn chính xác!' : '❌ Chưa chính xác rồi, hãy kiểm tra lại trật tự các từ nhé!'}
+          </div>
+          <div style="font-size:14px;color:#1e293b;margin-bottom:4px">
+            <b>Đáp án chuẩn:</b> <span style="color:#0284c7;font-weight:700">${esc(curItem.correctSentence)}</span>
+          </div>
+          <div style="font-size:13.5px;color:#475569;margin-bottom:4px">
+            <b>Dịch nghĩa:</b> ${esc(curItem.meaning)}
+          </div>
+          <div style="font-size:13px;color:#6366f1;font-weight:600">
+            💡 <b>Quy tắc ngữ pháp:</b> ${esc(curItem.grammarRule)}
+          </div>
+        </div>
+      ` : ''}
+    </div>`;
+  },
+
+  // ── Dạng 2: Find & Correct The Mistake ───────────────────────────
+  renderArenaMistake(grade) {
+    const list = (typeof PRACTICE_MISTAKE_DATA !== 'undefined' ? PRACTICE_MISTAKE_DATA : []).filter(item => item.grade === grade);
+    if (!list.length) return `<div class="card p-24 text-center">Đang cập nhật dữ liệu Tìm lỗi sai Lớp ${grade}...</div>`;
+
+    const pa = this.state.practiceArena;
+    const curIdx = pa.mistakeIndex % list.length;
+    const curItem = list[curIdx];
+    const selected = pa.mistakeSelected;
+
+    let renderedSentence = curItem.sentence.replace(/\[([A-D]):\s*([^\]]+)\]/g, (match, part, word) => {
+      let extraClass = '';
+      if (selected) {
+        if (selected === part) {
+          extraClass = (part === curItem.wrongPart) ? 'selected-correct' : 'selected-wrong';
+        } else if (part === curItem.wrongPart) {
+          extraClass = 'selected-correct';
+        }
+      }
+      return `<span class="mistake-choice ${extraClass}" onclick="App.selectMistakePart('${part}')"><u>(${part}) ${esc(word)}</u></span>`;
+    });
+
+    return `
+    <div class="card p-24" style="border-radius:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="row gap-8 align-center">
+          <span class="tag tag-nb">Lớp ${grade} · ${esc(curItem.unit)}</span>
+          <span style="font-size:13px;font-weight:700;color:var(--ink-soft)">Câu ${curIdx + 1} / ${list.length}</span>
+        </div>
+        <div class="row gap-8">
+          <button class="btn btn-sm btn-outline" onclick="App.prevMistake()" ${curIdx === 0 ? 'disabled' : ''}>← Câu trước</button>
+          <button class="btn btn-sm btn-outline" onclick="App.nextMistake()">Câu tiếp →</button>
+        </div>
+      </div>
+
+      <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:14px">
+        🔍 Bấm trực tiếp vào 1 trong 4 phần gạch chân (A, B, C, D) chứa lỗi sai ngữ pháp:
+      </div>
+
+      <!-- Mistake sentence box -->
+      <div class="card p-20 mb-20" style="background:var(--surface-2);border-left:5px solid #6366f1;border-radius:12px">
+        <div class="mistake-sentence">
+          ${renderedSentence}
+        </div>
+      </div>
+
+      <!-- Feedback banner -->
+      ${selected ? `
+        <div class="p-16 mb-16" style="border-radius:12px;background:${selected === curItem.wrongPart ? '#f0fdf4' : '#fef2f2'};border:1.5px solid ${selected === curItem.wrongPart ? '#22c55e' : '#ef4444'}">
+          <div style="font-weight:800;font-size:15px;color:${selected === curItem.wrongPart ? '#166534' : '#991b1b'};margin-bottom:6px">
+            ${selected === curItem.wrongPart ? `🎉 Chính xác! Lỗi sai nằm ở đáp án [${curItem.wrongPart}]` : `❌ Chưa đúng! Phần [${selected}] đúng ngữ pháp. Lỗi sai thực tế nằm ở [${curItem.wrongPart}].`}
+          </div>
+          <div style="font-size:14px;color:#1e293b;margin-bottom:4px">
+            <b>Cần sửa lại:</b> <span style="text-decoration:line-through;color:#ef4444">${esc(curItem.wrongWord)}</span> ➔ <b style="color:#16a34a">${esc(curItem.correctWord)}</b>
+          </div>
+          <div style="font-size:13.5px;color:#475569">
+            💡 <b>Giải thích chi tiết:</b> ${esc(curItem.explanation)}
+          </div>
+        </div>
+      ` : ''}
+
+      <div class="row gap-12 align-center">
+        <button class="btn btn-primary" onclick="App.nextMistake()">Câu tiếp theo →</button>
+        <button class="btn btn-ghost" onclick="AudioEngine.playScript('${esc(curItem.sentence.replace(/\[[A-D]:\s*([^\]]+)\]/g, '$2'))}', 0.85)">
+          🔊 Nghe đọc câu gốc
+        </button>
+      </div>
+    </div>`;
+  },
+
+  // ── Dạng 3: Sentence Transformation ──────────────────────────────
+  renderArenaTransform(grade) {
+    const list = (typeof PRACTICE_TRANSFORM_DATA !== 'undefined' ? PRACTICE_TRANSFORM_DATA : []).filter(item => item.grade === grade);
+    if (!list.length) return `<div class="card p-24 text-center">Đang cập nhật dữ liệu Viết lại câu Lớp ${grade}...</div>`;
+
+    const pa = this.state.practiceArena;
+    const curIdx = pa.transformIndex % list.length;
+    const curItem = list[curIdx];
+    const selected = pa.transformSelected;
+
+    return `
+    <div class="card p-24" style="border-radius:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="row gap-8 align-center">
+          <span class="tag tag-nb">Lớp ${grade} · ${esc(curItem.unit)}</span>
+          <span style="font-size:13px;font-weight:700;color:var(--ink-soft)">Câu ${curIdx + 1} / ${list.length}</span>
+        </div>
+        <div class="row gap-8">
+          <button class="btn btn-sm btn-outline" onclick="App.prevTransform()" ${curIdx === 0 ? 'disabled' : ''}>← Câu trước</button>
+          <button class="btn btn-sm btn-outline" onclick="App.nextTransform()">Câu tiếp →</button>
+        </div>
+      </div>
+
+      <div style="font-size:13.5px;color:var(--ink-soft);margin-bottom:6px">Câu ban đầu:</div>
+      <div class="transform-original-box">
+        "${esc(curItem.original)}"
+      </div>
+
+      <div style="font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:14px">
+        🔄 Chọn phần hoàn thành câu viết lại bắt đầu bằng: <span style="color:#2563eb;font-weight:800">"${esc(curItem.beginWith)} ..."</span>
+      </div>
+
+      <!-- 4 Multiple Choice Options -->
+      <div class="stack gap-10 mb-20">
+        ${curItem.options.map((opt, idx) => {
+          const isCorrect = (opt.trim() === curItem.correctAnswer.trim());
+          let optStyle = 'border:1.5px solid var(--line);background:var(--surface);';
+          if (selected !== null) {
+            if (idx === selected) {
+              optStyle = isCorrect
+                ? 'border:2px solid #22c55e;background:#f0fdf4;box-shadow:0 0 10px rgba(34,197,94,0.2);'
+                : 'border:2px solid #ef4444;background:#fef2f2;';
+            } else if (isCorrect) {
+              optStyle = 'border:2px solid #22c55e;background:#f0fdf4;';
+            }
+          }
+          return `
+          <div class="card p-14" style="cursor:pointer;border-radius:10px;transition:all 0.15s;${optStyle}"
+               onclick="App.selectTransformOption(${idx})">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <span style="width:24px;height:24px;border-radius:50%;background:${selected === idx ? (isCorrect ? '#22c55e' : '#ef4444') : '#e2e8f0'};color:${selected === idx ? '#fff' : '#475569'};display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0">
+                ${String.fromCharCode(65 + idx)}
+              </span>
+              <div style="font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.4">
+                <b>${esc(curItem.beginWith)}</b> ${esc(opt)}
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Explanation banner -->
+      ${selected !== null ? `
+        <div class="p-16 mb-16" style="border-radius:12px;background:${curItem.options[selected].trim() === curItem.correctAnswer.trim() ? '#f0fdf4' : '#fef2f2'};border:1.5px solid ${curItem.options[selected].trim() === curItem.correctAnswer.trim() ? '#22c55e' : '#ef4444'}">
+          <div style="font-weight:800;font-size:15px;color:${curItem.options[selected].trim() === curItem.correctAnswer.trim() ? '#166534' : '#991b1b'};margin-bottom:6px">
+            ${curItem.options[selected].trim() === curItem.correctAnswer.trim() ? '🎉 Chính xác! Câu viết lại có nghĩa và cấu trúc tương đương chuẩn xác!' : '❌ Chưa chính xác! Hãy quan sát cấu trúc tương đương bên dưới:'}
+          </div>
+          <div style="font-size:14px;color:#1e293b;margin-bottom:4px">
+            <b>Câu hoàn chỉnh:</b> <span style="color:#0284c7;font-weight:700">${esc(curItem.beginWith)} ${esc(curItem.correctAnswer)}</span>
+          </div>
+          <div style="font-size:13.5px;color:#475569">
+            💡 <b>Giải thích cấu trúc:</b> ${esc(curItem.explanation)}
+          </div>
+        </div>
+      ` : ''}
+
+      <div class="row gap-12 align-center">
+        <button class="btn btn-primary" onclick="App.nextTransform()">Câu tiếp theo →</button>
+        <button class="btn btn-ghost" onclick="AudioEngine.playScript('${esc(curItem.beginWith)} ${esc(curItem.correctAnswer)}', 0.85)">
+          🔊 Nghe đọc câu viết lại
+        </button>
+      </div>
+    </div>`;
+  },
+
+  // ── Dạng 4: Match Pairs 3D Game ──────────────────────────────────
+  renderArenaMatch(grade) {
+    const list = (typeof PRACTICE_MATCHING_DATA !== 'undefined' ? PRACTICE_MATCHING_DATA : []).filter(item => item.grade === grade);
+    if (!list.length) return `<div class="card p-24 text-center">Đang cập nhật dữ liệu Ghép thẻ Lớp ${grade}...</div>`;
+
+    const matchSet = list[0];
+    const pa = this.state.practiceArena;
+
+    if (!pa.matchShuffledTiles || pa.matchShuffledTilesGrade !== grade) {
+      const tiles = [];
+      matchSet.pairs.forEach((p, idx) => {
+        tiles.push({ id: `en-${idx}`, pairId: idx, text: p.en, icon: p.icon, type: 'en' });
+        tiles.push({ id: `vi-${idx}`, pairId: idx, text: p.vi, icon: p.icon, type: 'vi' });
+      });
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+      }
+      pa.matchShuffledTiles = tiles;
+      pa.matchShuffledTilesGrade = grade;
+      pa.matchPairsDone = [];
+      pa.matchSelected = null;
+    }
+
+    const doneCount = (pa.matchPairsDone || []).length;
+    const totalPairs = matchSet.pairs.length;
+    const isCompleted = doneCount === totalPairs;
+
+    return `
+    <div class="card p-24" style="border-radius:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div>
+          <span class="tag tag-nb">Lớp ${grade} · Game Ghép Thẻ</span>
+          <h3 style="font-size:16px;font-weight:800;color:var(--ink);margin-top:4px">${esc(matchSet.title)}</h3>
+        </div>
+        <div class="row gap-8 align-center">
+          <span style="font-size:13px;font-weight:700;color:#10b981;background:#ecfdf5;padding:4px 12px;border-radius:999px">
+            ⭐ Đã ghép: ${doneCount} / ${totalPairs} cặp
+          </span>
+          <button class="btn btn-sm btn-outline" onclick="App.resetMatchGame()">🔄 Chơi lại</button>
+        </div>
+      </div>
+
+      <div style="font-size:14px;color:var(--ink-soft);margin-bottom:16px">
+        👉 Bấm chọn 1 thẻ Tiếng Anh và 1 thẻ Tiếng Việt tương ứng để ghép đôi. Ghép đúng thẻ sẽ chuyển màu xanh!
+      </div>
+
+      ${isCompleted ? `
+        <div class="p-20 text-center mb-20" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #10b981;border-radius:16px">
+          <div style="font-size:48px;margin-bottom:8px">🎉 🏆 🌟</div>
+          <h2 style="font-size:22px;font-weight:900;color:#065f46;margin:0 0 6px">CHÚC MỪNG BẠN ĐÃ CHIẾN THẮNG!</h2>
+          <p style="color:#047857;font-size:14px;margin:0 0 16px">Bạn đã ghép chính xác toàn bộ ${totalPairs} cặp từ vựng Lớp ${grade}!</p>
+          <button class="btn btn-primary" onclick="App.resetMatchGame()">
+            🎮 Chơi lại ván mới (Xáo trộn thẻ)
+          </button>
+        </div>
+      ` : ''}
+
+      <!-- Grid of 12 Tiles -->
+      <div class="match-arena-grid">
+        ${pa.matchShuffledTiles.map(tile => {
+          const isDone = (pa.matchPairsDone || []).includes(tile.pairId);
+          const isSelected = pa.matchSelected && pa.matchSelected.id === tile.id;
+          let tileClass = 'match-tile';
+          if (isDone) tileClass += ' matched';
+          else if (isSelected) tileClass += ' selected';
+
+          return `
+          <div class="${tileClass}" onclick="App.selectMatchTile('${tile.id}', ${tile.pairId}, '${tile.type}')">
+            <div style="font-size:26px;margin-bottom:6px">${tile.icon}</div>
+            <div style="font-size:${tile.type === 'en' ? '15px' : '13px'};font-weight:700;color:${tile.type === 'en' ? '#1e3a8a' : '#059669'}">
+              ${esc(tile.text)}
+            </div>
+            <small style="font-size:10px;color:#94a3b8;margin-top:4px">
+              ${isDone ? '✓ Đã ghép' : (tile.type === 'en' ? 'English' : 'Tiếng Việt')}
+            </small>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  },
+
+  // ── Dạng 5: Cloze Test / Word Bank ──────────────────────────────
+  renderArenaCloze(grade) {
+    const list = (typeof PRACTICE_CLOZE_DATA !== 'undefined' ? PRACTICE_CLOZE_DATA : []).filter(item => item.grade === grade);
+    if (!list.length) return `<div class="card p-24 text-center">Đang cập nhật dữ liệu Điền từ Lớp ${grade}...</div>`;
+
+    const curItem = list[0];
+    const pa = this.state.practiceArena;
+    const selections = pa.clozeSelections || {};
+    const checked = pa.clozeChecked;
+
+    let passageHtml = curItem.passageTemplate.replace(/\[([1-5])\]/g, (match, slotNum) => {
+      const chosenWord = selections[slotNum] || '';
+      const isCorrect = chosenWord.toLowerCase() === (curItem.answers[slotNum] || '').toLowerCase();
+      let slotStyle = 'padding:4px 10px;font-size:14px;font-weight:700;border-radius:8px;margin:0 4px;';
+      if (checked) {
+        slotStyle += isCorrect ? 'background:#dcfce7;border:2px solid #22c55e;color:#166534;' : 'background:#fee2e2;border:2px solid #ef4444;color:#991b1b;'
+      } else {
+        slotStyle += 'background:#eff6ff;border:1.5px solid #3b82f6;color:#1d4ed8;'
+      }
+
+      return `
+      <select style="${slotStyle}" onchange="App.selectClozeWord(${slotNum}, this.value)" ${checked ? 'disabled' : ''}>
+        <option value="">-- [${slotNum}] Chọn từ --</option>
+        ${curItem.wordBank.map(w => `
+          <option value="${esc(w)}" ${chosenWord === w ? 'selected' : ''}>${esc(w)}</option>
+        `).join('')}
+      </select>`;
+    });
+
+    let score = 0;
+    if (checked) {
+      Object.keys(curItem.answers).forEach(slotNum => {
+        if ((selections[slotNum] || '').toLowerCase() === curItem.answers[slotNum].toLowerCase()) {
+          score++;
+        }
+      });
+    }
+
+    return `
+    <div class="card p-24" style="border-radius:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div>
+          <span class="tag tag-nb">Lớp ${grade} · Cloze Test</span>
+          <h3 style="font-size:16px;font-weight:800;color:var(--ink);margin-top:4px">${esc(curItem.title)}</h3>
+        </div>
+        <div class="row gap-8 align-center">
+          <button class="btn btn-sm btn-outline" onclick="App.resetCloze()">🔄 Làm lại</button>
+        </div>
+      </div>
+
+      <!-- Word Bank Box -->
+      <div class="cloze-bank-box mb-20">
+        <div style="font-size:12.5px;font-weight:700;color:#1e3a8a;margin-bottom:8px">
+          📦 NGÂN HÀNG TỪ VỰNG KHẢ DỤNG (WORD BANK):
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          ${curItem.wordBank.map(w => `
+            <span class="cloze-bank-word" onclick="AudioEngine.playScript('${w}', 0.85)">
+              🔊 ${esc(w)}
+            </span>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Passage Box -->
+      <div class="cloze-passage-box mb-20" style="line-height:2.2;font-size:16px">
+        ${passageHtml}
+      </div>
+
+      <!-- Actions -->
+      <div class="row gap-12 align-center flex-wrap mb-16">
+        <button class="btn btn-primary" onclick="App.checkClozeAnswers()">
+          ✓ Chấm điểm đoạn văn
+        </button>
+        <button class="btn btn-ghost" onclick="AudioEngine.playScript('${esc(curItem.passageTemplate.replace(/\[([1-5])\]/g, (m, s) => curItem.answers[s]))}', 0.85)">
+          🔊 Nghe toàn bộ đoạn văn chuẩn (AI Voice)
+        </button>
+      </div>
+
+      <!-- Result Banner -->
+      ${checked ? `
+        <div class="p-16 border-radius-12" style="border-radius:12px;background:${score === 5 ? '#f0fdf4' : '#fef2f2'};border:1.5px solid ${score === 5 ? '#22c55e' : '#ef4444'}">
+          <div style="font-weight:800;font-size:15px;color:${score === 5 ? '#166534' : '#991b1b'};margin-bottom:6px">
+            ${score === 5 ? '🎉 Hoàn hảo! Bạn đạt 5/5 điểm tuyệt đối!' : `Điểm số của bạn: ${score} / 5 vị trí đúng. Hãy xem đáp án chi tiết bên dưới:`}
+          </div>
+          <div style="font-size:13.5px;color:#334155">
+            <b>Đáp án đúng:</b>
+            ${Object.entries(curItem.answers).map(([k, v]) => `[${k}] <b>${esc(v)}</b>`).join(' &nbsp;•&nbsp; ')}
+          </div>
+        </div>
+      ` : ''}
+    </div>`;
+  },
+
+  // ── Arena Controller Methods ─────────────────────────────────────
+  setArenaTab(tab) {
+    this.state.practiceArena.activeTab = tab;
+    this.renderPage();
+  },
+
+  setArenaGrade(grade) {
+    this.state.practiceArena.grade = grade;
+    this.state.practiceArena.scrambleIndex = 0;
+    this.state.practiceArena.scramblePicked = [];
+    this.state.practiceArena.scrambleChecked = false;
+    this.state.practiceArena.mistakeIndex = 0;
+    this.state.practiceArena.mistakeSelected = null;
+    this.state.practiceArena.transformIndex = 0;
+    this.state.practiceArena.transformSelected = null;
+    this.state.practiceArena.matchShuffledTiles = null;
+    this.state.practiceArena.matchPairsDone = [];
+    this.state.practiceArena.clozeSelections = {};
+    this.state.practiceArena.clozeChecked = false;
+    this.renderPage();
+  },
+
+  pickScrambleChip(origIdx) {
+    const pa = this.state.practiceArena;
+    if (!pa.scramblePicked) pa.scramblePicked = [];
+    if (!pa.scramblePicked.includes(origIdx)) {
+      pa.scramblePicked.push(origIdx);
+      pa.scrambleChecked = false;
+      this.renderPage();
+    }
+  },
+
+  unpickScrambleChip(trayIdx) {
+    const pa = this.state.practiceArena;
+    if (pa.scramblePicked) {
+      pa.scramblePicked.splice(trayIdx, 1);
+      pa.scrambleChecked = false;
+      this.renderPage();
+    }
+  },
+
+  checkScramble() {
+    const pa = this.state.practiceArena;
+    const list = (typeof PRACTICE_SCRAMBLE_DATA !== 'undefined' ? PRACTICE_SCRAMBLE_DATA : []).filter(item => item.grade === pa.grade);
+    const curItem = list[pa.scrambleIndex % list.length];
+    if (!curItem) return;
+
+    const userSentence = (pa.scramblePicked || []).map(idx => curItem.words[idx]).join(' ').trim();
+    const correctClean = curItem.correctSentence.trim();
+
+    pa.scrambleChecked = true;
+    pa.scrambleIsCorrect = (userSentence.toLowerCase() === correctClean.toLowerCase());
+
+    if (pa.scrambleIsCorrect) {
+      AudioEngine.playChime('celebrate');
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+      }
+      UI.toast('Chính xác! Xuất sắc!', 'success');
+    } else {
+      AudioEngine.playChime('error');
+      UI.toast('Chưa đúng trật tự từ, hãy thử lại!', 'warn');
+    }
+    this.renderPage();
+  },
+
+  resetScramble() {
+    const pa = this.state.practiceArena;
+    pa.scramblePicked = [];
+    pa.scrambleChecked = false;
+    pa.scrambleIsCorrect = false;
+    this.renderPage();
+  },
+
+  nextScramble() {
+    const pa = this.state.practiceArena;
+    pa.scrambleIndex++;
+    pa.scramblePicked = [];
+    pa.scrambleChecked = false;
+    pa.scrambleIsCorrect = false;
+    this.renderPage();
+  },
+
+  prevScramble() {
+    const pa = this.state.practiceArena;
+    if (pa.scrambleIndex > 0) pa.scrambleIndex--;
+    pa.scramblePicked = [];
+    pa.scrambleChecked = false;
+    pa.scrambleIsCorrect = false;
+    this.renderPage();
+  },
+
+  selectMistakePart(part) {
+    const pa = this.state.practiceArena;
+    const list = (typeof PRACTICE_MISTAKE_DATA !== 'undefined' ? PRACTICE_MISTAKE_DATA : []).filter(item => item.grade === pa.grade);
+    const curItem = list[pa.mistakeIndex % list.length];
+    if (!curItem) return;
+
+    pa.mistakeSelected = part;
+    if (part === curItem.wrongPart) {
+      AudioEngine.playChime('success');
+      UI.toast(`Chính xác! Lỗi sai ở [${part}]`, 'success');
+    } else {
+      AudioEngine.playChime('error');
+      UI.toast(`Chưa đúng, [${part}] không có lỗi`, 'warn');
+    }
+    this.renderPage();
+  },
+
+  nextMistake() {
+    const pa = this.state.practiceArena;
+    pa.mistakeIndex++;
+    pa.mistakeSelected = null;
+    this.renderPage();
+  },
+
+  prevMistake() {
+    const pa = this.state.practiceArena;
+    if (pa.mistakeIndex > 0) pa.mistakeIndex--;
+    pa.mistakeSelected = null;
+    this.renderPage();
+  },
+
+  selectTransformOption(optIdx) {
+    const pa = this.state.practiceArena;
+    const list = (typeof PRACTICE_TRANSFORM_DATA !== 'undefined' ? PRACTICE_TRANSFORM_DATA : []).filter(item => item.grade === pa.grade);
+    const curItem = list[pa.transformIndex % list.length];
+    if (!curItem) return;
+
+    pa.transformSelected = optIdx;
+    const isCorrect = (curItem.options[optIdx].trim() === curItem.correctAnswer.trim());
+    if (isCorrect) {
+      AudioEngine.playChime('success');
+      UI.toast('Chính xác! Câu viết lại chuẩn 100%', 'success');
+    } else {
+      AudioEngine.playChime('error');
+      UI.toast('Chưa chính xác, hãy xem phân tích ngữ pháp', 'warn');
+    }
+    this.renderPage();
+  },
+
+  nextTransform() {
+    const pa = this.state.practiceArena;
+    pa.transformIndex++;
+    pa.transformSelected = null;
+    this.renderPage();
+  },
+
+  prevTransform() {
+    const pa = this.state.practiceArena;
+    if (pa.transformIndex > 0) pa.transformIndex--;
+    pa.transformSelected = null;
+    this.renderPage();
+  },
+
+  selectMatchTile(tileId, pairId, type) {
+    const pa = this.state.practiceArena;
+    if (!pa.matchPairsDone) pa.matchPairsDone = [];
+
+    if (pa.matchPairsDone.includes(pairId)) return;
+
+    if (!pa.matchSelected) {
+      pa.matchSelected = { id: tileId, pairId, type };
+      this.renderPage();
+      return;
+    }
+
+    if (pa.matchSelected.id === tileId) {
+      pa.matchSelected = null;
+      this.renderPage();
+      return;
+    }
+
+    if (pa.matchSelected.type === type) {
+      pa.matchSelected = { id: tileId, pairId, type };
+      this.renderPage();
+      return;
+    }
+
+    if (pa.matchSelected.pairId === pairId) {
+      pa.matchPairsDone.push(pairId);
+      pa.matchSelected = null;
+      AudioEngine.playChime('success');
+
+      const list = (typeof PRACTICE_MATCHING_DATA !== 'undefined' ? PRACTICE_MATCHING_DATA : []).filter(item => item.grade === pa.grade);
+      const totalPairs = (list[0] && list[0].pairs.length) || 6;
+      if (pa.matchPairsDone.length >= totalPairs) {
+        AudioEngine.playChime('celebrate');
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+        }
+        UI.toast('Tuyệt vời! Bạn đã hoàn thành toàn bộ ván ghép thẻ!', 'success');
+      }
+      this.renderPage();
+    } else {
+      AudioEngine.playChime('error');
+      UI.toast('Chưa khớp nghĩa, hãy thử lại!', 'warn');
+      pa.matchSelected = null;
+      this.renderPage();
+    }
+  },
+
+  resetMatchGame() {
+    const pa = this.state.practiceArena;
+    pa.matchShuffledTiles = null;
+    pa.matchPairsDone = [];
+    pa.matchSelected = null;
+    this.renderPage();
+  },
+
+  selectClozeWord(slotNum, word) {
+    if (!this.state.practiceArena.clozeSelections) {
+      this.state.practiceArena.clozeSelections = {};
+    }
+    this.state.practiceArena.clozeSelections[slotNum] = word;
+    this.state.practiceArena.clozeChecked = false;
+    this.renderPage();
+  },
+
+  checkClozeAnswers() {
+    const pa = this.state.practiceArena;
+    pa.clozeChecked = true;
+    const list = (typeof PRACTICE_CLOZE_DATA !== 'undefined' ? PRACTICE_CLOZE_DATA : []).filter(item => item.grade === pa.grade);
+    const curItem = list[0];
+    if (!curItem) return;
+
+    let score = 0;
+    Object.keys(curItem.answers).forEach(slotNum => {
+      if ((pa.clozeSelections[slotNum] || '').toLowerCase() === curItem.answers[slotNum].toLowerCase()) {
+        score++;
+      }
+    });
+
+    if (score === 5) {
+      AudioEngine.playChime('celebrate');
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      }
+      UI.toast('Tuyệt đối 5/5! Bạn quá thông minh!', 'success');
+    } else {
+      AudioEngine.playChime('error');
+      UI.toast(`Bạn làm đúng ${score}/5 vị trí`, 'info');
+    }
+    this.renderPage();
+  },
+
+  resetCloze() {
+    this.state.practiceArena.clozeSelections = {};
+    this.state.practiceArena.clozeChecked = false;
+    this.renderPage();
   }
 };
 
