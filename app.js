@@ -1922,6 +1922,7 @@ const App = {
     wiz.previewCodeIndex = 1;
     wiz.audioTitle = `Track 1: Listening Comprehension - Tiếng Anh ${curG} (${suite.termTitle})`;
     wiz.audioScript = suite.fullAudioScript;
+    wiz.audioUrl = suite.audioUrl || `audio/listening_${curG}_${curT.toLowerCase()}.mp3`;
     wiz.hasSpeaking = suite.hasSpeaking;
     wiz.selectedSections = JSON.parse(JSON.stringify(suite.sections_code1));
     wiz.sections_code2 = JSON.parse(JSON.stringify(suite.sections_code2));
@@ -1965,6 +1966,7 @@ const App = {
       wiz.examTime = newExam.timeMinutes || 60;
       wiz.audioTitle = newExam.audioTitle;
       wiz.audioScript = newExam.audioScript;
+      wiz.audioUrl = newExam.audioUrl || `audio/listening_${curG}_${curT.toLowerCase()}.mp3`;
       wiz.hasSpeaking = newExam.hasSpeaking;
       wiz.selectedSections = newExam.sections_code1;
       wiz.sections_code2 = newExam.sections_code2;
@@ -3816,6 +3818,11 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
     }
 
     this.state.studentExam = exam;
+    if (!exam.audioUrl && exam.grade) {
+      const g = exam.grade;
+      const t = (exam.examType || (exam.id && exam.id.includes('gk1') ? 'gk1' : 'gk1')).toLowerCase();
+      exam.audioUrl = `audio/listening_${g}_${t}.mp3`;
+    }
 
     // Chuẩn hóa ID duy nhất cho tất cả các câu hỏi trong đề thi
     let qCounter = 0;
@@ -5987,6 +5994,7 @@ ${esc(suite.fullAudioScript)}
       teacherName: 'Thầy Đinh Văn Thành',
       audioTitle: `Audio Script Tiếng Anh ${curG} (${suite.termTitle})`,
       audioScript: suite.fullAudioScript,
+      audioUrl: suite.audioUrl || `audio/listening_${curG}_${curT.toLowerCase()}.mp3`,
       sections: clonedSections,
       isOpen: true,
       publishedAt: new Date().toISOString()
@@ -6186,6 +6194,7 @@ ${esc(suite.fullAudioScript)}
       teacherName: 'Thầy Đinh Văn Thành',
       audioTitle: `Audio Script Tiếng Anh ${grade}`,
       audioScript: audioScript,
+      audioUrl: `audio/listening_${grade}_${(term || 'gk1').toLowerCase()}.mp3`,
       sections: sections,
       isOpen: true,
       publishedAt: new Date().toISOString()
