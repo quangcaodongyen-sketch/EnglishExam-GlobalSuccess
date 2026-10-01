@@ -2997,6 +2997,17 @@ const App = {
 
     this.state.studentExam = exam;
 
+    // Chuẩn hóa ID duy nhất cho tất cả các câu hỏi trong đề thi
+    let qCounter = 0;
+    (exam.sections || []).forEach((sec, sIdx) => {
+      (sec.questions || []).forEach((q, qIdx) => {
+        qCounter++;
+        if (!q.id) {
+          q.id = `q_${exam.id || 'exam'}_s${sIdx + 1}_${qCounter}`;
+        }
+      });
+    });
+
     if (!this.state.studentStarted) {
       const defaultName = this.state.user?.name || '';
       const defaultClass = this.state.user?.class || exam.examClass || '7A1';
@@ -3141,9 +3152,10 @@ const App = {
                 const isEssay = q.type === 'essay';
                 const isMC = !isTF && !isEssay;
                 const qi = qGlobalIndex;
+                const qId = q.id || `q_${qi}`;
 
                 return `
-                <div class="student-card" id="st-q-${q.id}">
+                <div class="student-card" id="st-q-${qId}">
                   <div style="font-size:14.5px;font-weight:700;color:#0f172a;line-height:1.6">
                     Câu ${qi}: ${esc(q.content)}
                   </div>
@@ -3151,9 +3163,9 @@ const App = {
                   <div class="student-opt-list">
                     ${(q.options || []).map(opt => {
                       const letter = opt.charAt(0);
-                      const isSel = this.state.studentAnswers[q.id] === letter;
+                      const isSel = this.state.studentAnswers[qId] === letter;
                       return `
-                      <div class="student-opt-btn ${isSel ? 'selected' : ''}" onclick="App.selectStudentMCOption('${q.id}','${letter}')">
+                      <div class="student-opt-btn ${isSel ? 'selected' : ''}" onclick="App.selectStudentMCOption('${qId}','${letter}')">
                         <div class="student-opt-indicator">${letter}</div>
                         <div>${esc(opt.slice(2).trim())}</div>
                       </div>`;
@@ -3163,13 +3175,13 @@ const App = {
                   ${isTF ? `
                   <div style="margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
                     ${(q.items || []).map(it => {
-                      const curVal = this.state.studentAnswers[q.id + '_' + it.label];
+                      const curVal = this.state.studentAnswers[qId + '_' + it.label];
                       return `
-                      <div class="student-tf-row">
+                      <div class="student-tf-row" data-tf-label="${it.label}">
                         <div style="font-size:13.5px;flex:1"><b>${it.label})</b> ${esc(it.text)}</div>
                         <div class="student-tf-pills">
-                          <button class="student-tf-pill ${curVal === true ? 'active-true' : ''}" onclick="App.selectStudentTF('${q.id}','${it.label}',true)">Đúng</button>
-                          <button class="student-tf-pill ${curVal === false ? 'active-false' : ''}" onclick="App.selectStudentTF('${q.id}','${it.label}',false)">Sai</button>
+                          <button class="student-tf-pill btn-tf-true ${curVal === true ? 'active-true' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',true)">Đúng</button>
+                          <button class="student-tf-pill btn-tf-false ${curVal === false ? 'active-false' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',false)">Sai</button>
                         </div>
                       </div>`;
                     }).join('')}
@@ -3177,8 +3189,8 @@ const App = {
 
                   ${isEssay ? `
                   <div style="margin-top:10px">
-                    <textarea rows="3" placeholder="Nhập câu trả lời..." oninput="App.inputStudentEssay('${q.id}',this.value)"
-                      style="width:100%;padding:10px;border:1.5px solid #cbd5e1;border-radius:10px;font-family:inherit">${esc(this.state.studentAnswers[q.id] || '')}</textarea>
+                    <textarea rows="3" placeholder="Nhập câu trả lời..." oninput="App.inputStudentEssay('${qId}',this.value)"
+                      style="width:100%;padding:10px;border:1.5px solid #cbd5e1;border-radius:10px;font-family:inherit">${esc(this.state.studentAnswers[qId] || '')}</textarea>
                   </div>` : ''}
                 </div>`;
               }).join('')}
@@ -3189,10 +3201,13 @@ const App = {
             <div class="palette-card">
               <div style="font-weight:800;font-size:14px;margin-bottom:8px">Danh sách câu hỏi</div>
               <div class="palette-grid">
-                ${allQ.map((q, idx) => `
-                <button class="palette-btn ${this.isQuestionAnswered(q) ? 'done' : ''}" id="pal-btn-${q.id}" onclick="document.getElementById('st-q-${q.id}')?.scrollIntoView({behavior:'smooth'})">
+                ${allQ.map((q, idx) => {
+                  const qId = q.id || `q_${idx + 1}`;
+                  return `
+                <button class="palette-btn ${this.isQuestionAnswered(q, qId) ? 'done' : ''}" id="pal-btn-${qId}" onclick="document.getElementById('st-q-${qId}')?.scrollIntoView({behavior:'smooth'})">
                   ${idx + 1}
-                </button>`).join('')}
+                </button>`;
+                }).join('')}
               </div>
               <button class="btn btn-primary" onclick="App.confirmSubmitExam()" style="width:100%;padding:12px;font-weight:800">
                 📝 NỘP BÀI THI
@@ -3233,24 +3248,80 @@ const App = {
   },
 
   selectStudentMCOption(qId, letter) {
+    if (!qId || qId === 'undefined') return;
     this.state.studentAnswers[qId] = letter;
-    this.renderStudentExamView();
+
+    // Cập nhật giao diện trực tiếp tại đúng thẻ câu hỏi được chọn
+    const card = document.getElementById(`st-q-${qId}`);
+    if (card) {
+      card.querySelectorAll('.student-opt-btn').forEach(btn => {
+        const ind = btn.querySelector('.student-opt-indicator')?.textContent?.trim();
+        if (ind === letter) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+    }
+
+    // Cập nhật trạng thái câu đã làm trên thanh danh sách câu hỏi
+    const palBtn = document.getElementById(`pal-btn-${qId}`);
+    if (palBtn) {
+      palBtn.classList.add('done');
+    }
   },
 
   selectStudentTF(qId, label, val) {
+    if (!qId || qId === 'undefined') return;
     this.state.studentAnswers[qId + '_' + label] = val;
-    this.renderStudentExamView();
+    const card = document.getElementById(`st-q-${qId}`);
+    if (card) {
+      const row = card.querySelector(`[data-tf-label="${label}"]`);
+      if (row) {
+        const btnTrue = row.querySelector('.btn-tf-true');
+        const btnFalse = row.querySelector('.btn-tf-false');
+        if (btnTrue && btnFalse) {
+          if (val === true) {
+            btnTrue.classList.add('active-true');
+            btnFalse.classList.remove('active-false');
+          } else {
+            btnFalse.classList.add('active-false');
+            btnTrue.classList.remove('active-true');
+          }
+        }
+      }
+    }
+
+    const palBtn = document.getElementById(`pal-btn-${qId}`);
+    if (palBtn) {
+      const allQ = this.state.studentExam?.sections?.flatMap(s => s.questions) || [];
+      const q = allQ.find(x => (x.id || '') === qId);
+      if (q && this.isQuestionAnswered(q, qId)) {
+        palBtn.classList.add('done');
+      }
+    }
   },
 
   inputStudentEssay(qId, val) {
+    if (!qId || qId === 'undefined') return;
     this.state.studentAnswers[qId] = val;
+    const palBtn = document.getElementById(`pal-btn-${qId}`);
+    if (palBtn) {
+      if (val && val.trim().length > 0) {
+        palBtn.classList.add('done');
+      } else {
+        palBtn.classList.remove('done');
+      }
+    }
   },
 
-  isQuestionAnswered(q) {
+  isQuestionAnswered(q, qId) {
+    const key = qId || q?.id;
+    if (!key) return false;
     if (q.type === 'tf') {
-      return (q.items || []).every(it => this.state.studentAnswers[q.id + '_' + it.label] !== undefined);
+      return (q.items || []).every(it => this.state.studentAnswers[key + '_' + it.label] !== undefined);
     }
-    return !!this.state.studentAnswers[q.id];
+    return !!this.state.studentAnswers[key];
   },
 
   confirmSubmitExam() {
@@ -3272,9 +3343,12 @@ const App = {
     let correctCount = 0;
     const perQ = 10 / (allQ.length || 1);
 
+    let qCounter = 0;
     allQ.forEach(q => {
+      qCounter++;
+      const qId = q.id || `q_${qCounter}`;
       if (q.type === 'tf') {
-        const itemResults = (q.items || []).map(it => answers[q.id + '_' + it.label] === it.isTrue);
+        const itemResults = (q.items || []).map(it => answers[qId + '_' + it.label] === it.isTrue);
         const corrects = itemResults.filter(Boolean).length;
         if (corrects === (q.items || []).length) {
           totalScore += perQ;
@@ -3282,8 +3356,10 @@ const App = {
         } else {
           totalScore += perQ * (corrects / (q.items?.length || 1));
         }
+      } else if (q.type === 'essay') {
+        if ((answers[qId] || '').trim().length > 10) totalScore += perQ;
       } else {
-        if (answers[q.id] === q.answer) {
+        if (answers[qId] === q.answer) {
           totalScore += perQ;
           correctCount++;
         }
@@ -4869,6 +4945,15 @@ ${esc(suite.fullAudioScript)}
     }
 
     const examId = `official-${curG}-${curT.toLowerCase()}-${Date.now()}`;
+    const clonedSections = JSON.parse(JSON.stringify(suite.sections_code1 || []));
+    let qCount = 0;
+    clonedSections.forEach((sec, sIdx) => {
+      (sec.questions || []).forEach((q, qIdx) => {
+        qCount++;
+        q.id = `q_${curG}_${curT.toLowerCase()}_s${sIdx + 1}_${qCount}`;
+      });
+    });
+
     const examRecord = {
       id: examId,
       title: `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${curG} GLOBAL SUCCESS`,
@@ -4881,7 +4966,7 @@ ${esc(suite.fullAudioScript)}
       teacherName: 'Thầy Đinh Văn Thành',
       audioTitle: `Audio Script Tiếng Anh ${curG} (${suite.termTitle})`,
       audioScript: suite.fullAudioScript,
-      sections: suite.sections_code1,
+      sections: clonedSections,
       isOpen: true,
       publishedAt: new Date().toISOString()
     };
@@ -5027,7 +5112,14 @@ ${esc(suite.fullAudioScript)}
       if (suite) {
         examId = `official-${grade}-${term.toLowerCase()}-${Date.now()}`;
         examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS`;
-        sections = suite.sections_code1 || [];
+        sections = JSON.parse(JSON.stringify(suite.sections_code1 || []));
+        let qCount = 0;
+        sections.forEach((sec, sIdx) => {
+          (sec.questions || []).forEach((q, qIdx) => {
+            qCount++;
+            q.id = `q_${grade}_${term.toLowerCase()}_s${sIdx + 1}_${qCount}`;
+          });
+        });
         audioScript = suite.fullAudioScript || '';
       } else {
         examId = `exam-${grade}-${Date.now()}`;

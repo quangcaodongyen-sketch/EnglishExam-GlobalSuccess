@@ -156,7 +156,19 @@ const Auth = (() => {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.PUBLISHED_EXAMS) || '[]');
   }
   function getPublishedExam(id) {
-    return getPublishedExams().find(e => e.id === id) || null;
+    const exam = getPublishedExams().find(e => e.id === id) || null;
+    if (exam && exam.sections) {
+      let qCount = 0;
+      exam.sections.forEach((sec, sIdx) => {
+        (sec.questions || []).forEach((q, qIdx) => {
+          qCount++;
+          if (!q.id) {
+            q.id = `q_${exam.id || 'exam'}_s${sIdx + 1}_${qCount}`;
+          }
+        });
+      });
+    }
+    return exam;
   }
   function publishExam(examData) {
     const list = getPublishedExams();
@@ -167,6 +179,18 @@ const Auth = (() => {
       isOpen: examData.isOpen !== undefined ? examData.isOpen : true,
       publishedAt: examData.publishedAt || new Date().toISOString(),
     };
+
+    // Đảm bảo mỗi câu hỏi luôn có ID duy nhất tuyệt đối
+    let qCount = 0;
+    (publishedItem.sections || []).forEach((sec, sIdx) => {
+      (sec.questions || []).forEach((q, qIdx) => {
+        qCount++;
+        if (!q.id) {
+          q.id = `q_${publishedItem.id || 'exam'}_s${sIdx + 1}_${qCount}`;
+        }
+      });
+    });
+
     if (idx >= 0) {
       list[idx] = publishedItem;
     } else {
@@ -363,3 +387,7 @@ const Auth = (() => {
     getAllQuestions, canAccess, getRemainingExams,
   };
 })();
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Auth;
+}
