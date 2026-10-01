@@ -1,4 +1,4 @@
-window.QUIZ_15M_DATA = {
+var QUIZ_15M_DATA = {
   "6": {
     "1": {
       "title": "Unit 1: My New School",
@@ -18632,3 +18632,10 @@ window.QUIZ_15M_DATA = {
     }
   }
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = QUIZ_15M_DATA;
+}
+if (typeof window !== 'undefined') {
+  window.QUIZ_15M_DATA = QUIZ_15M_DATA;
+}

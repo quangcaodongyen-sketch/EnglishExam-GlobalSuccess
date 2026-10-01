@@ -1927,12 +1927,68 @@ const App = {
     const wiz = this.state.wizard;
     const curG = String(grade || wiz.grade || '7');
     const curT = termKey || this.getWizardTermKey();
+
+    // Sử dụng Động cơ Tổ hợp Sinh Hàng Tỷ Đề Độc Bản (ExamGeneratorEngine)
+    let newExam = null;
+    if (typeof ExamGeneratorEngine !== 'undefined') {
+      try {
+        newExam = ExamGeneratorEngine.generateUniqueExam(parseInt(curG), curT, {
+          schoolName: wiz.schoolName || localStorage.getItem('cfg_school_name'),
+          teacherName: wiz.teacherName || 'Thầy Đinh Văn Thành'
+        });
+      } catch (err) {
+        console.warn('ExamGeneratorEngine generation notice:', err);
+      }
+    }
+
+    if (newExam) {
+      wiz.grade = newExam.grade;
+      wiz.term = newExam.term;
+      wiz.termTitle = newExam.termTitle;
+      wiz.examTitle = newExam.examTitle;
+      wiz.code1 = newExam.code1;
+      wiz.code2 = newExam.code2;
+      wiz.previewCodeIndex = 1;
+      wiz.examTime = newExam.timeMinutes || 60;
+      wiz.audioTitle = newExam.audioTitle;
+      wiz.audioScript = newExam.audioScript;
+      wiz.hasSpeaking = newExam.hasSpeaking;
+      wiz.selectedSections = newExam.sections_code1;
+      wiz.sections_code2 = newExam.sections_code2;
+      wiz.answerKeyRows = newExam.answerKeyRows;
+      wiz.matrixRows = newExam.matrixRows;
+      wiz.specRows = newExam.specRows;
+      wiz.step = 3;
+      wiz.id = newExam.id;
+
+      Auth.publishExam({
+        id: wiz.id,
+        title: wiz.examTitle + ` (Mã đề ${wiz.code1} & ${wiz.code2})`,
+        grade: wiz.grade,
+        subject: 'english',
+        examFormat: 'cv7991',
+        examTime: wiz.examTime,
+        examClass: wiz.examClass || (curG + 'A1'),
+        schoolName: wiz.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN',
+        teacherName: wiz.teacherName || 'Thầy Đinh Văn Thành',
+        audioTitle: wiz.audioTitle,
+        audioScript: wiz.audioScript,
+        sections: wiz.selectedSections,
+        isOpen: true,
+        publishedAt: new Date().toISOString()
+      });
+
+      this.renderPage();
+      UI.toast(`🎲 Đã sinh đề mới thành công! Mã đề [${wiz.code1} & ${wiz.code2}] từ kho tổ hợp 10²⁸ biến thể độc bản`, 'success');
+      return;
+    }
+
+    // Fallback: nếu chưa nạp kịp Engine
     const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) return;
 
     this.syncWizardOfficialTemplate(curG, curT);
 
-    // Sinh 02 mã đề mới ngẫu nhiên (ví dụ 603-604, 703-704, 805-806, 907-908)
     const baseCode = parseInt(curG) * 100 + (Math.floor(Math.random() * 20) + 2) * 2 - 1;
     const code1 = String(baseCode);
     const code2 = String(baseCode + 1);
@@ -1940,7 +1996,6 @@ const App = {
     wiz.code2 = code2;
     wiz.previewCodeIndex = 1;
 
-    // Hoán vị ngẫu nhiên phương án A, B, C cho từng câu và cập nhật lại q.answer
     const clone1 = JSON.parse(JSON.stringify(suite.sections_code1));
     const clone2 = JSON.parse(JSON.stringify(suite.sections_code2));
 
@@ -2109,15 +2164,18 @@ const App = {
 
         <!-- 3 Primary Action Paths -->
         <div class="card" style="border:2px solid #2563eb;background:#ffffff">
-          <div class="section-title mb-14" style="color:#1d4ed8">🚀 CHỌN HÌNH THỨC TẠO ĐỀ:</div>
+          <div class="section-title mb-14" style="color:#1d4ed8;display:flex;align-items:center;justify-content:space-between">
+            <span>🚀 CHỌN HÌNH THỨC TẠO ĐỀ:</span>
+            <span class="badge" style="background:#dbeafe;color:#1e40af;font-size:11px">Kho tổ hợp > 10²⁸ Đề</span>
+          </div>
           <div class="stack gap-12">
-            <button class="btn btn-primary btn-lg" onclick="App.syncWizardOfficialTemplate('${curG}', '${curT}'); App.goStep3();" style="width:100%;font-weight:800;padding:14px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px">
-              <span>🎯 NẠP MẪU ĐỀ CHUẨN 100%</span>
-              <span style="font-size:12px;opacity:0.9">(Đủ 8 phần, 37 câu + Speaking)</span>
+            <button class="btn btn-success btn-lg" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" style="width:100%;font-weight:800;padding:14px;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(135deg, #10b981, #059669);box-shadow:0 4px 12px rgba(16,185,129,0.3)">
+              <span style="font-size:16px">🎲 BỐC ĐỀ MỚI ĐỘC BẢN (KHÔNG LẶP LẠI)</span>
+              <span style="font-size:11.5px;font-weight:600;opacity:0.95">✨ Động cơ tổ hợp 10²⁸ đề: Tự động đổi câu hỏi Ngữ pháp, Từ vựng, Biển báo & Đọc hiểu</span>
             </button>
-            <button class="btn btn-success btn-lg" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" style="width:100%;font-weight:800;padding:14px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px">
-              <span>🎲 BỐC NGẪU NHIÊN SINH ĐỀ MỚI</span>
-              <span style="font-size:12px;opacity:0.9">(Đổi 2 mã đề, đảo phương án & đáp án)</span>
+            <button class="btn btn-primary btn-lg" onclick="App.syncWizardOfficialTemplate('${curG}', '${curT}'); App.goStep3();" style="width:100%;font-weight:800;padding:12px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px">
+              <span>🎯 NẠP MẪU ĐỀ CHUẨN THCS ĐỒNG YÊN</span>
+              <span style="font-size:12px;opacity:0.9">(37 câu chuẩn CV 7991)</span>
             </button>
             <button class="btn btn-outline btn-lg" onclick="App.goStep2()" style="width:100%;font-weight:700;padding:12px">
               📊 Xem & Tùy biến chi tiết Ma trận 8 Phần →
@@ -2197,7 +2255,7 @@ const App = {
         </div>
         <div class="row gap-8">
           <button class="btn btn-outline btn-sm" onclick="App.goStep1()">← Đổi khối lớp & kỳ thi</button>
-          <button class="btn btn-warn btn-sm" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')">🎲 Đảo phương án & Đổi mã đề</button>
+          <button class="btn btn-success btn-sm" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" style="font-weight:700">🎲 Bốc đề mới khác (10²⁸ biến thể)</button>
         </div>
       </div>
 
@@ -2407,6 +2465,7 @@ const App = {
             <button class="tab-btn ${wiz.previewMode === 'teacher' ? 'active' : ''}" onclick="App.setPreviewMode('teacher')">👩‍🏫 Kèm Đáp án & HDG</button>
             <button class="tab-btn ${wiz.previewMode === 'matrix' ? 'active' : ''}" onclick="App.setPreviewMode('matrix')">📊 Ma Trận & Bản Đặc Tả 7991</button>
           </div>
+          <button class="btn btn-warn" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" title="Bốc một đề thi hoàn toàn khác từ kho tổ hợp 10^28 đề">🎲 Bốc Đề Khác</button>
           <button class="btn btn-primary" onclick="App.exportWord(null, null, '${esc(curCode)}', false)">📄 Xuất Word Mã ${isCode2 ? '2' : '1'} (.doc)</button>
           <button class="btn btn-success" onclick="App.exportFullBundleWord()">📦 Trọn Bộ 2 Mã Đề (.doc)</button>
           <button class="btn" style="background:#7c3aed;color:#fff;font-weight:700" onclick="App.assignWizardExamOnline()">🚀 Giao bài Online</button>
@@ -5025,6 +5084,13 @@ ${esc(suite.fullAudioScript)}
           <div style="font-size:12.5px;color:#334155;margin-top:3px">Bám sát chuẩn SGK Global Success 6 - 9 · Chuẩn CV 7991 Thầy Đinh Văn Thành</div>
         </div>
 
+        <div style="background:#f0fdf4;padding:10px 14px;border-radius:10px;border:1px solid #86efac;font-size:12.5px;color:#166534;display:flex;align-items:center;gap:10px">
+          <span style="font-size:22px">🎲</span>
+          <div>
+            <b>Động cơ Tổ hợp > 10²⁸ biến thể:</b> Mỗi lần giao bài sẽ tự động bốc đề độc bản, câu hỏi được chọn ngẫu nhiên từ kho 48 Units & ngân hàng câu hỏi chuẩn, không trùng lặp!
+          </div>
+        </div>
+
         <div class="grid grid-2 gap-12">
           <div class="field">
             <label class="label">1. Chọn Khối lớp</label>
@@ -5081,7 +5147,7 @@ ${esc(suite.fullAudioScript)}
       </div>
     `, [
       {
-        label: '🚀 Tạo Link & Giao Ngay',
+        label: '🚀 Sinh Đề Độc Bản & Giao Bài Ngay',
         cls: 'btn-primary',
         action: () => App.executeAssignExam()
       },
@@ -5108,22 +5174,41 @@ ${esc(suite.fullAudioScript)}
       examId = `15m-g${grade}-u1-${Date.now()}`;
       examTitle = `ĐỀ KIỂM TRA 15 PHÚT TIẾNG ANH ${grade} GLOBAL SUCCESS`;
     } else {
-      const suite = this.getOfficialExamSuite(grade, term);
-      if (suite) {
-        examId = `official-${grade}-${term.toLowerCase()}-${Date.now()}`;
-        examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS`;
-        sections = JSON.parse(JSON.stringify(suite.sections_code1 || []));
-        let qCount = 0;
-        sections.forEach((sec, sIdx) => {
-          (sec.questions || []).forEach((q, qIdx) => {
-            qCount++;
-            q.id = `q_${grade}_${term.toLowerCase()}_s${sIdx + 1}_${qCount}`;
+      let synthExam = null;
+      if (typeof ExamGeneratorEngine !== 'undefined') {
+        try {
+          synthExam = ExamGeneratorEngine.generateUniqueExam(parseInt(grade), term, {
+            schoolName: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+            teacherName: 'Thầy Đinh Văn Thành'
           });
-        });
-        audioScript = suite.fullAudioScript || '';
+        } catch (e) {
+          console.warn('Assign synthesis note:', e);
+        }
+      }
+
+      if (synthExam) {
+        examId = synthExam.id;
+        examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${synthExam.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS (Mã ${synthExam.code1})`;
+        sections = synthExam.sections_code1;
+        audioScript = synthExam.audioScript || '';
       } else {
-        examId = `exam-${grade}-${Date.now()}`;
-        examTitle = `BÀI KIỂM TRA TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+        const suite = this.getOfficialExamSuite(grade, term);
+        if (suite) {
+          examId = `official-${grade}-${term.toLowerCase()}-${Date.now()}`;
+          examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+          sections = JSON.parse(JSON.stringify(suite.sections_code1 || []));
+          let qCount = 0;
+          sections.forEach((sec, sIdx) => {
+            (sec.questions || []).forEach((q, qIdx) => {
+              qCount++;
+              q.id = `q_${grade}_${term.toLowerCase()}_s${sIdx + 1}_${qCount}`;
+            });
+          });
+          audioScript = suite.fullAudioScript || '';
+        } else {
+          examId = `exam-${grade}-${Date.now()}`;
+          examTitle = `BÀI KIỂM TRA TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+        }
       }
     }
 
