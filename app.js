@@ -2648,7 +2648,6 @@ const App = {
 
       ${(sec.questions || []).map((q, qi) => {
         const qNum = q.num || globalQNum++;
-        const maxLen = q.options ? Math.max(...q.options.map(o => (o || '').length)) : 0;
         const isEssay = q.type === 'essay';
 
         if (isEssay) {
@@ -2673,13 +2672,20 @@ const App = {
             </div>` : ''}
           </div>`;
         }
+        let qOpts = q.options;
+        if (!qOpts || !Array.isArray(qOpts) || qOpts.length === 0) {
+          if (q.type === 'tf') {
+            qOpts = ['A. True', 'B. False'];
+          }
+        }
+        const maxLen = qOpts ? Math.max(...qOpts.map(o => o.length)) : 0;
 
         return `
         <div style="font-size:13pt;margin-bottom:6pt;line-height:1.25">
           <div><b>${qNum}.</b> ${formatExamText(q.content)}</div>
-          ${q.options ? (maxLen > 30 || q.options.length > 3 ? `
+          ${qOpts ? (maxLen > 30 || qOpts.length > 3 ? `
           <div style="padding-left:14pt;margin-top:2pt">
-            ${q.options.map(opt => `
+            ${qOpts.map(opt => `
               <div style="margin:2pt 0;font-size:13pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
                 <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
               </div>
@@ -2687,7 +2693,7 @@ const App = {
           </div>` : `
           <table style="width:100%;border:none;margin-top:2pt">
             <tr>
-              ${q.options.map(opt => `
+              ${qOpts.map(opt => `
                 <td style="border:none;font-size:13pt;padding:1pt 4pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
                   <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
                 </td>
@@ -3269,19 +3275,26 @@ const App = {
                   </div>`;
                 }
 
+                let qOpts = q.options;
+                if (!qOpts || !Array.isArray(qOpts) || qOpts.length === 0) {
+                  if (q.type === 'tf' || q.type !== 'essay') {
+                    qOpts = ['A. True', 'B. False'];
+                  }
+                }
+
                 return `
                 <div style="font-size:13pt;margin-bottom:8pt;line-height:1.25">
                   <div><b>${qNum}.</b> ${formatExamText(q.content)}</div>
-                  ${q.options ? `
+                  ${qOpts ? `
                   <div style="padding-left:16pt;margin-top:3pt;display:grid;grid-template-columns:1fr 1fr;gap:4pt;font-size:13pt">
-                    ${q.options.map(opt => `
+                    ${qOpts.map(opt => `
                     <div class="${wiz.previewMode === 'teacher' && opt.charAt(0) === (q.correctAnswer || q.answer) ? 'correct-answer' : ''}">
                       ${formatExamText(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === (q.correctAnswer || q.answer) ? ' ✓' : ''}
                     </div>`).join('')}
                   </div>` : ''}
-                  ${wiz.previewMode === 'teacher' && q.solution ? `
+                  ${wiz.previewMode === 'teacher' && (q.solution || q.explanation) ? `
                   <div style="margin-top:4pt;padding:4pt 10pt;background:#eff6ff;border-left:3px solid #2563eb;font-size:11pt;color:#1e40af">
-                    💡 <b>Giải thích:</b> ${formatExamText(q.solution)}
+                    💡 <b>Giải thích:</b> ${formatExamText(q.solution || q.explanation)}
                   </div>` : ''}
                 </div>`;
               }).join('')}
@@ -3571,7 +3584,6 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
 
       ${sec.questions.map((q, qi) => {
         const qNum = q.num || globalQNum++;
-        const maxLen = q.options ? Math.max(...q.options.map(o => o.length)) : 0;
         const isEssay = q.type === 'essay';
 
         if (isEssay) {
@@ -3596,13 +3608,20 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
             </div>` : ''}
           </div>`;
         }
+        let qOpts = q.options;
+        if (!qOpts || !Array.isArray(qOpts) || qOpts.length === 0) {
+          if (q.type === 'tf') {
+            qOpts = ['A. True', 'B. False'];
+          }
+        }
+        const maxLen = qOpts ? Math.max(...qOpts.map(o => o.length)) : 0;
 
         return `
         <div style="font-size:13pt;margin-bottom:6pt;line-height:1.25">
           <div><b>${qNum}.</b> ${formatExamText(q.content)}</div>
-          ${q.options ? (maxLen > 30 || q.options.length > 3 ? `
+          ${qOpts ? (maxLen > 30 || qOpts.length > 3 ? `
           <div style="padding-left:14pt;margin-top:2pt">
-            ${q.options.map(opt => `
+            ${qOpts.map(opt => `
               <div style="margin:2pt 0;font-size:13pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
                 <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
               </div>
@@ -3610,7 +3629,7 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
           </div>` : `
           <table style="width:100%;border:none;margin-top:2pt">
             <tr>
-              ${q.options.map(opt => `
+              ${qOpts.map(opt => `
                 <td style="border:none;font-size:13pt;padding:1pt 4pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
                   <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
                 </td>
@@ -3949,11 +3968,21 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
               </div>
               ${sec.questions.map(q => {
                 qGlobalIndex++;
-                const isTF = q.type === 'tf';
+                const isCompoundTF = (q.type === 'tf' || q.type === 'compound_tf') && Array.isArray(q.items) && q.items.length > 0;
                 const isEssay = q.type === 'essay';
-                const isMC = !isTF && !isEssay;
+                const isMC = !isCompoundTF && !isEssay;
                 const qi = qGlobalIndex;
                 const qId = q.id || `q_${qi}`;
+
+                // Chuẩn hóa danh sách lựa chọn: nếu là câu hỏi trắc nghiệm hoặc TF đơn lẻ mà thiếu options thì tự động bổ sung A. True / B. False
+                let qOptions = q.options;
+                if (!qOptions || !Array.isArray(qOptions) || qOptions.length === 0) {
+                  if (q.type === 'tf' || (!isEssay && !isCompoundTF)) {
+                    qOptions = ['A. True', 'B. False'];
+                  } else {
+                    qOptions = [];
+                  }
+                }
 
                 return `
                 <div class="student-card" id="st-q-${qId}">
@@ -3962,18 +3991,20 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
                   </div>
                   ${isMC ? `
                   <div class="student-opt-list">
-                    ${(q.options || []).map(opt => {
-                      const letter = opt.charAt(0);
+                    ${qOptions.map((opt, optIdx) => {
+                      const match = String(opt).match(/^([A-Da-d])[\.\:\)]\s*(.*)$/);
+                      const letter = match ? match[1].toUpperCase() : (String(opt).toUpperCase().startsWith('TRUE') || String(opt).toUpperCase().startsWith('ĐÚNG') ? 'A' : (String(opt).toUpperCase().startsWith('FALSE') || String(opt).toUpperCase().startsWith('SAI') ? 'B' : String.fromCharCode(65 + optIdx)));
+                      const text = match ? match[2] : opt;
                       const isSel = this.state.studentAnswers[qId] === letter;
                       return `
                       <div class="student-opt-btn ${isSel ? 'selected' : ''}" onclick="App.selectStudentMCOption('${qId}','${letter}')">
                         <div class="student-opt-indicator">${letter}</div>
-                        <div>${formatExamText(opt.slice(2).trim() || opt)}</div>
+                        <div>${formatExamText(text)}</div>
                       </div>`;
                     }).join('')}
                   </div>` : ''}
 
-                  ${isTF ? `
+                  ${isCompoundTF ? `
                   <div style="margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
                     ${(q.items || []).map(it => {
                       const curVal = this.state.studentAnswers[qId + '_' + it.label];
@@ -4119,8 +4150,8 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
   isQuestionAnswered(q, qId) {
     const key = qId || q?.id;
     if (!key) return false;
-    if (q.type === 'tf') {
-      return (q.items || []).every(it => this.state.studentAnswers[key + '_' + it.label] !== undefined);
+    if ((q.type === 'tf' || q.type === 'compound_tf') && Array.isArray(q.items) && q.items.length > 0) {
+      return q.items.every(it => this.state.studentAnswers[key + '_' + it.label] !== undefined);
     }
     return !!this.state.studentAnswers[key];
   },
@@ -4148,7 +4179,7 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
     allQ.forEach(q => {
       qCounter++;
       const qId = q.id || `q_${qCounter}`;
-      if (q.type === 'tf') {
+      if ((q.type === 'tf' || q.type === 'compound_tf') && Array.isArray(q.items) && q.items.length > 0) {
         const itemResults = (q.items || []).map(it => answers[qId + '_' + it.label] === it.isTrue);
         const corrects = itemResults.filter(Boolean).length;
         if (corrects === (q.items || []).length) {
@@ -4160,7 +4191,14 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
       } else if (q.type === 'essay') {
         if ((answers[qId] || '').trim().length > 10) totalScore += perQ;
       } else {
-        if (answers[qId] === q.answer) {
+        const expected = String(q.correctAnswer || q.answer || '').trim();
+        const studentAns = String(answers[qId] || '').trim();
+        const isMatch = studentAns === expected ||
+          (expected === 'A' && (studentAns === 'True' || studentAns === 'T')) ||
+          (expected === 'B' && (studentAns === 'False' || studentAns === 'F')) ||
+          (studentAns === 'A' && (expected === 'True' || expected === 'T')) ||
+          (studentAns === 'B' && (expected === 'False' || expected === 'F'));
+        if (isMatch) {
           totalScore += perQ;
           correctCount++;
         }
@@ -5382,7 +5420,11 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
                 return `
                 <div style="font-size:13pt;margin-bottom:12pt;line-height:1.3">
                   <div><b>${qNum}.</b> ${formatExamText(q.content).replace(/\n/g, '<br/>')}</div>
-                  <div style="margin-top:8pt;color:#94a3b8;font-size:12pt;line-height:2.0;letter-spacing:1px">
+                  <div style="margin-top:8pt;color:#000;font-size:12pt;line-height:2.0;letter-spacing:1px">
+                    ...................................................................................................................................................................<br/>
+                    ...................................................................................................................................................................<br/>
+                    ...................................................................................................................................................................<br/>
+                    ...................................................................................................................................................................<br/>
                     ...................................................................................................................................................................<br/>
                     ...................................................................................................................................................................<br/>
                     ...................................................................................................................................................................<br/>
@@ -5393,13 +5435,20 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
                 </div>`;
               }
 
-              const maxLen = q.options ? Math.max(...q.options.map(o => o.length)) : 0;
+              let qOpts = q.options;
+              if (!qOpts || !Array.isArray(qOpts) || qOpts.length === 0) {
+                if (q.type === 'tf' || q.type !== 'essay') {
+                  qOpts = ['A. True', 'B. False'];
+                }
+              }
+
+              const maxLen = qOpts ? Math.max(...qOpts.map(o => o.length)) : 0;
               return `
               <div style="font-size:13pt;margin-bottom:8pt;line-height:1.25">
                 <div><b>${qNum}.</b> ${formatExamText(q.content)}</div>
-                ${q.options ? (maxLen > 30 || q.options.length > 3 ? `
+                ${qOpts ? (maxLen > 30 || qOpts.length > 3 ? `
                 <div style="padding-left:16pt;margin-top:3pt">
-                  ${q.options.map(opt => `
+                  ${qOpts.map(opt => `
                     <div style="margin:2pt 0;font-size:13pt">
                       <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)}
                     </div>
@@ -5407,7 +5456,7 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
                 </div>` : `
                 <table style="width:100%;border:none;margin-top:2pt">
                   <tr>
-                    ${q.options.map(opt => `
+                    ${qOpts.map(opt => `
                       <td style="border:none;font-size:13pt;padding:1pt 4pt">
                         <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)}
                       </td>
