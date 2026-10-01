@@ -367,6 +367,11 @@ const App = {
   navigate(view) {
     AudioEngine.stop();
     this.state.view = view;
+    if (view === 'generate') {
+      const curG = String((this.state.wizard && this.state.wizard.grade) || '7');
+      const curT = this.getWizardTermKey ? this.getWizardTermKey() : 'GK1';
+      this.syncWizardOfficialTemplate(curG, curT);
+    }
     this.renderPage();
     document.querySelectorAll('.nav-item').forEach(el => {
       el.classList.toggle('active', el.dataset.view === view);
@@ -1754,11 +1759,20 @@ const App = {
     return isSem2 ? 'GK2' : 'GK1';
   },
 
+  getOfficialExamSuite(grade = null, termKey = null) {
+    const suites = (typeof window !== 'undefined' && window.OFFICIAL_EXAM_SUITES)
+      || (typeof OFFICIAL_EXAM_SUITES !== 'undefined' ? OFFICIAL_EXAM_SUITES : null);
+    if (!suites) return null;
+    const g = String(grade || (this.state.officialExams && this.state.officialExams.grade) || (this.state.wizard && this.state.wizard.grade) || '7');
+    const t = String(termKey || (this.state.officialExams && this.state.officialExams.term) || (this.getWizardTermKey ? this.getWizardTermKey() : 'GK1') || 'GK1');
+    return (suites[g] && suites[g][t]) ? suites[g][t] : (suites['7'] ? suites['7']['GK1'] : null);
+  },
+
   syncWizardOfficialTemplate(grade = null, termKey = null) {
     const wiz = this.state.wizard;
     const curG = String(grade || wiz.grade || '7');
     const curT = termKey || this.getWizardTermKey();
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
+    const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) return;
 
     wiz.grade = parseInt(curG);
@@ -1787,7 +1801,7 @@ const App = {
     const wiz = this.state.wizard;
     const curG = String(grade || wiz.grade || '7');
     const curT = termKey || this.getWizardTermKey();
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
+    const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) return;
 
     this.syncWizardOfficialTemplate(curG, curT);
@@ -2199,7 +2213,7 @@ const App = {
     const wiz = this.state.wizard;
     const curG = String(wiz.grade || '7');
     const curT = this.getWizardTermKey();
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
+    const suite = this.getOfficialExamSuite(curG, curT);
 
     const title = wiz.examTitle || `BÀI KIỂM TRA ĐÁNH GIÁ ${curT} – TIẾNG ANH ${curG}`;
     const code1 = wiz.code1 || (curG + '01');
@@ -4053,7 +4067,7 @@ const App = {
     const curT = oState.term || 'GK1';
     const activeTab = oState.activeTab || 'exam1';
     const item = (oPaths[curG] && oPaths[curG][curT]) || oPaths['7']['GK1'];
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]) || null;
+    const suite = this.getOfficialExamSuite(curG, curT);
 
     const code1 = suite ? suite.code1 : (curG + '01');
     const code2 = suite ? suite.code2 : (curG + '02');
@@ -4638,7 +4652,7 @@ ${esc(suite.fullAudioScript)}
     const oState = this.state.officialExams;
     const curG = oState.grade || '7';
     const curT = oState.term || 'GK1';
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]) || null;
+    const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) return;
 
     if (oState.audioPlaying) {
@@ -4659,7 +4673,7 @@ ${esc(suite.fullAudioScript)}
     const oState = this.state.officialExams;
     const curG = oState.grade || '7';
     const curT = oState.term || 'GK1';
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
+    const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) {
       UI.toast('Chưa có dữ liệu đề chuẩn!', 'warn');
       return;
@@ -4682,7 +4696,7 @@ ${esc(suite.fullAudioScript)}
     const oState = this.state.officialExams;
     const curG = oState.grade || '7';
     const curT = oState.term || 'GK1';
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
+    const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) return;
 
     const title = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`;
@@ -4722,8 +4736,11 @@ ${esc(suite.fullAudioScript)}
     const oState = this.state.officialExams;
     const curG = oState.grade || '7';
     const curT = oState.term || 'GK1';
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
-    if (!suite) return;
+    const suite = this.getOfficialExamSuite(curG, curT);
+    if (!suite) {
+      UI.toast('Đang tải dữ liệu bộ đề, vui lòng thử lại sau giây lát!', 'warn');
+      return;
+    }
 
     const examId = `official-${curG}-${curT.toLowerCase()}-${Date.now()}`;
     const examRecord = {
@@ -4773,7 +4790,7 @@ ${esc(suite.fullAudioScript)}
           <button class="btn btn-success" onclick="window.open('${url}','_blank')">
             📱 Làm thử trên giao diện Học sinh
           </button>
-          <button class="btn btn-outline" onclick="App.navigate('submissions')">
+          <button class="btn btn-outline" onclick="App.navigate('submissions'); UI.closeModal();">
             📥 Xem Bảng Thu bài & Chấm điểm
           </button>
         </div>
@@ -4785,12 +4802,187 @@ ${esc(suite.fullAudioScript)}
     ]);
   },
 
+  showAssignExamModal(preselectedExam = null) {
+    const curG = (this.state.officialExams && this.state.officialExams.grade) || '7';
+    const curT = (this.state.officialExams && this.state.officialExams.term) || 'GK1';
+    const classrooms = (typeof Auth !== 'undefined' && Auth.getClassrooms) ? Auth.getClassrooms() : [];
+
+    UI.showModal('🚀 Giao Bài Thi Trực Tuyến Cho Lớp Học', `
+      <div class="stack gap-16">
+        <div style="background:#eff6ff;padding:12px 16px;border-radius:10px;border-left:4px solid #2563eb">
+          <div style="font-size:14px;font-weight:800;color:#1e40af">Học sinh làm trực tiếp trên điện thoại & Tự động chấm điểm</div>
+          <div style="font-size:12.5px;color:#334155;margin-top:3px">Bám sát chuẩn SGK Global Success 6 - 9 · Chuẩn CV 7991 Thầy Đinh Văn Thành</div>
+        </div>
+
+        <div class="grid grid-2 gap-12">
+          <div class="field">
+            <label class="label">1. Chọn Khối lớp</label>
+            <select id="modal-assign-grade" class="select">
+              <option value="6" ${curG === '6' ? 'selected' : ''}>Khối 6 (Global Success 6)</option>
+              <option value="7" ${curG === '7' ? 'selected' : ''}>Khối 7 (Global Success 7)</option>
+              <option value="8" ${curG === '8' ? 'selected' : ''}>Khối 8 (Global Success 8)</option>
+              <option value="9" ${curG === '9' ? 'selected' : ''}>Khối 9 (Global Success 9)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">2. Kỳ kiểm tra / Dạng bài</label>
+            <select id="modal-assign-term" class="select">
+              <option value="GK1" ${curT === 'GK1' ? 'selected' : ''}>Giữa Học kỳ 1 (GK1 - 10đ Viết)</option>
+              <option value="CK1" ${curT === 'CK1' ? 'selected' : ''}>Cuối Học kỳ 1 (CK1 - 8đ Viết + 2đ Nói)</option>
+              <option value="GK2" ${curT === 'GK2' ? 'selected' : ''}>Giữa Học kỳ 2 (GK2 - 10đ Viết)</option>
+              <option value="CK2" ${curT === 'CK2' ? 'selected' : ''}>Cuối Học kỳ 2 (CK2 - 8đ Viết + 2đ Nói)</option>
+              <option value="KSCL" ${curT === 'KSCL' ? 'selected' : ''}>Khảo sát chất lượng đầu năm (10đ)</option>
+              <option value="15M">Đề 15 phút (20 câu trắc nghiệm)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-12">
+          <div class="field">
+            <label class="label">3. Giao cho Lớp học</label>
+            <select id="modal-assign-class" class="select">
+              <option value="all">Tất cả học sinh khối</option>
+              ${classrooms.map(c => `<option value="${c.name || c.id}">${c.name || c.id} (${c.grade ? ('Khối ' + c.grade) : ''})</option>`).join('')}
+              <option value="6A1">Lớp 6A1</option>
+              <option value="6A2">Lớp 6A2</option>
+              <option value="7A1" selected>Lớp 7A1</option>
+              <option value="7A2">Lớp 7A2</option>
+              <option value="8A1">Lớp 8A1</option>
+              <option value="8A2">Lớp 8A2</option>
+              <option value="9A1">Lớp 9A1</option>
+              <option value="9A2">Lớp 9A2</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label">4. Thời gian làm bài</label>
+            <select id="modal-assign-time" class="select">
+              <option value="60" selected>60 Phút (Chuẩn bài thi định kỳ)</option>
+              <option value="45">45 Phút (1 tiết học)</option>
+              <option value="90">90 Phút</option>
+              <option value="15">15 Phút</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="modal-assign-result-box" style="display:none"></div>
+      </div>
+    `, [
+      {
+        label: '🚀 Tạo Link & Giao Ngay',
+        cls: 'btn-primary',
+        action: () => App.executeAssignExam()
+      },
+      {
+        label: 'Đóng',
+        cls: 'btn-outline',
+        action: () => UI.closeModal()
+      }
+    ]);
+  },
+
+  executeAssignExam() {
+    const grade = document.getElementById('modal-assign-grade')?.value || '7';
+    const term = document.getElementById('modal-assign-term')?.value || 'GK1';
+    const targetClass = document.getElementById('modal-assign-class')?.value || '7A1';
+    const examTime = parseInt(document.getElementById('modal-assign-time')?.value || '60');
+
+    let examId = '';
+    let examTitle = '';
+    let sections = [];
+    let audioScript = '';
+
+    if (term === '15M') {
+      examId = `15m-g${grade}-u1-${Date.now()}`;
+      examTitle = `ĐỀ KIỂM TRA 15 PHÚT TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+    } else {
+      const suite = this.getOfficialExamSuite(grade, term);
+      if (suite) {
+        examId = `official-${grade}-${term.toLowerCase()}-${Date.now()}`;
+        examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle} – TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+        sections = suite.sections_code1 || [];
+        audioScript = suite.fullAudioScript || '';
+      } else {
+        examId = `exam-${grade}-${Date.now()}`;
+        examTitle = `BÀI KIỂM TRA TIẾNG ANH ${grade} GLOBAL SUCCESS`;
+      }
+    }
+
+    const examRecord = {
+      id: examId,
+      title: examTitle,
+      grade: parseInt(grade),
+      subject: 'english',
+      examFormat: 'cv7991',
+      examTime: examTime,
+      examClass: targetClass,
+      schoolName: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+      teacherName: 'Thầy Đinh Văn Thành',
+      audioTitle: `Audio Script Tiếng Anh ${grade}`,
+      audioScript: audioScript,
+      sections: sections,
+      isOpen: true,
+      publishedAt: new Date().toISOString()
+    };
+
+    if (typeof Auth !== 'undefined') {
+      Auth.publishExam(examRecord);
+      Auth.saveExamRecord({
+        id: examId,
+        userId: (this.state.user ? this.state.user.id : 'teacher-1'),
+        title: examTitle,
+        grade: parseInt(grade),
+        subject: 'english',
+        examType: term,
+        questionCount: sections.length > 0 ? 37 : 20,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    const url = `${window.location.origin}${window.location.pathname}?mode=student&examId=${examId}`;
+
+    const resBox = document.getElementById('modal-assign-result-box');
+    if (resBox) {
+      resBox.style.display = 'block';
+      resBox.innerHTML = `
+        <div style="background:#f0fdf4;border:2px solid #22c55e;padding:14px;border-radius:10px;margin-top:12px">
+          <div style="color:#166534;font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px">
+            <span>✅ ĐÃ TẠO PHÒNG THI THÀNH CÔNG!</span>
+          </div>
+          <div style="font-size:13px;color:#1e293b;margin:6px 0">
+            Học sinh lớp <b>${esc(targetClass)}</b> có thể vào thi ngay qua đường link này:
+          </div>
+          <div class="input-group" style="margin-bottom:10px">
+            <input type="text" id="modal-share-link" value="${url}" readonly style="font-size:13px;font-weight:700;color:#2563eb;background:#fff;width:100%" />
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="navigator.clipboard.writeText('${url}'); UI.toast('Đã sao chép link phòng thi!', 'success');">
+              📋 Sao chép Link
+            </button>
+            <button class="btn btn-outline" onclick="window.open('${url}', '_blank')">
+              🌐 Mở thử màn hình thi
+            </button>
+            <button class="btn btn-outline" onclick="App.navigate('submissions'); UI.closeModal();">
+              📥 Xem Bảng Thu Bài
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    UI.toast(' Đã giao bài thi thành công!', 'success');
+  },
+
   loadOfficialToWizard() {
     const oState = this.state.officialExams;
     const curG = oState.grade || '7';
     const curT = oState.term || 'GK1';
-    const suite = (window.OFFICIAL_EXAM_SUITES && window.OFFICIAL_EXAM_SUITES[curG] && window.OFFICIAL_EXAM_SUITES[curG][curT]);
-    if (!suite) return;
+    const suite = this.getOfficialExamSuite(curG, curT);
+    if (!suite) {
+      UI.toast('Đang tải dữ liệu bộ đề, vui lòng thử lại sau giây lát!', 'warn');
+      return;
+    }
 
     const wiz = this.state.wizard;
     wiz.grade = parseInt(curG);
@@ -4800,6 +4992,9 @@ ${esc(suite.fullAudioScript)}
     wiz.examType = curT.startsWith('GK') ? 'Giữa kỳ' : (curT.startsWith('CK') ? 'Cuối kỳ' : 'Khảo sát');
     wiz.audioScript = suite.fullAudioScript;
     wiz.selectedSections = JSON.parse(JSON.stringify(suite.sections_code1));
+    wiz.sections_code2 = JSON.parse(JSON.stringify(suite.sections_code2));
+    wiz.code1 = suite.code1;
+    wiz.code2 = suite.code2;
     wiz.step = 3;
 
     this.navigate('generate');

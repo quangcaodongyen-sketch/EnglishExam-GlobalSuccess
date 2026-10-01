@@ -4,7 +4,7 @@
 // Chuẩn Công văn 7991/BGDĐT & GDPT 2018 (Năm học 2026 - 2027)
 // ================================================================
 
-const OFFICIAL_EXAM_SUITES = {
+var OFFICIAL_EXAM_SUITES = {
   "6": {
     "GK1": {
       "grade": "6",
@@ -27968,3 +27968,11 @@ const OFFICIAL_EXAM_SUITES = {
     }
   }
 };
+
+if (typeof window !== 'undefined') {
+  window.OFFICIAL_EXAM_SUITES = OFFICIAL_EXAM_SUITES;
+}
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = OFFICIAL_EXAM_SUITES;
+}
+
