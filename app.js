@@ -2050,85 +2050,85 @@ const App = {
         </div>` : ''}
       </div>` : ''}
 
-      <!-- Exam Sheet: Chuẩn Nghị định 30 -->
+      <!-- Exam Sheet: Chuẩn 100% Mẫu Thầy Đinh Văn Thành (THCS Đồng Yên) -->
       <div class="exam-preview-wrap">
-        <div class="exam-sheet" id="exam-sheet">
-          <div class="nd30-header">
-            <div class="nd30-left">
-              <div class="ministry">SỞ GIÁO DỤC VÀ ĐÀO TẠO</div>
-              <div class="school nd30-left" style="text-align:center">
-                <span class="underline">${esc((wiz.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase())}</span>
+        <div class="exam-sheet" id="exam-sheet" style="font-family:'Times New Roman',serif;font-size:13pt;line-height:1.25">
+          <!-- 1. Header Table (2x2) -->
+          <table style="width:100%;border:none;margin-bottom:6pt;font-family:'Times New Roman',serif">
+            <tr>
+              <td style="width:38%;text-align:center;vertical-align:top;border:none;line-height:1.2">
+                <div style="font-size:11.5pt;font-weight:bold">${esc((localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase())}</div>
+                <div style="font-size:11.5pt;font-weight:bold;text-decoration:underline">${esc((wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase())}</div>
+              </td>
+              <td style="width:62%;text-align:center;vertical-align:top;border:none;line-height:1.25">
+                <div style="font-size:12.5pt;font-weight:bold">${esc(wiz.examTitle.toUpperCase())}</div>
+                <div style="font-size:11.5pt;font-weight:bold">NĂM HỌC: ${esc(localStorage.getItem('cfg_school_year') || '2026 - 2027')}</div>
+                <div style="font-size:12.5pt;font-weight:bold">Môn: Tiếng Anh ${wiz.grade}</div>
+                <div style="font-size:11.5pt;font-style:italic">Thời gian làm bài: ${wiz.examTime} phút (không kể thời gian giao đề)</div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- 2. Dòng Full Name, Class, Mã đề -->
+          <div style="font-size:13pt;margin:6pt 0 8pt 0;display:flex;justify-content:space-between;align-items:center">
+            <span><b>Full name:</b> ____________________________________,</span>
+            <span><b>Class:</b> ${esc(wiz.examClass || (wiz.grade + 'A___'))}</span>
+            <span><b style="color:#b91c1c;font-size:13pt">Mã đề: 101</b></span>
+          </div>
+
+          <!-- 3. Bảng Điểm Marks Box (Auto fit to window - Chuẩn THCS Đồng Yên) -->
+          <table style="width:100%;border-collapse:collapse;margin-bottom:12pt;font-family:'Times New Roman',serif;font-size:11.5pt">
+            <tr style="text-align:center;font-weight:bold">
+              <td colspan="2" style="border:1px solid #000;width:22%;padding:4px">Marks</td>
+              <td rowspan="2" style="border:1px solid #000;width:14%;padding:4px;vertical-align:middle">Total</td>
+              <td rowspan="2" style="border:1px solid #000;width:64%;padding:4px 8px;text-align:left;vertical-align:top">
+                <div style="text-align:center;font-weight:bold;margin-bottom:4px">Teacher’s remarks</div>
+                <div style="color:#64748b;font-size:11pt">____________________________________________________________________</div>
+                <div style="color:#64748b;font-size:11pt;margin-top:2px">____________________________________________________________________</div>
+              </td>
+            </tr>
+            <tr style="text-align:center;font-weight:bold">
+              <td style="border:1px solid #000;width:11%;padding:3px">Speak</td>
+              <td style="border:1px solid #000;width:11%;padding:3px">Write</td>
+            </tr>
+            <tr style="height:36px;text-align:center">
+              <td style="border:1px solid #000">&nbsp;</td>
+              <td style="border:1px solid #000">&nbsp;</td>
+              <td style="border:1px solid #000">&nbsp;</td>
+              <td style="border:1px solid #000">&nbsp;</td>
+            </tr>
+          </table>
+
+          <!-- 4. Nội dung câu hỏi theo chuẩn CV 7991 (Cỡ chữ 13 Times New Roman) -->
+          ${secs.map((sec, si) => `
+            <div style="font-size:13pt;font-weight:bold;margin-top:12pt;margin-bottom:4pt">
+              Part ${si + 1}. ${esc(sec.name)}: (${sec.questions.length} câu)
+            </div>
+            ${sec.questions.map((q, qi) => `
+              <div style="font-size:13pt;margin-bottom:8pt;line-height:1.25">
+                <div><b>${qi + 1}.</b> ${esc(q.content)}</div>
+                ${q.options ? `
+                <div style="padding-left:16pt;margin-top:3pt;display:grid;grid-template-columns:1fr 1fr;gap:4pt;font-size:13pt">
+                  ${q.options.map(opt => `
+                  <div class="${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? 'correct-answer' : ''}">
+                    ${esc(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? ' ✓' : ''}
+                  </div>`).join('')}
+                </div>` : ''}
+                ${wiz.previewMode === 'teacher' && q.solution ? `
+                <div style="margin-top:4pt;padding:4pt 10pt;background:#eff6ff;border-left:3px solid #2563eb;font-size:11pt;color:#1e40af">
+                  💡 <b>Giải thích:</b> ${esc(q.solution)}
+                </div>` : ''}
               </div>
-              <div style="font-size:10pt;font-style:italic;margin-top:2pt">Tổ Xã Hội – Nhóm Ngoại Ngữ</div>
-            </div>
-            <div class="nd30-right">
-              <div class="city">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-              <div style="font-weight:700;text-decoration:underline">Độc lập – Tự do – Hạnh phúc</div>
-              <div class="date">─────────────────────</div>
-              <div style="font-style:italic">${dateStr}</div>
-            </div>
-          </div>
-
-          <div class="nd30-title">
-            <div class="star">✦ ✦ ✦</div>
-            <div style="font-weight:700;font-size:12pt;margin-bottom:3px;color:#1e293b">
-              ĐỀ KIỂM TRA ĐỊNH KỲ THEO CHƯƠNG TRÌNH TIẾNG ANH GLOBAL SUCCESS
-            </div>
-            <h1>${esc(wiz.examTitle.toUpperCase())}</h1>
-            <div class="meta">
-              Môn: <strong>TIẾNG ANH THCS</strong> &nbsp;|&nbsp;
-              Lớp: <strong>${esc(wiz.examClass)}</strong> &nbsp;|&nbsp;
-              Thời gian làm bài: <strong>${wiz.examTime} phút</strong>
-            </div>
-            <div style="margin-top:4px;font-size:11pt;color:#555"><i>(${esc(wiz.examSemester)})</i></div>
-          </div>
-
-          <div class="nd30-info-line">
-            <span><strong>Họ và tên thí sinh:</strong> ...............................................................................................</span>
-            <span><strong>Lớp:</strong> .................</span>
-            <span><strong>SBD:</strong> .................</span>
-          </div>
-
-          ${secs.map((sec) => `
-          <div class="nd30-section-title" style="margin-top:14pt">
-            <span>${esc(sec.name)}: (${sec.questions.length} câu)</span>
-          </div>
-          ${sec.questions.map((q, qi) => `
-            <div class="nd30-question">
-              <div class="nd30-question-text">
-                <strong>Câu ${qi + 1}:</strong> ${esc(q.content)}
-              </div>
-              ${q.options ? `
-              <div class="nd30-options">
-                ${q.options.map(opt => `
-                <div class="nd30-opt ${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? 'correct-answer' : ''}">
-                  ${esc(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? ' ✓' : ''}
-                </div>`).join('')}
-              </div>` : ''}
-              ${q.items ? `
-              <table class="cv7991-tf-table">
-                <thead><tr><th>Ý</th><th>Mệnh đề</th><th>Đúng</th><th>Sai</th></tr></thead>
-                <tbody>
-                  ${q.items.map(it => `
-                  <tr>
-                    <td><b>${it.label})</b></td>
-                    <td>${esc(it.text)}</td>
-                    <td>${wiz.previewMode === 'teacher' && it.isTrue ? '<b style="color:#16a34a">✓</b>' : ''}</td>
-                    <td>${wiz.previewMode === 'teacher' && !it.isTrue ? '<b style="color:#dc2626">✓</b>' : ''}</td>
-                  </tr>`).join('')}
-                </tbody>
-              </table>` : ''}
-              ${wiz.previewMode === 'teacher' && q.solution ? `
-              <div style="margin-top:6px;padding:6px 12px;background:#eff6ff;border-left:3px solid #3b82f6;font-size:11pt;color:#1e40af">
-                <strong>Giải thích:</strong> ${esc(q.solution)}
-              </div>` : ''}
-            </div>
-          `).join('')}
+            `).join('')}
           `).join('')}
 
-          <div style="margin-top:25pt;border-top:1pt solid #000;padding-top:8pt;font-size:10.5pt;display:flex;justify-content:space-between;color:#475569">
-            <span>Bản quyền: <b>Thầy Đinh Văn Thành – Trường THCS Đồng Yên</b></span>
-            <span>EnglishExam Pro Global Success</span>
+          <div style="text-align:center;font-weight:bold;font-style:italic;margin-top:18pt;font-size:11pt">
+            --- HẾT ---
+          </div>
+
+          <div style="margin-top:20pt;border-top:1pt solid #000;padding-top:8pt;font-size:10.5pt;display:flex;justify-content:space-between;color:#475569">
+            <span>Bản quyền: <b>Thầy Đinh Văn Thành – Trường THCS Đồng Yên (0915.213717)</b></span>
+            <span>EnglishExam Pro • Chuẩn SGK Global Success</span>
           </div>
         </div>
       </div>
@@ -2169,13 +2169,17 @@ const App = {
     }
   },
 
-  // ── Xuất Word (.doc) chuẩn Nghị định 30 & Audio Script ──────────
+  // ── Xuất Word (.doc) chuẩn 100% Mẫu Thầy Đinh Văn Thành (THCS Đồng Yên) ──────────
   generateDocHtml(sections, title, examCode = '', showAnswer = false) {
     const wiz = this.state.wizard;
-    const today = new Date();
-    const dateStr = `ngày ${today.getDate()} tháng ${today.getMonth() + 1} năm ${today.getFullYear()}`;
-    const school = (wiz.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const school = (wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const schoolYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const curGrade = wiz.grade || '6';
+    const examClass = wiz.examClass || (curGrade + 'A___');
+    const examTime = wiz.examTime || 60;
     const teacher = wiz.teacherName || 'Thầy Đinh Văn Thành';
+    const code = examCode || (curGrade + '01');
 
     return `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -2183,87 +2187,152 @@ const App = {
   <meta charset='utf-8'>
   <title>${esc(title)}</title>
   <style>
-    @page Section1 { size: 21.0cm 29.7cm; margin: 2.0cm; }
+    @page Section1 { size: 21.0cm 29.7cm; margin: 1.5cm 1.5cm 1.5cm 2.0cm; mso-page-orientation: portrait; }
     div.Section1 { page: Section1; }
-    body { font-family: 'Times New Roman', Times, serif; font-size: 13pt; line-height: 1.35; color: #000; }
-    table { width: 100%; border-collapse: collapse; }
-    .header-tbl td { vertical-align: top; text-align: center; }
-    .title-sec { text-align: center; margin: 12pt 0 8pt 0; }
-    .title-sec h2 { font-size: 14pt; font-weight: bold; margin: 0 0 4pt 0; text-transform: uppercase; }
-    .info-tbl { border: 1pt solid #000; margin: 10pt 0 14pt 0; }
-    .info-tbl td { padding: 4pt 8pt; font-size: 12pt; }
-    .sec-heading { font-size: 13pt; font-weight: bold; text-decoration: underline; margin-top: 14pt; margin-bottom: 6pt; }
-    .q-text { font-size: 13pt; margin-top: 8pt; margin-bottom: 4pt; }
-    .opt-tbl td { width: 50%; font-size: 12.5pt; padding: 2pt 4pt; }
-    .sign-tbl { margin-top: 25pt; width: 100%; }
-    .sign-tbl td { text-align: center; width: 33.3%; font-size: 12pt; }
-    .script-box { border: 1pt dashed #0066cc; background: #fafafa; padding: 8pt 12pt; margin: 12pt 0; font-size: 11pt; }
+    body { font-family: 'Times New Roman', Times, serif; font-size: 13pt; line-height: 1.15; color: #000; }
+    table { width: 100%; border-collapse: collapse; font-family: 'Times New Roman', Times, serif; }
+    p { margin: 2pt 0; padding: 0; line-height: 1.15; }
   </style>
 </head>
 <body>
 <div class="Section1">
-  <table class="header-tbl">
+  <!-- 1. HEADER TABLE 2x2 CHUẨN THCS ĐỒNG YÊN -->
+  <table style="width:100%;border:none;margin-bottom:4pt">
     <tr>
-      <td style="width: 45%;">
-        <div style="font-size: 11pt; font-weight: bold;">SỞ GIÁO DỤC VÀ ĐÀO TẠO</div>
-        <div style="font-size: 12pt; font-weight: bold; text-decoration: underline;">${school}</div>
-        <div style="font-size: 10pt; font-style: italic;">Tổ Xã Hội – Nhóm Ngoại Ngữ</div>
+      <td style="width:38%;text-align:center;vertical-align:top;border:none;line-height:1.2">
+        <div style="font-size:11.5pt;font-weight:bold">${esc(parentAgency)}</div>
+        <div style="font-size:11.5pt;font-weight:bold;text-decoration:underline">${esc(school)}</div>
       </td>
-      <td style="width: 55%;">
-        <div style="font-size: 11.5pt; font-weight: bold;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-        <div style="font-size: 12pt; font-weight: bold; text-decoration: underline;">Độc lập – Tự do – Hạnh phúc</div>
-        <div style="font-size: 11pt; font-style: italic; margin-top: 3pt;">${dateStr}</div>
+      <td style="width:62%;text-align:center;vertical-align:top;border:none;line-height:1.25">
+        <div style="font-size:12.5pt;font-weight:bold">${esc((title || 'BÀI KIỂM TRA ĐÁNH GIÁ GIỮA HỌC KÌ I').toUpperCase())}</div>
+        <div style="font-size:11.5pt;font-weight:bold">NĂM HỌC: ${esc(schoolYear)}</div>
+        <div style="font-size:12.5pt;font-weight:bold">Môn: Tiếng Anh ${curGrade}</div>
+        <div style="font-size:11.5pt;font-style:italic">Thời gian làm bài: ${examTime} phút (không kể thời gian giao đề)</div>
       </td>
     </tr>
   </table>
 
-  <div class="title-sec">
-    <h2>${esc(title)}</h2>
-    <div style="font-size:12pt">
-      Môn: <b>TIẾNG ANH (GLOBAL SUCCESS)</b> – Lớp: <b>${esc(wiz.examClass)}</b> – Thời gian: <b>${wiz.examTime} phút</b>
-      ${examCode ? `<br/><b style="color:#b91c1c">MÃ ĐỀ THI: ${examCode}</b>` : ''}
+  <!-- 2. DÒNG FULL NAME, CLASS, MÃ ĐỀ (CỠ CHỮ 13) -->
+  <table style="width:100%;border:none;margin:4pt 0 6pt 0;font-size:13pt">
+    <tr>
+      <td style="width:55%;border:none"><b>Full name:</b> __________________________,</td>
+      <td style="width:25%;border:none"><b>Class:</b> ${esc(examClass)}</td>
+      <td style="width:20%;text-align:right;border:none"><b style="color:#b91c1c;font-size:13pt">Mã đề: ${esc(code)}</b></td>
+    </tr>
+  </table>
+
+  <!-- 3. BẢNG MARKS AUTO FIT TO WINDOW 100% (CHUẨN 2 DÒNG LỜI PHÊ GỌN GÀNG) -->
+  <table style="width:100%;border-collapse:collapse;margin-bottom:10pt;font-size:11.5pt">
+    <tr style="text-align:center;font-weight:bold">
+      <td colspan="2" style="border:1pt solid #000;width:22%;padding:4pt">Marks</td>
+      <td rowspan="2" style="border:1pt solid #000;width:14%;padding:4pt;vertical-align:middle">Total</td>
+      <td rowspan="2" style="border:1pt solid #000;width:64%;padding:4pt 8pt;text-align:left;vertical-align:top">
+        <div style="text-align:center;font-weight:bold;margin-bottom:3pt">Teacher’s remarks</div>
+        <div style="color:#000;font-size:11pt">________________________________________________</div>
+        <div style="color:#000;font-size:11pt;margin-top:3pt">________________________________________________</div>
+      </td>
+    </tr>
+    <tr style="text-align:center;font-weight:bold">
+      <td style="border:1pt solid #000;width:11%;padding:3pt">Speak</td>
+      <td style="border:1pt solid #000;width:11%;padding:3pt">Write</td>
+    </tr>
+    <tr style="height:36pt;text-align:center">
+      <td style="border:1pt solid #000">&nbsp;</td>
+      <td style="border:1pt solid #000">&nbsp;</td>
+      <td style="border:1pt solid #000">&nbsp;</td>
+      <td style="border:1pt solid #000">&nbsp;</td>
+    </tr>
+  </table>
+
+  <!-- 4. NỘI DUNG CÁC PHẦN THI (CỠ CHỮ 13 TIMES NEW ROMAN) -->
+  ${sections.map((sec, si) => `
+    <div style="font-size:13pt;font-weight:bold;margin-top:10pt;margin-bottom:4pt">
+      Part ${si + 1}. ${esc(sec.name)}: (${sec.questions.length} câu)
     </div>
-  </div>
-
-  <table class="info-tbl">
-    <tr>
-      <td style="width: 60%;"><b>Họ và tên thí sinh:</b> ..........................................................................</td>
-      <td style="width: 20%;"><b>Lớp:</b> ...............</td>
-      <td style="width: 20%;"><b>SBD:</b> ...............</td>
-    </tr>
-  </table>
-
-  ${sections.map(sec => `
-    <div class="sec-heading">${esc(sec.name)}: (${sec.questions.length} câu)</div>
     ${sec.questions.map((q, qi) => `
-      <div class="q-text"><b>Câu ${qi + 1}:</b> ${esc(q.content)}</div>
-      ${q.options ? `
-      <table class="opt-tbl">
-        <tr><td>${esc(q.options[0] || '')}</td><td>${esc(q.options[1] || '')}</td></tr>
-        <tr><td>${esc(q.options[2] || '')}</td><td>${esc(q.options[3] || '')}</td></tr>
-      </table>` : ''}
+      <div style="font-size:13pt;margin-bottom:6pt;line-height:1.25">
+        <div><b>${qi + 1}.</b> ${esc(q.content)}</div>
+        ${q.options ? `
+        <table style="width:100%;border:none;margin-top:2pt">
+          <tr>
+            ${q.options.map(opt => `
+              <td style="border:none;font-size:13pt;padding:1pt 4pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
+                <b>${esc(opt.charAt(0))}.</b> ${esc(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
+              </td>
+            `).join('')}
+          </tr>
+        </table>` : ''}
+        ${showAnswer && q.solution ? `
+        <div style="margin-top:2pt;padding:3pt 8pt;background:#eff6ff;font-size:11pt;color:#1e40af">
+          💡 <b>Giải thích:</b> ${esc(q.solution)}
+        </div>` : ''}
+      </div>
     `).join('')}
   `).join('')}
 
-  <div style="text-align: center; margin-top: 15pt; font-weight: bold;">--- HẾT ---</div>
-
-  <table class="sign-tbl">
-    <tr>
-      <td><b>CÁN BỘ CHẤM THI</b></td>
-      <td><b>CÁN BỘ COI THI</b></td>
-      <td><b>GIÁO VIÊN RA ĐỀ</b><br/><br/><br/><b>${esc(teacher)}</b></td>
-    </tr>
-  </table>
+  <div style="text-align:center;font-weight:bold;font-size:13pt;margin-top:16pt">
+    ------The end------
+  </div>
 
   ${wiz.audioScript ? `
-  <br clear=all style='mso-special-character:line-break;page-break-before:always'>
-  <div class="title-sec">
-    <h2>HƯỚNG DẪN BÀI THI NGHE (LISTENING AUDIO SCRIPT)</h2>
-    <div style="font-size:11pt;font-style:italic">Dành cho Giám thị / Giáo viên đọc trong phòng thi</div>
+  <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+  <div style="text-align:center;margin-bottom:12pt">
+    <div style="font-size:12pt;font-weight:bold">${esc(parentAgency)} - ${esc(school)}</div>
+    <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a;margin-top:4pt">NỘI DUNG BÀI NGHE (AUDIO SCRIPTS - DÙNG CHO CẢ 2 MÃ ĐỀ)</div>
   </div>
-  <div class="script-box">
-    <b>NỘI DUNG BÀI NGHE (${esc(wiz.audioTitle || 'Listening Track')}):</b><br/><br/>
+  <div style="border:1pt dashed #0066cc;background:#fafafa;padding:10pt 14pt;font-size:12pt;line-height:1.4">
     ${esc(wiz.audioScript).replace(/\n/g, '<br/>')}
+  </div>
+  ` : ''}
+
+  ${showAnswer ? `
+  <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+  <div style="text-align:center;margin-bottom:12pt">
+    <div style="font-size:12pt;font-weight:bold">${esc(parentAgency)} - ${esc(school)}</div>
+    <div style="font-size:13.5pt;font-weight:bold;color:#b91c1c;margin-top:4pt">HƯỚNG DẪN ĐÁP ÁN VÀ BIỂU ĐIỂM</div>
+    <div style="font-size:12pt;font-style:italic">Môn: Tiếng Anh ${curGrade} • Mã đề: ${esc(code)}</div>
+  </div>
+
+  <table style="width:100%;border-collapse:collapse;font-size:11.5pt">
+    <thead>
+      <tr style="background:#e8eef5;text-align:center;font-weight:bold">
+        <th style="border:1pt solid #000;padding:4pt;width:12%">Câu</th>
+        <th style="border:1pt solid #000;padding:4pt;width:18%">Đáp án</th>
+        <th style="border:1pt solid #000;padding:4pt;width:15%">Điểm</th>
+        <th style="border:1pt solid #000;padding:4pt;width:55%">Giải thích / Ghi chú</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${(() => {
+        let qNum = 1;
+        let rowsHtml = '';
+        const totalQ = sections.reduce((acc, s) => acc + s.questions.length, 0) || 40;
+        const ptPerQ = (10 / totalQ).toFixed(2);
+        sections.forEach(sec => {
+          rowsHtml += `
+            <tr style="background:#f1f5f9;font-weight:bold">
+              <td colspan="4" style="border:1pt solid #000;padding:3pt 6pt">${esc(sec.name)}</td>
+            </tr>
+          `;
+          sec.questions.forEach(q => {
+            rowsHtml += `
+              <tr>
+                <td style="border:1pt solid #000;text-align:center;font-weight:bold;padding:3pt">${qNum++}</td>
+                <td style="border:1pt solid #000;text-align:center;font-weight:bold;color:#b91c1c;padding:3pt">${esc(q.answer || '')}</td>
+                <td style="border:1pt solid #000;text-align:center;padding:3pt">${ptPerQ} đ</td>
+                <td style="border:1pt solid #000;padding:3pt 6pt">${esc(q.solution || '')}</td>
+              </tr>
+            `;
+          });
+        });
+        return rowsHtml;
+      })()}
+    </tbody>
+  </table>
+
+  <div style="margin-top:20pt;text-align:right;padding-right:20pt;font-size:11.5pt">
+    <b>GIÁO VIÊN RA ĐỀ</b><br/><br/><br/>
+    <b>${esc(teacher)}</b>
   </div>
   ` : ''}
 </div>
@@ -2964,6 +3033,9 @@ const App = {
             <button onclick="App.export15mWord('full')" class="btn btn-success" style="background:#10b981;border:none">
               📦 Trọn Bộ 2 Mã Đề 5 Trang (.doc)
             </button>
+            <button onclick="App.export15mWord('solution')" class="btn" style="background:#f59e0b;color:#fff;font-weight:700;border:none">
+              💡 Kèm Lời Giải 4 Cột (.doc)
+            </button>
             <button onclick="App.share15mZalo()" class="btn" style="background:#0284c7;color:#fff;font-weight:700">
               💬 Giao qua Zalo
             </button>
@@ -3037,10 +3109,13 @@ const App = {
             <button onclick="App.switchQuiz15mPreviewFace(3)" id="btnTab15mFace3" class="btn ${qState.previewFace === 3 ? 'btn-primary' : 'btn-ghost'}" style="font-weight:700">
               📊 Mặt 3: Bảng đáp án rút gọn
             </button>
+            <button onclick="App.switchQuiz15mPreviewFace(4)" id="btnTab15mFace4" class="btn ${qState.previewFace === 4 ? 'btn-primary' : 'btn-ghost'}" style="font-weight:700">
+              💡 Mặt 4: Lời giải chi tiết 4 cột
+            </button>
           </div>
 
-          <!-- Code Switcher for Face 1 -->
-          ${qState.previewFace === 1 ? `
+          <!-- Code Switcher for Face 1 & Face 4 -->
+          ${(qState.previewFace === 1 || qState.previewFace === 4) ? `
             <div style="display:flex;align-items:center;gap:6px">
               <span style="font-size:12px;color:var(--ink-soft);font-weight:600">Xem mã đề:</span>
               <button onclick="App.switchQuiz15mCode(1)" class="btn ${qState.previewCodeIndex === 1 ? 'btn-primary' : 'btn-outline'}" style="padding:4px 10px;font-size:12px">
@@ -3060,7 +3135,8 @@ const App = {
           <table style="width:100%;border:none;margin-bottom:4px;font-family:'Times New Roman',serif;font-size:10.5pt">
             <tr>
               <td style="width:50%;vertical-align:top;border:none">
-                <b>${esc(qState.school.toUpperCase())}</b><br/>
+                <div style="font-weight:bold;font-size:9.5pt">${esc((localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase())}</div>
+                <div style="font-weight:bold;font-size:10.5pt;text-decoration:underline">${esc(qState.school.toUpperCase())}</div>
                 Họ và tên: ....................................................<br/>
                 Lớp: ${curGrade}A.....
               </td>
@@ -3171,6 +3247,55 @@ const App = {
           </div>
         </div>
       </div>
+
+      <!-- ── FACE 4 PREVIEW: BẢNG LỜI GIẢI CHI TIẾT 4 CỘT CHUẨN ĐỒNG YÊN ── -->
+      <div id="view15mFace4" class="${qState.previewFace === 4 ? '' : 'hidden'}">
+        <div class="exam-paper-15m" style="max-width:920px;margin:0 auto">
+          <div style="text-align:center;margin-bottom:14px">
+            <h3 style="color:#1e3a8a;font-size:14pt;font-weight:bold;margin-bottom:4px">HƯỚNG DẪN CHẤM & LỜI GIẢI CHI TIẾT (4 CỘT)</h3>
+            <div style="font-style:italic;font-size:10.5pt">
+              Môn: Tiếng Anh ${curGrade} • ${esc(model.title)} • Mã đề ${model.code} • Năm học ${esc(qState.year)}<br/>
+              (Thang điểm 10.0 • Mỗi câu đúng 0.5 điểm • Chuẩn mẫu THCS Đồng Yên)
+            </div>
+          </div>
+
+          <table class="table-short-ans" style="width:100%;font-size:10pt">
+            <thead>
+              <tr style="background:#e2e8f0;font-weight:bold;text-align:center">
+                <th style="width:8%;border:1px solid #000;padding:6px">Câu</th>
+                <th style="width:10%;border:1px solid #000;padding:6px">Đáp án</th>
+                <th style="width:12%;border:1px solid #000;padding:6px">Cấp độ</th>
+                <th style="width:70%;border:1px solid #000;padding:6px;text-align:left">Giải thích (Nội dung cần nhớ)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#f8fafc;font-weight:bold"><td colspan="4" style="border:1px solid #000;padding:5px 8px;text-align:left">Part I: Vocabulary & Communication (10 câu - 5.0 điểm)</td></tr>
+              ${model.vocabItems.map(item => `
+                <tr>
+                  <td style="border:1px solid #cbd5e1;text-align:center;font-weight:bold;padding:5px">${item.num}</td>
+                  <td style="border:1px solid #cbd5e1;text-align:center;font-weight:bold;color:#b91c1c;padding:5px">${item.ans}</td>
+                  <td style="border:1px solid #cbd5e1;text-align:center;padding:5px"><span class="badge" style="font-size:10px">${item.lvl || 'TH'}</span></td>
+                  <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:left;line-height:1.4">${esc(item.exp || '')}</td>
+                </tr>
+              `).join('')}
+              <tr style="background:#f8fafc;font-weight:bold"><td colspan="4" style="border:1px solid #000;padding:5px 8px;text-align:left">Part II: Grammar & Reading (10 câu - 5.0 điểm)</td></tr>
+              ${model.grammarItems.map(item => `
+                <tr>
+                  <td style="border:1px solid #cbd5e1;text-align:center;font-weight:bold;padding:5px">${item.num}</td>
+                  <td style="border:1px solid #cbd5e1;text-align:center;font-weight:bold;color:#b91c1c;padding:5px">${item.ans}</td>
+                  <td style="border:1px solid #cbd5e1;text-align:center;padding:5px"><span class="badge" style="font-size:10px">${item.lvl || 'TH'}</span></td>
+                  <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:left;line-height:1.4">${esc(item.exp || '')}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div style="margin-top:30px;text-align:right;padding-right:24px;font-size:11pt">
+            <b>GIÁO VIÊN BỘ MÔN</b><br/>
+            <span style="font-size:9.5pt;color:#64748b">(Ký và ghi rõ họ tên)</span>
+          </div>
+        </div>
+      </div>
     </div>`;
   },
 
@@ -3219,6 +3344,7 @@ const App = {
     const curUnit = qState.unitNum;
     const school = qState.school;
     const year = qState.year;
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
 
     const m1 = this.build15mQuizModel(curGrade, curUnit, qState.code1, qState.seed1);
     const m2 = this.build15mQuizModel(curGrade, curUnit, qState.code2, qState.seed2);
@@ -3251,14 +3377,15 @@ const App = {
       });
 
       return `
-        <table style="width:100%;border:none;margin-bottom:2pt;font-family:'Times New Roman';font-size:10.5pt">
+        <table style="width:100%;border:none;margin-bottom:2pt;font-family:'Times New Roman';font-size:10pt">
           <tr>
-            <td style="width:50%;vertical-align:top;border:none">
-              <b>${school.toUpperCase()}</b><br/>
+            <td style="width:50%;vertical-align:top;border:none;line-height:1.2">
+              <div style="font-weight:bold;font-size:9.5pt">${parentAgency}</div>
+              <div style="font-weight:bold;font-size:10pt;text-decoration:underline">${school.toUpperCase()}</div>
               Họ và tên: ....................................................<br/>
               Lớp: ${m.grade}A.....
             </td>
-            <td style="width:50%;vertical-align:top;text-align:center;border:none">
+            <td style="width:50%;vertical-align:top;text-align:center;border:none;line-height:1.25">
               <b style="font-size:11pt">BÀI KIỂM TRA 15 PHÚT</b><br/>
               <i>Môn: Tiếng Anh ${m.grade} • ${m.title}</i><br/>
               <b style="color:#b91c1c;font-size:11pt">Mã đề: ${m.code}</b>
@@ -3316,6 +3443,64 @@ const App = {
       `;
     }
 
+    function buildWordSolutionPage(m) {
+      let rows = `
+        <tr style="background:#f1f5f9;font-weight:bold">
+          <td colspan="4" style="border:1px solid #000;padding:4px 8px;font-size:11pt">Part I: Vocabulary & Communication (10 câu - 5.0 điểm)</td>
+        </tr>
+      `;
+      m.vocabItems.forEach(item => {
+        rows += `
+          <tr>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:4px">${item.num}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;color:#b91c1c;padding:4px">${item.ans}</td>
+            <td style="border:1px solid #000;text-align:center;padding:4px">${item.lvl || 'TH'}</td>
+            <td style="border:1px solid #000;padding:4px 8px;text-align:left">${item.exp || ''}</td>
+          </tr>
+        `;
+      });
+      rows += `
+        <tr style="background:#f1f5f9;font-weight:bold">
+          <td colspan="4" style="border:1px solid #000;padding:4px 8px;font-size:11pt">Part II: Grammar & Reading (10 câu - 5.0 điểm)</td>
+        </tr>
+      `;
+      m.grammarItems.forEach(item => {
+        rows += `
+          <tr>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:4px">${item.num}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;color:#b91c1c;padding:4px">${item.ans}</td>
+            <td style="border:1px solid #000;text-align:center;padding:4px">${item.lvl || 'TH'}</td>
+            <td style="border:1px solid #000;padding:4px 8px;text-align:left">${item.exp || ''}</td>
+          </tr>
+        `;
+      });
+
+      return `
+        <p style="text-align:center;font-weight:bold;font-size:13pt;color:#1e3a8a;margin:6pt 0 2pt 0;font-family:'Times New Roman'">HƯỚNG DẪN CHẤM & LỜI GIẢI CHI TIẾT</p>
+        <p style="text-align:center;font-style:italic;font-size:10.5pt;margin:0 0 8pt 0;font-family:'Times New Roman'">
+          Môn: Tiếng Anh ${m.grade} • ${m.title} • Mã đề ${m.code} • Năm học ${year}<br/>
+          (Thang điểm 10.0 • Mỗi câu đúng 0.5 điểm • Chuẩn mẫu THCS Đồng Yên)
+        </p>
+        <table style="width:100%;border-collapse:collapse;margin-top:4pt;font-size:10.5pt;font-family:'Times New Roman'">
+          <thead>
+            <tr style="background-color:#e2e8f0;text-align:center;font-weight:bold">
+              <th style="border:1px solid #000;padding:5px;width:10%">Câu</th>
+              <th style="border:1px solid #000;padding:5px;width:12%">Đáp án</th>
+              <th style="border:1px solid #000;padding:5px;width:12%">Cấp độ</th>
+              <th style="border:1px solid #000;padding:5px;width:66%;text-align:left">Giải thích (Nội dung cần nhớ)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+        <div style="margin-top:25pt;text-align:right;padding-right:20pt;font-size:10.5pt;font-family:'Times New Roman'">
+          <b>GIÁO VIÊN BỘ MÔN</b><br/>
+          <span style="font-size:9pt;color:#64748b">(Ký và ghi rõ họ tên)</span>
+        </div>
+      `;
+    }
+
     const imgTag = window.ANSWER_SHEET_PNG_BASE64 ?
       `<img src="${window.ANSWER_SHEET_PNG_BASE64}" style="width:100%;max-width:680px;height:auto;margin:0 auto;display:block" />` :
       `<p style="text-align:center;font-weight:bold;margin-top:100px">[PHIẾU TRẢ LỜI TRẮC NGHIỆM 20 CÂU]</p>`;
@@ -3342,6 +3527,19 @@ const App = {
         ${buildWordShortAns(m1, m2)}
       `;
       fileName = `De_15P_Anh_${curGrade}_Unit_${curUnit}_Tron_Bo_5_Trang_Ma_${m1.code}_${m2.code}.doc`;
+    } else if (type === 'solution') {
+      // Chuẩn 3 Trang kèm Lời giải chi tiết 4 Cột
+      fullBody = `
+        <!-- TRANG 1: ĐỀ MÃ 1 -->
+        ${buildWordExamPage(m1)}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 2: PHIẾU CHẤM -->
+        ${imgTag}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 3: BẢNG LỜI GIẢI CHI TIẾT 4 CỘT -->
+        ${buildWordSolutionPage(m1)}
+      `;
+      fileName = `De_15P_Anh_${curGrade}_Unit_${curUnit}_Ma_${m1.code}_Kem_Loi_Giai_4_Cot.doc`;
     } else {
       // Chuẩn 3 Trang đơn lẻ
       fullBody = `
