@@ -31,20 +31,31 @@
 
 ---
 
-### 👨‍🏫 2. Dành cho Giáo viên & Quản trị (Teacher Portal)
-* **Quản lý Lớp học Thông minh**:
-  * Tạo các lớp học (7A1, 7A2, 8B, 9A...) kèm mã lớp định danh (Class Code).
-  * Theo dõi sĩ số học sinh, danh sách bài nộp và thống kê phổ điểm theo từng lớp.
-* **Soạn đề & Tự động sinh Ma trận đề thi**:
-  * **Đề 15 phút (Đánh giá thường xuyên)**: 15–20 câu trắc nghiệm nhanh bám sát từng Unit.
-  * **Đề Giữa học kỳ (45–60 phút)**: Chuẩn 4 kỹ năng (Part A: Listening, Part B: Language Focus, Part C: Reading, Part D: Writing).
-  * **Đề Cuối học kỳ (60 phút)**: Khung ma trận 4 mức độ nhận thức (*Nhận biết 40%, Thông hiểu 30%, Vận dụng 20%, Vận dụng cao 10%*) theo chuẩn **Công văn 7991/BGDĐT-GDTrH**.
-* **Giao bài 1-Click qua Zalo nhóm lớp**:
-  * Tự động tạo link làm bài và soạn sẵn mẫu tin nhắn Zalo kèm hướng dẫn chi tiết để giáo viên gửi cho phụ huynh/học sinh.
-* **Xuất văn bản hành chính theo Nghị định 30/2020/NĐ-CP**:
-  * Tải file Word (`.doc`) chuẩn thể thức văn bản: Tờ đề thi, Hướng dẫn bài thi nghe (**Listening Audio Script**) cho giám thị, **Đáp án & Hướng dẫn chấm chi tiết**, Bảng ma trận 2 chiều & Bảng đặc tả đề thi.
-  * **Trộn 4 mã đề hoán vị (101, 102, 103, 104)** tự động.
-* **Xuất Báo cáo & Bảng điểm Excel / CSV**: Hỗ trợ chuyển dữ liệu nhanh vào sổ điểm điện tử VnEdu / SMAS.
+### ⚡ 2. Tạo Đề Kiểm Tra 15 Phút Chuẩn 2 Mã Đề (48 Units Global Success)
+* **Kho câu hỏi phong phú 48 Units (Lớp 6, 7, 8, 9)**: Gồm **960 câu hỏi** trắc nghiệm được phân hóa theo cấp độ Nhận biết (NB), Thông hiểu (TH), Vận dụng (VD) kèm lời giải thích sư phạm chi tiết.
+* **Cấu trúc chuẩn 20 câu / đề**:
+  * **Part I**: 10 câu Vocabulary & Communication
+  * **Part II**: 10 câu Grammar & Reading
+  * Tuyệt đối không chứa bài tập phát âm / trọng âm (theo chuẩn chỉ đạo của Thầy Thành).
+* **Quy cách xuất bản 5 Trang in ấn A4**:
+  * **Trang 1**: Đề thi Mã 1 (20 câu trọn vẹn đúng 1 trang A4, phông Times New Roman 10.5pt, dãn dòng 11.5pt).
+  * **Trang 2**: Phiếu trả lời trắc nghiệm 20 câu (chèn chuẩn mẫu bỏ chữ 8C, có chỗ ghi họ tên/lớp).
+  * **Trang 3**: Đề thi Mã 2 (hoán vị câu hỏi và phương án A, B, C độc lập).
+  * **Trang 4**: Phiếu trả lời trắc nghiệm 20 câu.
+  * **Trang 5**: Bảng đối chiếu đáp án rút gọn A, B, C (2 cụm: Câu 1-10 và 11-20) cho giáo viên chấm nhanh trong vài giây.
+* **Quy chuẩn mã đề theo khối**: Lớp 6 (Mã 601 & 602), Lớp 7 (Mã 701 & 702), Lớp 8 (Mã 801 & 802), Lớp 9 (Mã 901 & 902).
+* **Tùy chọn tải về**: Xuất file Word (.doc) 3 mặt đơn lẻ, trọn bộ 5 mặt in ấn, hoặc in trực tiếp A4 (`window.print()`).
+
+### 🏛️ 3. Bộ Đề Thi Chuẩn Định Kỳ (GK1, CK1, GK2, CK2, KSCL, Đề Cương) Chuẩn CV 7991/BGDĐT
+* **20 Bộ Đề Chuẩn & 40 Mã Đề Hoán Vị**:
+  * **Giữa Học kỳ I (GK1)**: Units 1-3. 100% Đề thi Viết trên giấy 10.0 điểm (36 câu TNKQ + 1 câu Viết), không thi Nói.
+  * **Cuối Học kỳ I (CK1)**: Units 1-6. Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ (kèm 4 cột Examiner Script).
+  * **Giữa Học kỳ II (GK2)**: Units 7-9. 100% Đề thi Viết trên giấy 10.0 điểm, không thi Nói.
+  * **Cuối Học kỳ II (CK2)**: Units 7-12. Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ (kèm 4 cột Examiner Script).
+  * **Khảo sát đầu năm (KSCL)**: Đánh giá năng lực tổng hợp 10.0 điểm.
+  * **04 Đề Cương Ôn Tập (6 Trang)**: Mục tiêu vững chắc 6.0+ điểm (Ngữ âm, Từ vựng, 30 câu ngữ pháp, 2 bài đọc, 10 câu viết lại, 3 bài văn mẫu).
+* **Tải về file Word (.docx) chuẩn gốc**: Đầy đủ 24 file `.docx` chính thức trong thư mục `exams_docx/`, bảng biểu Auto fit to window, cỡ chữ 13 Times New Roman.
+* **Tùy chỉnh đơn vị trường học**: Lưu trữ thông tin Cơ quan cấp trên (`UBND XÃ ĐỒNG YÊN`) & Tên trường (`TRƯỜNG THCS ĐỒNG YÊN`) linh hoạt.
 
 ---
 

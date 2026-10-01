@@ -236,6 +236,42 @@ const App = {
     bankFilter: { grade: '', skill: '', chapter: '', level: '', search: '', source: 'all' },
     sidebarOpen: false,
     previewAudioPlaying: false,
+
+    // ── 15-Minute Exam Generator State (Chuẩn 48 Units - 05 Global 15 mins) ──
+    quiz15m: {
+      grade: '6',
+      unitNum: 1,
+      code1: '601',
+      code2: '602',
+      seed1: 42,
+      seed2: 99,
+      previewFace: 1,
+      previewCodeIndex: 1,
+      school: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+      parent: localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN',
+      year: localStorage.getItem('cfg_school_year') || '2025 - 2026'
+    },
+
+    // ── Official Periodic Exams State (Chuẩn CV 7991 - Tạo đề Tiếng Anh THCS Using) ──
+    officialExams: {
+      grade: '6',
+      term: 'GK1',
+      school: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+      parent: localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN'
+    },
+
+    // ── Student 15m Practice State (Luyện thi 15 phút trực tuyến) ──
+    student15m: {
+      grade: '7',
+      unitNum: 1,
+      started: false,
+      answers: {},
+      timeRemaining: 900,
+      timer: null,
+      submitted: false,
+      score: 0,
+      model: null
+    },
   },
 
   init() {
@@ -310,7 +346,9 @@ const App = {
     // Menu cho Giáo viên
     const teacherNav = [
       { view: 'dashboard', icon: '🏠', label: 'Bàn làm việc' },
-      { view: 'generate', icon: '📝', label: 'Soạn đề Tiếng Anh', badge: remaining === Infinity ? null : remaining },
+      { view: 'quiz-15m', icon: '⚡', label: 'Tạo Đề 15 Phút (48 Units)' },
+      { view: 'official-exams', icon: '🏛️', label: 'Bộ Đề Chuẩn (GK, CK, KSCL)' },
+      { view: 'generate', icon: '📝', label: 'Soạn đề Tùy biến (CV 7991)', badge: remaining === Infinity ? null : remaining },
       { view: 'classrooms', icon: '🏫', label: 'Quản lý Lớp học' },
       { view: 'submissions', icon: '📥', label: 'Thu bài & Chấm điểm', badge: subCount > 0 ? subCount : null },
       { view: 'bank', icon: '📚', label: 'Ngân hàng Global Success' },
@@ -322,6 +360,7 @@ const App = {
     // Menu cho Học sinh
     const studentNav = [
       { view: 'student-hub', icon: '🌟', label: 'Góc học tập' },
+      { view: 'student-15m-practice', icon: '⚡', label: 'Luyện Đề 15 Phút (48 Units)' },
       { view: 'vocab-studio', icon: '📖', label: 'Luyện Từ vựng (Flashcards)' },
       { view: 'listening-lab', icon: '🎧', label: 'Luyện Nghe (Audio Lab)' },
       { view: 'student-exams-list', icon: '✍️', label: 'Phòng thi trực tuyến' },
@@ -423,6 +462,9 @@ const App = {
   renderPage() {
     const el = document.getElementById('page-content');
     const titles = {
+      'quiz-15m': '⚡ Tạo Đề 15 Phút Chuẩn 2 Mã Đề (48 Units) – Thầy Đinh Văn Thành',
+      'official-exams': '🏛️ Bộ Đề Thi Chuẩn Định Kỳ (GK, CK, KSCL) CV 7991',
+      'student-15m-practice': '⚡ Luyện Đề 15 Phút (48 Units) Global Success',
       dashboard: '🏠 Bàn làm việc Giáo viên',
       generate: '📝 Soạn đề Tiếng Anh THCS Global Success',
       classrooms: '🏫 Quản lý Lớp học & Học sinh',
@@ -444,7 +486,10 @@ const App = {
     if (!el) return;
 
     const view = this.state.view;
-    if (view === 'dashboard') el.innerHTML = this.renderDashboard();
+    if (view === 'quiz-15m') el.innerHTML = this.renderQuiz15m();
+    else if (view === 'official-exams') el.innerHTML = this.renderOfficialExams();
+    else if (view === 'student-15m-practice') el.innerHTML = this.renderStudent15mPractice();
+    else if (view === 'dashboard') el.innerHTML = this.renderDashboard();
     else if (view === 'generate') el.innerHTML = this.renderGenerate();
     else if (view === 'classrooms') el.innerHTML = this.renderClassrooms();
     else if (view === 'bank') el.innerHTML = this.renderBank();
@@ -2803,6 +2848,1048 @@ const App = {
         </div>
       </div>
     </div>`;
+  },
+
+  // ================================================================
+  // ── MÔ-ĐUN 1: TẠO ĐỀ KIỂM TRA 15 PHÚT (48 UNITS GLOBAL SUCCESS) ─
+  // ================================================================
+  build15mQuizModel(grade, uNum, code, seed) {
+    const gData = (window.QUIZ_15M_DATA && window.QUIZ_15M_DATA[grade]) || {};
+    const uInfo = gData[uNum] || gData[1] || { vocab: [], grammar: [], title: `Unit ${uNum}` };
+    const letters = ['A', 'B', 'C', 'D'];
+
+    function pseudoShuffle(arr, s) {
+      const copy = [...(arr || [])];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.abs(Math.sin(s + i * 37)) * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    const shuffledVocab = pseudoShuffle(uInfo.vocab || [], seed).slice(0, 10);
+    const shuffledGrammar = pseudoShuffle(uInfo.grammar || [], seed + 101).slice(0, 10);
+
+    const vocabItems = shuffledVocab.map((item, idx) => {
+      let opts = [...(item.opts || [])];
+      opts.sort((a, b) => Math.sin(seed + idx * 13 + (a[0] ? a[0].length : 0)) - 0.5);
+      let correctLetter = 'A';
+      const formattedOpts = opts.map((opt, oIdx) => {
+        const l = letters[oIdx];
+        if (opt[1] === true) correctLetter = l;
+        return { letter: l, text: opt[0] };
+      });
+      const vItem = {
+        num: idx + 1,
+        q: item.q,
+        opts: formattedOpts,
+        ans: correctLetter,
+        exp: item.exp || '',
+        lvl: item.lvl || 'TH'
+      };
+      if (item.passage_title) vItem.passage_title = item.passage_title;
+      if (item.passage_text) vItem.passage_text = item.passage_text;
+      return vItem;
+    });
+
+    const grammarItems = shuffledGrammar.map((item, idx) => {
+      let opts = [...(item.opts || [])];
+      opts.sort((a, b) => Math.cos(seed + idx * 17 + (a[0] ? a[0].length : 0)) - 0.5);
+      let correctLetter = 'A';
+      const formattedOpts = opts.map((opt, oIdx) => {
+        const l = letters[oIdx];
+        if (opt[1] === true) correctLetter = l;
+        return { letter: l, text: opt[0] };
+      });
+      const gItem = {
+        num: idx + 11,
+        q: item.q,
+        opts: formattedOpts,
+        ans: correctLetter,
+        exp: item.exp || '',
+        lvl: item.lvl || 'TH'
+      };
+      if (item.passage_title) gItem.passage_title = item.passage_title;
+      if (item.passage_text) gItem.passage_text = item.passage_text;
+      return gItem;
+    });
+
+    return {
+      grade: String(grade),
+      unitNum: Number(uNum),
+      title: uInfo.title || `Unit ${uNum}`,
+      sub: uInfo.sub || '',
+      code: code,
+      vocabItems: vocabItems,
+      grammarItems: grammarItems
+    };
+  },
+
+  renderQuiz15m() {
+    const qState = this.state.quiz15m;
+    const curGrade = qState.grade;
+    const curUnit = qState.unitNum;
+    const gData = (window.QUIZ_15M_DATA && window.QUIZ_15M_DATA[curGrade]) || {};
+    const uInfo = gData[curUnit] || { title: `Unit ${curUnit}`, sub: '' };
+
+    const curCode = qState.previewCodeIndex === 1 ? qState.code1 : qState.code2;
+    const curSeed = qState.previewCodeIndex === 1 ? qState.seed1 : qState.seed2;
+    const model = this.build15mQuizModel(curGrade, curUnit, curCode, curSeed);
+
+    const m1 = this.build15mQuizModel(curGrade, curUnit, qState.code1, qState.seed1);
+    const m2 = this.build15mQuizModel(curGrade, curUnit, qState.code2, qState.seed2);
+
+    return `
+    <div class="page-body slide-up" style="max-width:1200px;margin:0 auto">
+      <!-- Header Banner -->
+      <div class="card mb-16 no-print" style="background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);color:#fff;border:none;padding:20px 24px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-size:24px">⚡</span>
+              <h2 style="font-size:20px;font-weight:900;letter-spacing:-0.02em">CÔNG CỤ TẠO ĐỀ KIỂM TRA 15 PHÚT TIẾNG ANH THCS</h2>
+              <span class="badge" style="background:rgba(255,255,255,0.2);color:#fff;font-weight:700">48 UNITS GLOBAL SUCCESS</span>
+            </div>
+            <p style="font-size:13px;opacity:0.9">
+              Bản quyền: <strong>Thầy Đinh Văn Thành – THCS Đồng Yên</strong> (0915.213717) • Quy chuẩn 5 trang in ấn A4 (Đề 1 - Phiếu - Đề 2 - Phiếu - Đáp án).
+            </p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="window.print()" class="btn btn-outline" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3)">
+              🖨️ In đề A4
+            </button>
+            <button onclick="App.export15mWord(1)" class="btn btn-primary" style="background:#0284c7;border:none">
+              📥 Xuất Word 3 Mặt (.doc)
+            </button>
+            <button onclick="App.export15mWord('full')" class="btn btn-success" style="background:#10b981;border:none">
+              📦 Trọn Bộ 2 Mã Đề 5 Trang (.doc)
+            </button>
+            <button onclick="App.share15mZalo()" class="btn" style="background:#0284c7;color:#fff;font-weight:700">
+              💬 Giao qua Zalo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade & Unit Selector -->
+      <div class="card mb-16 no-print" style="padding:16px 20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+          <div style="display:flex;gap:8px">
+            ${['6', '7', '8', '9'].map(g => `
+              <button onclick="App.selectQuiz15mGrade('${g}')" class="btn ${curGrade === g ? 'btn-primary' : 'btn-outline'}" style="font-weight:800">
+                🇬🇧 TIẾNG ANH ${g}
+              </button>
+            `).join('')}
+          </div>
+          <div style="font-size:12.5px;color:var(--ink-soft);font-weight:600">
+            Mã đề mặc định: <span style="color:#2563eb;font-weight:800">Mã ${qState.code1}</span> & <span style="color:#0284c7;font-weight:800">Mã ${qState.code2}</span>
+          </div>
+        </div>
+
+        <!-- 12 Units Pills -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          ${Array.from({ length: 12 }, (_, i) => i + 1).map(u => {
+            const uData = gData[u] || {};
+            const title = uData.title || `Unit ${u}`;
+            const isAct = curUnit === u;
+            return `
+              <button onclick="App.selectQuiz15mUnit(${u})" class="unit-pill-btn ${isAct ? 'active' : ''}">
+                ${isAct ? '✓ ' : ''}${title.length > 20 ? title.slice(0, 20) + '...' : title}
+              </button>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- School & Unit Configuration (Editable) -->
+      <div class="card mb-16 no-print" style="background:#f8fafc;border:1.5px dashed var(--line);padding:14px 18px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)) 120px;gap:12px;align-items:end">
+          <div>
+            <label class="label" style="font-size:11px;color:var(--ink-soft)">CƠ QUAN CẤP TRÊN:</label>
+            <input type="text" id="cfg15mParent" value="${esc(qState.parent)}" class="input" style="font-weight:700" onchange="App.save15mSchoolConfig()"/>
+          </div>
+          <div>
+            <label class="label" style="font-size:11px;color:var(--ink-soft)">TÊN TRƯỜNG HỌC:</label>
+            <input type="text" id="cfg15mSchool" value="${esc(qState.school)}" class="input" style="font-weight:700" onchange="App.save15mSchoolConfig()"/>
+          </div>
+          <div>
+            <label class="label" style="font-size:11px;color:var(--ink-soft)">NĂM HỌC:</label>
+            <input type="text" id="cfg15mYear" value="${esc(qState.year)}" class="input" style="font-weight:700" onchange="App.save15mSchoolConfig()"/>
+          </div>
+          <div>
+            <button onclick="App.save15mSchoolConfig()" class="btn btn-outline" style="width:100%">
+              💾 Lưu lại
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Mode Subtabs -->
+      <div class="card mb-16 no-print" style="padding:10px 16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;gap:8px">
+            <button onclick="App.switchQuiz15mPreviewFace(1)" id="btnTab15mFace1" class="btn ${qState.previewFace === 1 ? 'btn-primary' : 'btn-ghost'}" style="font-weight:700">
+              📄 Mặt 1: Đề thi 20 câu (A4)
+            </button>
+            <button onclick="App.switchQuiz15mPreviewFace(2)" id="btnTab15mFace2" class="btn ${qState.previewFace === 2 ? 'btn-primary' : 'btn-ghost'}" style="font-weight:700">
+              📝 Mặt 2: Phiếu trắc nghiệm 20 câu
+            </button>
+            <button onclick="App.switchQuiz15mPreviewFace(3)" id="btnTab15mFace3" class="btn ${qState.previewFace === 3 ? 'btn-primary' : 'btn-ghost'}" style="font-weight:700">
+              📊 Mặt 3: Bảng đáp án rút gọn
+            </button>
+          </div>
+
+          <!-- Code Switcher for Face 1 -->
+          ${qState.previewFace === 1 ? `
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-size:12px;color:var(--ink-soft);font-weight:600">Xem mã đề:</span>
+              <button onclick="App.switchQuiz15mCode(1)" class="btn ${qState.previewCodeIndex === 1 ? 'btn-primary' : 'btn-outline'}" style="padding:4px 10px;font-size:12px">
+                Mã ${qState.code1}
+              </button>
+              <button onclick="App.switchQuiz15mCode(2)" class="btn ${qState.previewCodeIndex === 2 ? 'btn-primary' : 'btn-outline'}" style="padding:4px 10px;font-size:12px">
+                Mã ${qState.code2}
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+      <!-- ── FACE 1 PREVIEW: ĐỀ THI 20 CÂU ── -->
+      <div id="view15mFace1" class="${qState.previewFace === 1 ? '' : 'hidden'}">
+        <div class="exam-paper-15m">
+          <table style="width:100%;border:none;margin-bottom:4px;font-family:'Times New Roman',serif;font-size:10.5pt">
+            <tr>
+              <td style="width:50%;vertical-align:top;border:none">
+                <b>${esc(qState.school.toUpperCase())}</b><br/>
+                Họ và tên: ....................................................<br/>
+                Lớp: ${curGrade}A.....
+              </td>
+              <td style="width:50%;vertical-align:top;text-align:center;border:none">
+                <b style="font-size:11pt">BÀI KIỂM TRA 15 PHÚT</b><br/>
+                <i>Môn: Tiếng Anh ${curGrade} • ${esc(model.title)}</i><br/>
+                <b style="color:#b91c1c;font-size:11.5pt">Mã đề: ${model.code}</b>
+              </td>
+            </tr>
+          </table>
+          <hr style="border:none;border-top:1px solid #000;margin:2px 0 6px 0"/>
+
+          <p style="margin:2px 0;font-size:10.5pt;font-family:'Times New Roman',serif;font-weight:bold">
+            Part I: Vocabulary & Communication. <span style="font-weight:normal;font-style:italic;font-size:10pt">Choose the best answer A, B, or C to complete the sentences.</span>
+          </p>
+
+          ${model.vocabItems.map(item => `
+            ${item.passage_title ? `<div style="font-weight:bold;font-style:italic;font-size:10pt;color:#1e293b;margin-top:3px">${esc(item.passage_title)}</div>` : ''}
+            ${item.passage_text ? `<div style="font-style:italic;font-size:9.5pt;background:#f8fafc;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;margin-bottom:3px">${esc(item.passage_text)}</div>` : ''}
+            <div style="font-size:10.5pt;line-height:1.25;margin-bottom:2px">
+              <b>${item.num}.</b> ${esc(item.q)}
+              <div style="padding-left:14px;display:flex;flex-wrap:wrap;gap:18px;font-size:10pt">
+                ${item.opts.map(o => `<span><b>${o.letter}.</b> ${esc(o.text)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+
+          <p style="margin:6px 0 2px 0;font-size:10.5pt;font-family:'Times New Roman',serif;font-weight:bold">
+            Part II: Grammar & Reading. <span style="font-weight:normal;font-style:italic;font-size:10pt">Choose the best answer A, B, or C to complete the sentences.</span>
+          </p>
+
+          ${model.grammarItems.map(item => `
+            ${item.passage_title ? `<div style="font-weight:bold;font-style:italic;font-size:10pt;color:#1e293b;margin-top:3px">${esc(item.passage_title)}</div>` : ''}
+            ${item.passage_text ? `<div style="font-style:italic;font-size:9.5pt;background:#f8fafc;padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;margin-bottom:3px">${esc(item.passage_text)}</div>` : ''}
+            <div style="font-size:10.5pt;line-height:1.25;margin-bottom:2px">
+              <b>${item.num}.</b> ${esc(item.q)}
+              <div style="padding-left:14px;display:flex;flex-wrap:wrap;gap:18px;font-size:10pt">
+                ${item.opts.map(o => `<span><b>${o.letter}.</b> ${esc(o.text)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+
+          <div style="text-align:center;font-weight:bold;font-style:italic;font-size:9.5pt;color:#64748b;margin-top:8px">
+            --- HẾT ---
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FACE 2 PREVIEW: PHIẾU CHẤM TRẮC NGHIỆM 20 CÂU ── -->
+      <div id="view15mFace2" class="${qState.previewFace === 2 ? '' : 'hidden'}">
+        <div class="card p-24 text-center">
+          <div style="margin-bottom:12px;font-weight:700;color:var(--ink-soft)">
+            PHIẾU TRẢ LỜI TRẮC NGHIỆM 20 CÂU TIÊU CHUẨN (ĐÃ LOẠI BỎ CHỮ 8C, CHÈN TỰ ĐỘNG VÀO WORD KHI XUẤT BẢN)
+          </div>
+          ${window.ANSWER_SHEET_PNG_BASE64 ? `
+            <img src="${window.ANSWER_SHEET_PNG_BASE64}" style="max-width:700px;width:100%;height:auto;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow-sm);margin:0 auto" alt="Phiếu trắc nghiệm 20 câu"/>
+          ` : `
+            <div style="padding:60px 20px;border:2px dashed var(--line);border-radius:12px;color:var(--ink-soft)">
+              Phiếu trắc nghiệm 20 câu A4 tiêu chuẩn (Đã cấu hình chèn trực tiếp khi xuất file Word)
+            </div>
+          `}
+        </div>
+      </div>
+
+      <!-- ── FACE 3 PREVIEW: BẢNG ĐÁP ÁN RÚT GỌN ── -->
+      <div id="view15mFace3" class="${qState.previewFace === 3 ? '' : 'hidden'}">
+        <div class="exam-paper-15m" style="max-width:800px;margin:0 auto">
+          <div style="text-align:center;margin-bottom:14px">
+            <h3 style="color:#b91c1c;font-size:14pt;font-weight:bold;margin-bottom:4px">BẢNG ĐÁP ÁN ĐỀ KIỂM TRA 15 PHÚT (RÚT GỌN)</h3>
+            <div style="font-style:italic;font-size:10.5pt">
+              Môn: Tiếng Anh ${curGrade} • ${esc(m1.title)} • Năm học ${esc(qState.year)}<br/>
+              (Mỗi câu đúng 0.5 điểm • Thang điểm 10.0 • Dành cho Giáo viên chấm điểm)
+            </div>
+          </div>
+
+          <table class="table-short-ans">
+            <thead>
+              <tr>
+                <th style="width:14%">Câu</th>
+                <th style="color:#dc2626">Mã ${m1.code}</th>
+                <th style="color:#2563eb">Mã ${m2.code}</th>
+                <th style="width:14%">Câu</th>
+                <th style="color:#dc2626">Mã ${m1.code}</th>
+                <th style="color:#2563eb">Mã ${m2.code}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Array.from({ length: 10 }, (_, r) => {
+                const allAns1 = [...m1.vocabItems.map(x => x.ans), ...m1.grammarItems.map(x => x.ans)];
+                const allAns2 = [...m2.vocabItems.map(x => x.ans), ...m2.grammarItems.map(x => x.ans)];
+                return `
+                  <tr>
+                    <td><b>${r + 1}</b></td>
+                    <td style="color:#dc2626;font-weight:bold">${allAns1[r] || ''}</td>
+                    <td style="color:#2563eb;font-weight:bold">${allAns2[r] || ''}</td>
+                    <td><b>${r + 11}</b></td>
+                    <td style="color:#dc2626;font-weight:bold">${allAns1[r + 10] || ''}</td>
+                    <td style="color:#2563eb;font-weight:bold">${allAns2[r + 10] || ''}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+
+          <div style="margin-top:30px;text-align:right;padding-right:24px;font-size:11pt">
+            <b>GIÁO VIÊN BỘ MÔN</b><br/>
+            <span style="font-size:9.5pt;color:#64748b">(Ký và ghi rõ họ tên)</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  selectQuiz15mGrade(grade) {
+    this.state.quiz15m.grade = String(grade);
+    this.state.quiz15m.unitNum = 1;
+    this.state.quiz15m.code1 = grade + '01';
+    this.state.quiz15m.code2 = grade + '02';
+    this.renderPage();
+  },
+
+  selectQuiz15mUnit(unitNum) {
+    this.state.quiz15m.unitNum = Number(unitNum);
+    this.renderPage();
+  },
+
+  switchQuiz15mPreviewFace(faceNum) {
+    this.state.quiz15m.previewFace = faceNum;
+    this.renderPage();
+  },
+
+  switchQuiz15mCode(codeIdx) {
+    this.state.quiz15m.previewCodeIndex = codeIdx;
+    this.renderPage();
+  },
+
+  save15mSchoolConfig() {
+    const p = document.getElementById('cfg15mParent')?.value.trim().toUpperCase() || 'UBND XÃ ĐỒNG YÊN';
+    const s = document.getElementById('cfg15mSchool')?.value.trim().toUpperCase() || 'TRƯỜNG THCS ĐỒNG YÊN';
+    const y = document.getElementById('cfg15mYear')?.value.trim() || '2025 - 2026';
+
+    this.state.quiz15m.parent = p;
+    this.state.quiz15m.school = s;
+    this.state.quiz15m.year = y;
+
+    localStorage.setItem('cfg_parent_agency', p);
+    localStorage.setItem('cfg_school_name', s);
+    localStorage.setItem('cfg_school_year', y);
+    UI.toast(`Đã lưu thông tin: ${s}`, 'success');
+    this.renderPage();
+  },
+
+  export15mWord(type = 1) {
+    const qState = this.state.quiz15m;
+    const curGrade = qState.grade;
+    const curUnit = qState.unitNum;
+    const school = qState.school;
+    const year = qState.year;
+
+    const m1 = this.build15mQuizModel(curGrade, curUnit, qState.code1, qState.seed1);
+    const m2 = this.build15mQuizModel(curGrade, curUnit, qState.code2, qState.seed2);
+
+    function buildWordExamPage(m) {
+      let vHtml = '';
+      m.vocabItems.forEach(item => {
+        const opts = item.opts.map(o => `<b>${o.letter}.</b> ${o.text}`).join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        let passHtml = '';
+        if (item.passage_title) passHtml += `<p style="margin:1pt 0 0 0;line-height:11pt;font-size:10pt;font-family:'Times New Roman';font-weight:bold;font-style:italic">${item.passage_title}</p>`;
+        if (item.passage_text) passHtml += `<p style="margin:0 0 1pt 0;line-height:11pt;font-size:9.5pt;font-family:'Times New Roman';font-style:italic">${item.passage_text}</p>`;
+        vHtml += `
+          ${passHtml}
+          <p style="margin:0;padding:0;line-height:12pt;font-size:10.5pt;font-family:'Times New Roman'"><b>${item.num}.</b> ${item.q}</p>
+          <p style="margin:0 0 1.5pt 14pt;padding:0;line-height:11pt;font-size:10pt;font-family:'Times New Roman'">${opts}</p>
+        `;
+      });
+
+      let gHtml = '';
+      m.grammarItems.forEach(item => {
+        const opts = item.opts.map(o => `<b>${o.letter}.</b> ${o.text}`).join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        let passHtml = '';
+        if (item.passage_title) passHtml += `<p style="margin:1pt 0 0 0;line-height:11pt;font-size:10pt;font-family:'Times New Roman';font-weight:bold;font-style:italic">${item.passage_title}</p>`;
+        if (item.passage_text) passHtml += `<p style="margin:0 0 1pt 0;line-height:11pt;font-size:9.5pt;font-family:'Times New Roman';font-style:italic">${item.passage_text}</p>`;
+        gHtml += `
+          ${passHtml}
+          <p style="margin:0;padding:0;line-height:12pt;font-size:10.5pt;font-family:'Times New Roman'"><b>${item.num}.</b> ${item.q}</p>
+          <p style="margin:0 0 1.5pt 14pt;padding:0;line-height:11pt;font-size:10pt;font-family:'Times New Roman'">${opts}</p>
+        `;
+      });
+
+      return `
+        <table style="width:100%;border:none;margin-bottom:2pt;font-family:'Times New Roman';font-size:10.5pt">
+          <tr>
+            <td style="width:50%;vertical-align:top;border:none">
+              <b>${school.toUpperCase()}</b><br/>
+              Họ và tên: ....................................................<br/>
+              Lớp: ${m.grade}A.....
+            </td>
+            <td style="width:50%;vertical-align:top;text-align:center;border:none">
+              <b style="font-size:11pt">BÀI KIỂM TRA 15 PHÚT</b><br/>
+              <i>Môn: Tiếng Anh ${m.grade} • ${m.title}</i><br/>
+              <b style="color:#b91c1c;font-size:11pt">Mã đề: ${m.code}</b>
+            </td>
+          </tr>
+        </table>
+        <hr style="border:none;border-top:0.75pt solid #000;margin:1pt 0 3pt 0"/>
+        <p style="margin:1pt 0 1pt 0;font-size:10.5pt;font-family:'Times New Roman';font-weight:bold">Part I: Vocabulary & Communication. <span style="font-weight:normal;font-style:italic;font-size:10pt">Choose the best answer A, B, or C to complete the sentences.</span></p>
+        ${vHtml}
+        <p style="margin:1.5pt 0 1pt 0;font-size:10.5pt;font-family:'Times New Roman';font-weight:bold">Part II: Grammar & Reading. <span style="font-weight:normal;font-style:italic;font-size:10pt">Choose the best answer A, B, or C to complete the sentences.</span></p>
+        ${gHtml}
+        <p style="text-align:center;font-weight:bold;font-style:italic;margin-top:2pt;font-size:9.5pt;font-family:'Times New Roman';color:#475569">--- HẾT ---</p>
+      `;
+    }
+
+    function buildWordShortAns(model1, model2) {
+      const allAns1 = [...model1.vocabItems.map(x => x.ans), ...model1.grammarItems.map(x => x.ans)];
+      const allAns2 = model2 ? [...model2.vocabItems.map(x => x.ans), ...model2.grammarItems.map(x => x.ans)] : [];
+
+      let rows = '';
+      for (let r = 0; r < 10; r++) {
+        rows += `
+          <tr>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:2px">${r + 1}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;color:red;padding:2px">${allAns1[r] || ''}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;color:blue;padding:2px">${allAns2[r] || ''}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:2px">${r + 11}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;color:red;padding:2px">${allAns1[r + 10] || ''}</td>
+            <td style="border:1px solid #000;text-align:center;font-weight:bold;color:blue;padding:2px">${allAns2[r + 10] || ''}</td>
+          </tr>
+        `;
+      }
+
+      return `
+        <p style="text-align:center;font-weight:bold;font-size:13pt;color:#b91c1c;margin:4pt 0 1pt 0;font-family:'Times New Roman'">BẢNG ĐÁP ÁN ĐỀ KIỂM TRA 15 PHÚT (RÚT GỌN)</p>
+        <p style="text-align:center;font-style:italic;font-size:10.5pt;margin:0 0 6pt 0;font-family:'Times New Roman'">
+          Môn: Tiếng Anh ${model1.grade} • ${model1.title} • Năm học ${year}<br/>
+          (Mỗi câu đúng 0.5 điểm • Thang điểm 10.0 • Dành cho Giáo viên chấm điểm)
+        </p>
+        <table style="width:100%;border-collapse:collapse;margin-top:4pt;font-size:10.5pt;font-family:'Times New Roman'">
+          <tr style="background-color:#f1f5f9;text-align:center;font-weight:bold">
+            <th style="border:1px solid #000;padding:3px;width:14%">Câu</th>
+            <th style="border:1px solid #000;padding:3px;color:red">Mã ${model1.code}</th>
+            <th style="border:1px solid #000;padding:3px;color:blue">Mã ${model2 ? model2.code : ''}</th>
+            <th style="border:1px solid #000;padding:3px;width:14%">Câu</th>
+            <th style="border:1px solid #000;padding:3px;color:red">Mã ${model1.code}</th>
+            <th style="border:1px solid #000;padding:3px;color:blue">Mã ${model2 ? model2.code : ''}</th>
+          </tr>
+          ${rows}
+        </table>
+        <div style="margin-top:25pt;text-align:right;padding-right:20pt;font-size:10.5pt;font-family:'Times New Roman'">
+          <b>GIÁO VIÊN BỘ MÔN</b><br/>
+          <span style="font-size:9pt;color:#64748b">(Ký và ghi rõ họ tên)</span>
+        </div>
+      `;
+    }
+
+    const imgTag = window.ANSWER_SHEET_PNG_BASE64 ?
+      `<img src="${window.ANSWER_SHEET_PNG_BASE64}" style="width:100%;max-width:680px;height:auto;margin:0 auto;display:block" />` :
+      `<p style="text-align:center;font-weight:bold;margin-top:100px">[PHIẾU TRẢ LỜI TRẮC NGHIỆM 20 CÂU]</p>`;
+
+    let fullBody = '';
+    let fileName = '';
+
+    if (type === 'full') {
+      // Chuẩn 5 Trang in ấn A4
+      fullBody = `
+        <!-- TRANG 1: ĐỀ MÃ 1 -->
+        ${buildWordExamPage(m1)}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 2: PHIẾU CHẤM MÃ 1 -->
+        ${imgTag}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 3: ĐỀ MÃ 2 -->
+        ${buildWordExamPage(m2)}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 4: PHIẾU CHẤM MÃ 2 -->
+        ${imgTag}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 5: ĐÁP ÁN RÚT GỌN ĐỐI CHIẾU 2 MÃ ĐỀ -->
+        ${buildWordShortAns(m1, m2)}
+      `;
+      fileName = `De_15P_Anh_${curGrade}_Unit_${curUnit}_Tron_Bo_5_Trang_Ma_${m1.code}_${m2.code}.doc`;
+    } else {
+      // Chuẩn 3 Trang đơn lẻ
+      fullBody = `
+        <!-- TRANG 1: ĐỀ MÃ 1 -->
+        ${buildWordExamPage(m1)}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 2: PHIẾU CHẤM -->
+        ${imgTag}
+        <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
+        <!-- TRANG 3: ĐÁP ÁN RÚT GỌN -->
+        ${buildWordShortAns(m1, null)}
+      `;
+      fileName = `De_15P_Anh_${curGrade}_Unit_${curUnit}_Ma_${m1.code}.doc`;
+    }
+
+    const docHtml = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head><meta charset='utf-8'><title>${fileName}</title>
+      <style>
+        @page { size: 21.0cm 29.7cm; margin: 0.6cm 1.2cm 0.6cm 1.2cm; mso-page-orientation: portrait; }
+        body { font-family: 'Times New Roman', serif; font-size: 10.5pt; line-height: 1.15; color: #000; margin: 0; padding: 0; }
+        p { margin: 0; padding: 0; line-height: 1.15; }
+      </style>
+      </head>
+      <body>
+        ${fullBody}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
+    UI.toast(`📥 Đã tải xuống file Word: ${fileName}`, 'success');
+  },
+
+  share15mZalo() {
+    const q = this.state.quiz15m;
+    const url = `${window.location.origin}${window.location.pathname}?mode=student15m&grade=${q.grade}&unit=${q.unitNum}`;
+    const text = `Kính gửi Quý Phụ huynh và các em Học sinh lớp ${q.grade}!\nThầy Đinh Văn Thành gửi link làm Bài Kiểm Tra 15 Phút Tiếng Anh (Unit ${q.unitNum}) trực tiếp trên điện thoại:\n👉 ${url}\nCác em làm xong nộp bài sẽ có điểm ngay!`;
+
+    navigator.clipboard?.writeText(text).then(() => {
+      UI.toast(' Đã sao chép nội dung & link bài thi Zalo!', 'success');
+      window.open(`https://zalo.me/share?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+    }).catch(() => {
+      prompt('Sao chép link làm bài thi 15 phút:', url);
+    });
+  },
+
+  // ================================================================
+  // ── MÔ-ĐUN 2: BỘ ĐỀ THI CHUẨN ĐỊNH KỲ (GK, CK, KSCL - CV 7991) ──
+  // ================================================================
+  renderOfficialExams() {
+    const oPaths = {
+      '6': {
+        'GK1': { f: 'GK1 - Anh 6.docx', p: 'exams_docx/Tieng_Anh_6/Giua_Ky_1/GK1 - Anh 6.docx', t: 'Unit 1: My New School, Unit 2: My House, Unit 3: My Friends', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['Thì hiện tại đơn', 'Tính từ miêu tả', 'Giới từ chỉ vị trí', 'Phát âm /s/, /z/'] },
+        'CK1': { f: 'CK1 - Anh 6.docx', p: 'exams_docx/Tieng_Anh_6/Cuoi_Ky_1/CK1 - Anh 6.docx', t: 'Unit 1 đến Unit 6 (Tet holiday, Natural Wonders, Neighbourhood)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Picture Talk (1.0đ) + About You (1.0đ) kèm Examiner Script.', pills: ['So sánh hơn', 'should/shouldn\'t', 'must/mustn\'t', 'Countable/Uncountable'] },
+        'GK2': { f: 'GK2 - Anh 6.docx', p: 'exams_docx/Tieng_Anh_6/Giua_Ky_2/GK2 - Anh 6.docx', t: 'Unit 7: Television, Unit 8: Sports and Games, Unit 9: Cities of the World', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['Quá khứ đơn', 'Liên từ and/but/so/because', 'So sánh nhất', 'Đại từ sở hữu'] },
+        'CK2': { f: 'CK2 - Anh 6.docx', p: 'exams_docx/Tieng_Anh_6/Cuoi_Ky_2/CK2 - Anh 6.docx', t: 'Unit 7 đến Unit 12 (Future Houses, 3Rs Environment, Smart Robots)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Picture Talk (1.0đ) + About You (1.0đ) kèm Examiner Script.', pills: ['Câu điều kiện loại 1', 'will/won\'t & might', 'will be able to', 'Quy tắc 3Rs'] },
+        'KSCL': { f: 'KSCL - Anh 6.docx', p: 'exams_docx/Tieng_Anh_6/Khao_Sat_Dau_Nam/KSCL - Anh 6.docx', t: 'Khảo sát chất lượng đầu năm / Ôn tập tổng hợp Tiếng Anh 6', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking.', pills: ['Tổng hợp ngữ âm', 'Từ vựng cơ bản', 'Ngữ pháp then chốt', 'Đọc hiểu & Viết đoạn'] },
+        'DECUONG': { f: 'De_Cuong_On_Tap_Anh_6.docx', p: 'exams_docx/Tieng_Anh_6/De_Cuong_On_Tap_Anh_6.docx', t: 'Đề cương ôn tập trọng tâm 6 trang (Mục tiêu 6.0+ điểm)', s: 'Ngữ âm, Từ vựng, 30 câu ngữ pháp, 2 bài đọc, 10 câu viết lại, 3 bài văn mẫu.', spk: '📖 Tài liệu ôn tập tự học chuẩn ma trận đạt điểm 6.0+.', pills: ['6 Trang chuẩn A4', 'Quy tắc phát âm -s/ed', 'Công thức thì & so sánh', 'Mẹo tìm keyword'] }
+      },
+      '7': {
+        'GK1': { f: 'GK1 - Anh 7.docx', p: 'exams_docx/Tieng_Anh_7/Giua_Ky_1/GK1 - Anh 7.docx', t: 'Unit 1: Hobbies, Unit 2: Healthy Living, Unit 3: Community Service', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['like/enjoy + V-ing', 'Hiện tại & Quá khứ đơn', 'Từ vựng sức khỏe', 'Phát âm /s/, /z/, /t/, /d/'] },
+        'CK1': { f: 'CK1 - Anh 7.docx', p: 'exams_docx/Tieng_Anh_7/Cuoi_Ky_1/CK1 - Anh 7.docx', t: 'Unit 1 đến Unit 6 (Music & Arts, Food & Drink, School)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Describe a Picture + Personal Topic kèm Examiner Script.', pills: ['as...as, the same as', 'some/any, how much/many', 'Music & Food'] },
+        'GK2': { f: 'GK2 - Anh 7.docx', p: 'exams_docx/Tieng_Anh_7/Giua_Ky_2/GK2 - Anh 7.docx', t: 'Unit 7: Traffic, Unit 8: Films, Unit 9: Festivals around the World', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['It indicates distance', 'used to + V', 'although/despite/however', 'Traffic & Film'] },
+        'CK2': { f: 'CK2 - Anh 7.docx', p: 'exams_docx/Tieng_Anh_7/Cuoi_Ky_2/CK2 - Anh 7.docx', t: 'Unit 7 đến Unit 12 (Energy sources, Travelling in future, English countries)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Describe a Picture + Personal Topic kèm Examiner Script.', pills: ['Future continuous', 'Possessive pronouns', 'Solar/Wind energy', 'Future vehicles'] },
+        'KSCL': { f: 'KSCL - Anh 7.docx', p: 'exams_docx/Tieng_Anh_7/Khao_Sat_Dau_Nam/KSCL - Anh 7.docx', t: 'Khảo sát chất lượng đầu năm / Ôn tập tổng hợp Tiếng Anh 7', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking.', pills: ['Tổng hợp ngữ âm', 'Từ vựng lớp 7', 'Cấu trúc so sánh & liên từ', 'Đọc hiểu & Viết đoạn'] },
+        'DECUONG': { f: 'De_Cuong_On_Tap_Anh_7.docx', p: 'exams_docx/Tieng_Anh_7/De_Cuong_On_Tap_Anh_7.docx', t: 'Đề cương ôn tập trọng tâm 6 trang (Mục tiêu 6.0+ điểm)', s: 'Ngữ âm, Từ vựng, 30 câu ngữ pháp, 2 bài đọc, 10 câu viết lại, 3 bài văn mẫu.', spk: '📖 Tài liệu ôn tập tự học chuẩn ma trận đạt điểm 6.0+.', pills: ['6 Trang chuẩn A4', 'Quy tắc phát âm', 'used to & although', 'Mẹo tìm keyword'] }
+      },
+      '8': {
+        'GK1': { f: 'GK1 - Anh 8.docx', p: 'exams_docx/Tieng_Anh_8/Giua_Ky_1/GK1 - Anh 8.docx', t: 'Unit 1: Leisure Time, Unit 2: Life in Countryside, Unit 3: Teenagers', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['Verbs of liking/disliking', 'Comparative adverbs', 'Compound sentences', 'Teenagers'] },
+        'CK1': { f: 'CK1 - Anh 8.docx', p: 'exams_docx/Tieng_Anh_8/Cuoi_Ky_1/CK1 - Anh 8.docx', t: 'Unit 1 đến Unit 6 (Ethnic groups, Customs & Traditions, Lifestyles)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Short Topic Talk + Choose & Say Why kèm Examiner Script.', pills: ['Articles (a/an/the)', 'Wh-questions', 'should/have to', 'Customs'] },
+        'GK2': { f: 'GK2 - Anh 8.docx', p: 'exams_docx/Tieng_Anh_8/Giua_Ky_2/GK2 - Anh 8.docx', t: 'Unit 7: Environment, Unit 8: Shopping, Unit 9: Natural Disasters', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['Complex sentences', 'Adverbs of frequency', 'Past continuous', 'Disasters'] },
+        'CK2': { f: 'CK2 - Anh 8.docx', p: 'exams_docx/Tieng_Anh_8/Cuoi_Ky_2/CK2 - Anh 8.docx', t: 'Unit 7 đến Unit 12 (Communication, Science & Tech, Planets)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Short Topic Talk + Choose & Say Why kèm Examiner Script.', pills: ['Reported speech', 'May/might for possibility', 'Prepositions', 'Space'] },
+        'KSCL': { f: 'KSCL - Anh 8.docx', p: 'exams_docx/Tieng_Anh_8/Khao_Sat_Dau_Nam/KSCL - Anh 8.docx', t: 'Khảo sát chất lượng đầu năm / Ôn tập tổng hợp Tiếng Anh 8', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking.', pills: ['Tổng hợp ngữ âm', 'Từ vựng lớp 8', 'Câu ghép & câu phức', 'Đọc hiểu & Viết đoạn'] },
+        'DECUONG': { f: 'De_Cuong_On_Tap_Anh_8.docx', p: 'exams_docx/Tieng_Anh_8/De_Cuong_On_Tap_Anh_8.docx', t: 'Đề cương ôn tập trọng tâm 6 trang (Mục tiêu 6.0+ điểm)', s: 'Ngữ âm, Từ vựng, 30 câu ngữ pháp, 2 bài đọc, 10 câu viết lại, 3 bài văn mẫu.', spk: '📖 Tài liệu ôn tập tự học chuẩn ma trận đạt điểm 6.0+.', pills: ['6 Trang chuẩn A4', 'Quy tắc phát âm & trọng âm', 'Câu điều kiện & gián tiếp', 'Mẹo keyword'] }
+      },
+      '9': {
+        'GK1': { f: 'GK1 - Anh 9.docx', p: 'exams_docx/Tieng_Anh_9/Giua_Ky_1/GK1 - Anh 9.docx', t: 'Unit 1: Local Community, Unit 2: City Life, Unit 3: Teens Health', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['Phrasal verbs', 'Comparison of adjectives/adverbs', 'Wh-word + to-inf', 'Modal reported'] },
+        'CK1': { f: 'CK1 - Anh 9.docx', p: 'exams_docx/Tieng_Anh_9/Cuoi_Ky_1/CK1 - Anh 9.docx', t: 'Unit 1 đến Unit 6 (Past memories, Wonders of VN, English in world)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Photo Talk + Compare & Choose kèm Examiner Script.', pills: ['Past continuous vs Past simple', 'Wish + Past simple', 'Impersonal passive', 'Relative clauses'] },
+        'GK2': { f: 'GK2 - Anh 9.docx', p: 'exams_docx/Tieng_Anh_9/Giua_Ky_2/GK2 - Anh 9.docx', t: 'Unit 7: Natural World, Unit 8: Tourism, Unit 9: World Englishes', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking ở bài thi Giữa kỳ.', pills: ['Conditional Type 2', 'Relative pronouns', 'Compound nouns', 'Tourism'] },
+        'CK2': { f: 'CK2 - Anh 9.docx', p: 'exams_docx/Tieng_Anh_9/Cuoi_Ky_2/CK2 - Anh 9.docx', t: 'Unit 7 đến Unit 12 (Space Exploration, Society Roles, Careers)', s: 'Đề viết 8.0đ + Bài thi Nói Speaking 2.0đ = 10.0đ.', spk: '🎤 Có Speaking 2.0đ: Photo Talk + Compare & Choose kèm Examiner Script.', pills: ['Past perfect', 'Relative clauses', 'Future passive', 'Careers'] },
+        'KSCL': { f: 'KSCL - Anh 9.docx', p: 'exams_docx/Tieng_Anh_9/Khao_Sat_Dau_Nam/KSCL - Anh 9.docx', t: 'Khảo sát chất lượng đầu năm / Ôn tập tổng hợp Tiếng Anh 9', s: '100% Đề thi Viết (10.0 điểm). 36 câu TNKQ + 1 câu Viết.', spk: '❌ Không có Speaking.', pills: ['Tổng hợp ngữ âm & trọng âm', 'Từ vựng lớp 9', 'Mệnh đề quan hệ & điều kiện', 'Đọc hiểu & Viết luận'] },
+        'DECUONG': { f: 'De_Cuong_On_Tap_Anh_9.docx', p: 'exams_docx/Tieng_Anh_9/De_Cuong_On_Tap_Anh_9.docx', t: 'Đề cương ôn tập trọng tâm 6 trang (Mục tiêu 6.0+ điểm)', s: 'Ngữ âm, Từ vựng, 30 câu ngữ pháp, 2 bài đọc, 10 câu viết lại, 3 bài văn mẫu.', spk: '📖 Tài liệu ôn tập tự học chuẩn ma trận đạt điểm 6.0+.', pills: ['6 Trang chuẩn A4', 'Quy tắc phát âm & trọng âm', 'Câu ước Wish & Bị động', 'Mẹo keyword'] }
+      }
+    };
+
+    const oState = this.state.officialExams;
+    const curG = oState.grade;
+    const curT = oState.term;
+    const item = (oPaths[curG] && oPaths[curG][curT]) || oPaths['6']['GK1'];
+
+    return `
+    <div class="page-body slide-up" style="max-width:1200px;margin:0 auto">
+      <!-- Stats Summary Bar -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-bottom:20px">
+        <div class="card p-16" style="display:flex;align-items:center;gap:14px;border-left:4px solid #2563eb">
+          <div style="font-size:28px">📚</div>
+          <div><div style="font-size:16px;font-weight:900;color:#1e3a8a">20 Bộ Đề Chuẩn</div><div style="font-size:12px;color:var(--ink-soft)">Khối 6, 7, 8, 9 (GK, CK, KSCL)</div></div>
+        </div>
+        <div class="card p-16" style="display:flex;align-items:center;gap:14px;border-left:4px solid #0d9488">
+          <div style="font-size:28px">📋</div>
+          <div><div style="font-size:16px;font-weight:900;color:#0f766e">40 Mã Đề Hoán Vị</div><div style="font-size:12px;color:var(--ink-soft)">02 mã đề tương đương / bộ</div></div>
+        </div>
+        <div class="card p-16" style="display:flex;align-items:center;gap:14px;border-left:4px solid #d97706">
+          <div style="font-size:28px">🏛️</div>
+          <div><div style="font-size:16px;font-weight:900;color:#b45309">Chuẩn CV 7991/BGDĐT</div><div style="font-size:12px;color:var(--ink-soft)">Năm học 2026 - 2027</div></div>
+        </div>
+        <div class="card p-16" style="display:flex;align-items:center;gap:14px;border-left:4px solid #7c3aed">
+          <div style="font-size:28px">🎓</div>
+          <div><div style="font-size:16px;font-weight:900;color:#6d28d9">04 Đề Cương 6 Trang</div><div style="font-size:12px;color:var(--ink-soft)">Mục tiêu vững chắc 6.0+ điểm</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:20px">
+        <!-- Left: Grade & Term Selector -->
+        <div class="card p-24">
+          <div class="section-title mb-16">BƯỚC 1: CHỌN KHỐI LỚP & KỲ KIỂM TRA</div>
+
+          <!-- School config box -->
+          <div style="background:#f1f5f9;padding:12px 16px;border-radius:12px;border:1px dashed #cbd5e1;margin-bottom:20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:13px;font-weight:700;color:#1e293b">🏫 Thông Tin Đơn Vị & Trường Học:</span>
+              <button onclick="App.saveOfficialSchoolConfig()" class="btn btn-primary" style="padding:3px 10px;font-size:11px">Lưu</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <input type="text" id="cfgOfficialParent" value="${esc(oState.parent)}" class="input" style="font-size:12px;font-weight:600" placeholder="UBND XÃ ĐỒNG YÊN"/>
+              <input type="text" id="cfgOfficialSchool" value="${esc(oState.school)}" class="input" style="font-size:12px;font-weight:600" placeholder="TRƯỜNG THCS ĐỒNG YÊN"/>
+            </div>
+          </div>
+
+          <!-- Grade Selector -->
+          <div style="margin-bottom:20px">
+            <label class="label" style="font-weight:700">1. CHỌN KHỐI LỚP THCS:</label>
+            <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px">
+              ${['6', '7', '8', '9'].map(g => `
+                <button onclick="App.selectOfficialGrade('${g}')" class="btn ${curG === g ? 'btn-primary' : 'btn-outline'}" style="padding:14px 10px;display:flex;flex-direction:column;align-items:center;border-radius:12px">
+                  <span style="font-size:22px;font-weight:900">${g}</span>
+                  <span style="font-size:11px;font-weight:700;opacity:0.8">LỚP ${g}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Exam Term Cards -->
+          <div>
+            <label class="label" style="font-weight:700">2. CHỌN KỲ KIỂM TRA / TÀI LIỆU:</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              ${[
+                ['GK1', 'Giữa Học kỳ I', '10.0đ Viết', 'Units 1-3. Đề viết 10.0 điểm, không thi Nói.'],
+                ['CK1', 'Cuối Học kỳ I', '8.0đ + 2.0đ Nói', 'Units 1-6. Đề viết 8.0đ + Bài thi Speaking 2.0đ.'],
+                ['GK2', 'Giữa Học kỳ II', '10.0đ Viết', 'Units 7-9. Đề viết 10.0 điểm, không thi Nói.'],
+                ['CK2', 'Cuối Học kỳ II', '8.0đ + 2.0đ Nói', 'Units 7-12. Đề viết 8.0đ + Bài thi Speaking 2.0đ.'],
+                ['KSCL', 'Khảo sát đầu năm', 'Tổng hợp 10đ', 'Đánh giá năng lực tổng hợp đầu năm học.'],
+                ['DECUONG', 'Đề Cương Ôn Tập', '6 Trang ~ 6.0đ', 'Bộ tài liệu ôn tập cốt lõi 6 trang bám sát ma trận.']
+              ].map(([tKey, tName, tTag, tDesc]) => `
+                <div onclick="App.selectOfficialTerm('${tKey}')" class="official-exam-card ${curT === tKey ? 'active' : ''}">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <strong style="font-size:14px;color:#1e293b">${tName}</strong>
+                    <span class="badge" style="background:#e0f2fe;color:#0369a1;font-size:10.5px">${tTag}</span>
+                  </div>
+                  <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.4">${tDesc}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Download Action Button -->
+          <div style="margin-top:24px">
+            <a href="${item.p}" download="${item.f}" class="btn btn-primary" style="width:100%;padding:14px 20px;font-size:15px;font-weight:900;justify-content:center;display:flex;align-items:center;gap:10px;text-decoration:none">
+              📥 TẢI VỀ FILE WORD GỐC (.DOCX): ${item.f}
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Specification Box -->
+        <div class="card p-24" style="background:#ffffff">
+          <div class="section-title mb-16">BƯỚC 2: THÔNG TIN CHI TIẾT & BẢN ĐẶC TẢ</div>
+          
+          <div class="spec-box mb-12">
+            <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase">Tên File Word Xuất Bản</div>
+            <div style="font-size:15px;font-weight:800;color:#2563eb;margin-top:2px">${item.f}</div>
+          </div>
+
+          <div class="spec-box mb-12">
+            <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase">Phạm Vi Bài Học (SGK Global Success)</div>
+            <div style="font-size:13.5px;font-weight:700;color:#1e293b;margin-top:2px">${item.t}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+              ${item.pills.map(p => `<span class="badge" style="background:#f1f5f9;color:#334155;font-size:11px">${p}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="spec-box mb-12">
+            <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase">Cấu Trúc Đề & Thang Điểm</div>
+            <div style="font-size:13.5px;font-weight:700;color:#1e293b;margin-top:2px">${item.s}</div>
+          </div>
+
+          <div class="spec-box mb-12">
+            <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase">Phần Thi Nói (Speaking Test)</div>
+            <div style="font-size:13.5px;font-weight:700;color:#1e293b;margin-top:2px">${item.spk}</div>
+          </div>
+
+          <div class="spec-box">
+            <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase">Bảo Chứng Quy Chuẩn Khảo Thí</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+              <span class="badge" style="background:#eff6ff;color:#1d4ed8">Times New Roman 13pt</span>
+              <span class="badge" style="background:#eff6ff;color:#1d4ed8">Bảng Auto fit to window</span>
+              <span class="badge" style="background:#eff6ff;color:#1d4ed8">02 Mã đề tương đương</span>
+              <span class="badge" style="background:#eff6ff;color:#1d4ed8">Năm học 2026 - 2027</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  selectOfficialGrade(grade) {
+    this.state.officialExams.grade = String(grade);
+    this.renderPage();
+  },
+
+  selectOfficialTerm(term) {
+    this.state.officialExams.term = term;
+    this.renderPage();
+  },
+
+  saveOfficialSchoolConfig() {
+    const p = document.getElementById('cfgOfficialParent')?.value.trim().toUpperCase() || 'UBND XÃ ĐỒNG YÊN';
+    const s = document.getElementById('cfgOfficialSchool')?.value.trim().toUpperCase() || 'TRƯỜNG THCS ĐỒNG YÊN';
+
+    this.state.officialExams.parent = p;
+    this.state.officialExams.school = s;
+    localStorage.setItem('cfg_parent_agency', p);
+    localStorage.setItem('cfg_school_name', s);
+    UI.toast(`Đã lưu cấu hình trường: ${s}`, 'success');
+    this.renderPage();
+  },
+
+  // ================================================================
+  // ── MÔ-ĐUN 3: PHÒNG LUYỆN ĐỀ 15 PHÚT TRỰC TUYẾN CHO HỌC SINH ──
+  // ================================================================
+  renderStudent15mPractice() {
+    const st = this.state.student15m;
+    const curG = st.grade;
+    const curU = st.unitNum;
+    const gData = (window.QUIZ_15M_DATA && window.QUIZ_15M_DATA[curG]) || {};
+    const uInfo = gData[curU] || { title: `Unit ${curU}`, sub: '' };
+
+    if (!st.model) {
+      st.model = this.build15mQuizModel(curG, curU, curG + '01', 42);
+    }
+    const model = st.model;
+
+    // View 1: Chưa bắt đầu
+    if (!st.started && !st.submitted) {
+      return `
+      <div class="page-body slide-up" style="max-width:850px;margin:0 auto">
+        <!-- Grade selection -->
+        <div class="card p-16 mb-16 text-center">
+          <div style="font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:10px">1. CHỌN KHỐI LỚP CỦA EM:</div>
+          <div style="display:flex;justify-content:center;gap:10px">
+            ${['6', '7', '8', '9'].map(g => `
+              <button onclick="App.selectStudent15mGrade('${g}')" class="btn ${curG === g ? 'btn-primary' : 'btn-outline'}" style="font-weight:800;padding:8px 18px">
+                Lớp ${g}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 12 Units grid -->
+        <div class="card p-20 mb-20">
+          <div style="font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:12px">2. CHỌN BÀI HỌC (UNIT):</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:10px">
+            ${Array.from({ length: 12 }, (_, i) => i + 1).map(u => {
+              const uData = gData[u] || {};
+              const title = uData.title || `Unit ${u}`;
+              const isAct = curU === u;
+              return `
+                <div onclick="App.selectStudent15mUnit(${u})" style="cursor:pointer;padding:12px 14px;border-radius:12px;border:2px solid ${isAct ? '#2563eb' : 'var(--line)'};background:${isAct ? '#eff6ff' : '#fff'};transition:all .2s">
+                  <div style="font-weight:800;font-size:13.5px;color:${isAct ? '#1d4ed8' : '#1e293b'}">${title}</div>
+                  <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">${uData.sub ? uData.sub.slice(0, 35) + '...' : '20 câu trắc nghiệm'}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Start card -->
+        <div class="card p-28 text-center" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #2563eb">
+          <div style="font-size:42px;margin-bottom:8px">⚡</div>
+          <h2 style="font-size:22px;font-weight:900;color:#1e3a8a;margin-bottom:6px">
+            Bài Kiểm Tra 15 Phút: ${esc(uInfo.title)}
+          </h2>
+          <p style="font-size:14px;color:#1e40af;max-width:540px;margin:0 auto 20px">
+            Gồm 20 câu hỏi trắc nghiệm (10 câu Từ vựng & Giao tiếp + 10 câu Ngữ pháp & Đọc hiểu). Thời gian làm bài: 15 phút.
+          </p>
+          <button onclick="App.startStudent15m()" class="btn btn-primary" style="padding:14px 36px;font-size:16px;font-weight:900;box-shadow:var(--shadow-md)">
+            🚀 BẮT ĐẦU LÀM BÀI NGAY
+          </button>
+        </div>
+      </div>`;
+    }
+
+    // View 2: Kết quả sau khi nộp bài
+    if (st.submitted) {
+      const allQuestions = [...model.vocabItems, ...model.grammarItems];
+      let correctCount = 0;
+      allQuestions.forEach(q => {
+        if (st.answers[q.num] === q.ans) correctCount++;
+      });
+      const score = ((correctCount / allQuestions.length) * 10).toFixed(1);
+
+      let badgeColor = '#10b981';
+      let rankText = '🌟 XUẤT SẮC!';
+      if (score < 5.0) { badgeColor = '#ef4444'; rankText = ' CẦN ÔN TẬP THÊM!'; }
+      else if (score < 8.0) { badgeColor = '#f59e0b'; rankText = '👍 KHÁ TỐT!'; }
+
+      return `
+      <div class="page-body slide-up" style="max-width:850px;margin:0 auto">
+        <div class="card p-28 text-center mb-20" style="background:#fff;border-top:6px solid ${badgeColor}">
+          <div style="font-size:48px;margin-bottom:6px">${score >= 8 ? '🎉' : '📖'}</div>
+          <h2 style="font-size:24px;font-weight:900;color:#1e293b;margin-bottom:4px">KẾT QUẢ BÀI THI 15 PHÚT</h2>
+          <div style="font-size:14px;color:var(--ink-soft);margin-bottom:14px">${esc(model.title)} – Tiếng Anh ${curG}</div>
+
+          <div style="display:inline-block;padding:12px 30px;border-radius:20px;background:${badgeColor}15;border:2px solid ${badgeColor};margin-bottom:14px">
+            <span style="font-size:36px;font-weight:900;color:${badgeColor}">${score}</span>
+            <span style="font-size:18px;font-weight:700;color:var(--ink-soft)"> / 10.0 Điểm</span>
+          </div>
+
+          <div style="font-size:16px;font-weight:800;color:${badgeColor};margin-bottom:16px">${rankText} (Đúng ${correctCount}/20 câu)</div>
+
+          <div style="display:flex;justify-content:center;gap:12px">
+            <button onclick="App.startStudent15m()" class="btn btn-primary">🔄 Làm lại bài này</button>
+            <button onclick="App.resetStudent15m()" class="btn btn-outline">📚 Chọn bài khác</button>
+          </div>
+        </div>
+
+        <!-- Chi tiết từng câu và lời giải sư phạm của Thầy Thành -->
+        <div class="section-title mb-14">GIẢI THÍCH CHI TIẾT TỪ THẦY ĐINH VĂN THÀNH:</div>
+        <div class="stack gap-12">
+          ${allQuestions.map(q => {
+            const userAns = st.answers[q.num];
+            const isCorrect = userAns === q.ans;
+            return `
+              <div class="card p-18" style="border-left:4px solid ${isCorrect ? '#10b981' : '#ef4444'}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                  <strong>Câu ${q.num}:</strong>
+                  <span class="badge" style="background:${isCorrect ? '#dcfce7' : '#fee2e2'};color:${isCorrect ? '#15803d' : '#b91c1c'};font-weight:800">
+                    ${isCorrect ? '✓ Đúng (+0.5đ)' : `✗ Sai (Đáp án: ${q.ans})`}
+                  </span>
+                </div>
+                <div style="font-size:14px;margin-bottom:8px">${esc(q.q)}</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px;margin-bottom:10px">
+                  ${q.opts.map(o => `
+                    <div style="padding:6px 10px;border-radius:8px;background:${o.letter === q.ans ? '#dcfce7' : (o.letter === userAns ? '#fee2e2' : '#f8fafc')};border:1px solid ${o.letter === q.ans ? '#86efac' : '#e2e8f0'}">
+                      <b>${o.letter}.</b> ${esc(o.text)} ${o.letter === q.ans ? '✓' : ''}
+                    </div>
+                  `).join('')}
+                </div>
+                ${q.exp ? `
+                  <div style="background:#eff6ff;padding:10px 14px;border-radius:8px;border:1px dashed #93c5fd;font-size:12.5px;color:#1e40af">
+                    💡 <b>Giải thích:</b> ${esc(q.exp)}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    // View 3: Đang làm bài thi (Interactive Test)
+    const allQuestions = [...model.vocabItems, ...model.grammarItems];
+    const answeredCount = Object.keys(st.answers).length;
+    const mins = Math.floor(st.timeRemaining / 60);
+    const secs = st.timeRemaining % 60;
+    const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    return `
+    <div class="page-body slide-up" style="max-width:850px;margin:0 auto">
+      <!-- Fixed floating status bar -->
+      <div class="card p-14 mb-16 sticky top-0 z-40" style="background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-md)">
+        <div>
+          <strong style="font-size:15px;color:#1e3a8a">${esc(model.title)}</strong>
+          <div style="font-size:12px;color:var(--ink-soft)">Đã làm: ${answeredCount}/20 câu</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-size:18px;font-weight:900;color:${st.timeRemaining < 120 ? '#ef4444' : '#2563eb'};background:#f1f5f9;padding:6px 14px;border-radius:10px">
+            ⏱️ ${timeStr}
+          </div>
+          <button onclick="App.submitStudent15m()" class="btn btn-success" style="font-weight:800">
+            Nộp bài thi ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- Question list -->
+      <div class="stack gap-16">
+        <div class="card p-14" style="background:#eff6ff;border:1px solid #bfdbfe;font-weight:700;color:#1e40af">
+          Part I: Vocabulary & Communication (Câu 1 - 10)
+        </div>
+        ${model.vocabItems.map(item => `
+          <div class="card p-18">
+            ${item.passage_title ? `<div style="font-weight:bold;font-style:italic;font-size:13px;color:#1e293b;margin-bottom:4px">${esc(item.passage_title)}</div>` : ''}
+            ${item.passage_text ? `<div style="font-style:italic;font-size:12.5px;background:#f8fafc;padding:6px 10px;border-radius:6px;border:1px solid #e2e8f0;margin-bottom:8px">${esc(item.passage_text)}</div>` : ''}
+            <div style="font-weight:700;font-size:14.5px;margin-bottom:10px">
+              Câu ${item.num}: ${esc(item.q)}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr;gap:8px">
+              ${item.opts.map(o => {
+                const isSel = st.answers[item.num] === o.letter;
+                return `
+                  <div onclick="App.selectStudent15mAnswer(${item.num}, '${o.letter}')" style="cursor:pointer;padding:10px 14px;border-radius:10px;border:2px solid ${isSel ? '#2563eb' : 'var(--line)'};background:${isSel ? '#eff6ff' : '#fff'};display:flex;align-items:center;gap:10px;transition:all .15s">
+                    <span style="width:24px;height:24px;border-radius:50%;background:${isSel ? '#2563eb' : '#f1f5f9'};color:${isSel ? '#fff' : '#334155'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">
+                      ${o.letter}
+                    </span>
+                    <span style="font-size:13.5px;font-weight:${isSel ? '700' : '500'}">${esc(o.text)}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+
+        <div class="card p-14 mt-12" style="background:#eff6ff;border:1px solid #bfdbfe;font-weight:700;color:#1e40af">
+          Part II: Grammar & Reading (Câu 11 - 20)
+        </div>
+        ${model.grammarItems.map(item => `
+          <div class="card p-18">
+            ${item.passage_title ? `<div style="font-weight:bold;font-style:italic;font-size:13px;color:#1e293b;margin-bottom:4px">${esc(item.passage_title)}</div>` : ''}
+            ${item.passage_text ? `<div style="font-style:italic;font-size:12.5px;background:#f8fafc;padding:6px 10px;border-radius:6px;border:1px solid #e2e8f0;margin-bottom:8px">${esc(item.passage_text)}</div>` : ''}
+            <div style="font-weight:700;font-size:14.5px;margin-bottom:10px">
+              Câu ${item.num}: ${esc(item.q)}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr;gap:8px">
+              ${item.opts.map(o => {
+                const isSel = st.answers[item.num] === o.letter;
+                return `
+                  <div onclick="App.selectStudent15mAnswer(${item.num}, '${o.letter}')" style="cursor:pointer;padding:10px 14px;border-radius:10px;border:2px solid ${isSel ? '#2563eb' : 'var(--line)'};background:${isSel ? '#eff6ff' : '#fff'};display:flex;align-items:center;gap:10px;transition:all .15s">
+                    <span style="width:24px;height:24px;border-radius:50%;background:${isSel ? '#2563eb' : '#f1f5f9'};color:${isSel ? '#fff' : '#334155'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">
+                      ${o.letter}
+                    </span>
+                    <span style="font-size:13.5px;font-weight:${isSel ? '700' : '500'}">${esc(o.text)}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+
+        <div style="text-align:center;padding:20px 0 40px">
+          <button onclick="App.submitStudent15m()" class="btn btn-success" style="padding:14px 40px;font-size:16px;font-weight:900">
+            ✓ HOÀN THÀNH & NỘP BÀI THI
+          </button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  selectStudent15mGrade(grade) {
+    this.state.student15m.grade = String(grade);
+    this.state.student15m.unitNum = 1;
+    this.state.student15m.model = null;
+    this.renderPage();
+  },
+
+  selectStudent15mUnit(unitNum) {
+    this.state.student15m.unitNum = Number(unitNum);
+    this.state.student15m.model = null;
+    this.renderPage();
+  },
+
+  startStudent15m() {
+    const st = this.state.student15m;
+    st.model = this.build15mQuizModel(st.grade, st.unitNum, st.grade + '01', Date.now());
+    st.started = true;
+    st.submitted = false;
+    st.answers = {};
+    st.timeRemaining = 900;
+
+    if (st.timer) clearInterval(st.timer);
+    st.timer = setInterval(() => {
+      st.timeRemaining--;
+      if (st.timeRemaining <= 0) {
+        clearInterval(st.timer);
+        App.submitStudent15m();
+      } else {
+        const mins = Math.floor(st.timeRemaining / 60);
+        const secs = st.timeRemaining % 60;
+        const timeEl = document.querySelector('.sticky.top-0 div:last-child div:first-child');
+        if (timeEl) timeEl.textContent = `⏱️ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+    }, 1000);
+
+    this.renderPage();
+    window.scrollTo(0, 0);
+  },
+
+  selectStudent15mAnswer(qNum, choice) {
+    this.state.student15m.answers[qNum] = choice;
+    this.renderPage();
+  },
+
+  submitStudent15m() {
+    const st = this.state.student15m;
+    if (st.timer) clearInterval(st.timer);
+
+    const allQuestions = [...(st.model.vocabItems || []), ...(st.model.grammarItems || [])];
+    let correctCount = 0;
+    allQuestions.forEach(q => {
+      if (st.answers[q.num] === q.ans) correctCount++;
+    });
+    const finalScore = parseFloat(((correctCount / allQuestions.length) * 10).toFixed(1));
+
+    st.score = finalScore;
+    st.submitted = true;
+    st.started = false;
+
+    // Lưu vào lịch sử học sinh
+    const user = this.state.user || { name: 'Học sinh', class: `${st.grade}A1` };
+    Auth.addSubmission({
+      examId: `15m-g${st.grade}-u${st.unitNum}`,
+      examTitle: `Đề 15P Tiếng Anh ${st.grade} - ${st.model.title}`,
+      grade: st.grade,
+      studentName: user.name || 'Học sinh',
+      studentClass: user.class || `${st.grade}A1`,
+      score: finalScore,
+      correctCount: correctCount,
+      totalQuestions: 20,
+      submittedAt: new Date().toISOString()
+    });
+
+    UI.toast(` Đã nộp bài! Điểm của em: ${finalScore}/10`, 'success');
+    this.renderPage();
+    window.scrollTo(0, 0);
+  },
+
+  resetStudent15m() {
+    this.state.student15m.started = false;
+    this.state.student15m.submitted = false;
+    this.state.student15m.answers = {};
+    if (this.state.student15m.timer) clearInterval(this.state.student15m.timer);
+    this.renderPage();
   }
 };
 

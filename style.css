@@ -1189,4 +1189,93 @@ details > summary::-webkit-details-marker { display: none; }
   color: #1e293b;
 }
 
+/* ================================================================
+   15-MINUTE QUIZ & OFFICIAL EXAMS SPECIAL STYLES (GLOBAL SUCCESS)
+   ================================================================ */
+.exam-paper-15m {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 10.5pt;
+  line-height: 1.25;
+  background: #ffffff;
+  color: #000000;
+  padding: 24px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.table-short-ans {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 11pt;
+}
+.table-short-ans th, .table-short-ans td {
+  border: 1px solid #000000;
+  padding: 6px 10px;
+  text-align: center;
+}
+.table-short-ans th {
+  background: #f1f5f9;
+  font-weight: bold;
+}
+
+.official-exam-card {
+  background: #ffffff;
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all var(--t-base);
+  position: relative;
+}
+.official-exam-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.official-exam-card.active {
+  border-color: #2563eb;
+  background: linear-gradient(145deg, #ffffff, #eff6ff);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+}
+
+.unit-pill-btn {
+  padding: 6px 12px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid var(--line);
+  background: #ffffff;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+.unit-pill-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.unit-pill-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+@media print {
+  .no-print, .sidebar, .topbar { display: none !important; }
+  .shell { display: block !important; padding: 0 !important; }
+  .main-content { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+  body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
+  .exam-paper-15m {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.25 !important;
+  }
+  .page-break-print { page-break-before: always; }
+}
+
+
 
