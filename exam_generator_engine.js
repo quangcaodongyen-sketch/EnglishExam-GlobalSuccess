@@ -531,6 +531,12 @@
         answerKeyRows: answerKeyRows,
         matrixRows: baseSuite.matrixRows,
         specRows: baseSuite.specRows,
+        matrixSubtitle: baseSuite.matrixSubtitle || '',
+        specSubtitle: baseSuite.specSubtitle || '',
+        writingRubric: baseSuite.writingRubric || '',
+        sampleWritingText: baseSuite.sampleWritingText || '',
+        speakingScriptRows: baseSuite.speakingScriptRows || [],
+        finalScoreSummary: baseSuite.finalScoreSummary || '',
         combinatorialTag: '10^28+ Độc Bản Không Lặp Lại'
       };
     }

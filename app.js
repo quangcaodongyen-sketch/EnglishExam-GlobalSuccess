@@ -1928,6 +1928,12 @@ const App = {
     wiz.answerKeyRows = suite.answerKeyRows;
     wiz.matrixRows = suite.matrixRows;
     wiz.specRows = suite.specRows;
+    wiz.matrixSubtitle = suite.matrixSubtitle || '';
+    wiz.specSubtitle = suite.specSubtitle || '';
+    wiz.writingRubric = suite.writingRubric || '';
+    wiz.sampleWritingText = suite.sampleWritingText || '';
+    wiz.speakingScriptRows = suite.speakingScriptRows || [];
+    wiz.finalScoreSummary = suite.finalScoreSummary || '';
   },
 
   generateRandomizedOfficialExam(grade = null, termKey = null) {
@@ -1965,6 +1971,12 @@ const App = {
       wiz.answerKeyRows = newExam.answerKeyRows;
       wiz.matrixRows = newExam.matrixRows;
       wiz.specRows = newExam.specRows;
+      wiz.matrixSubtitle = newExam.matrixSubtitle || '';
+      wiz.specSubtitle = newExam.specSubtitle || '';
+      wiz.writingRubric = newExam.writingRubric || '';
+      wiz.sampleWritingText = newExam.sampleWritingText || '';
+      wiz.speakingScriptRows = newExam.speakingScriptRows || [];
+      wiz.finalScoreSummary = newExam.finalScoreSummary || '';
       wiz.step = 3;
       wiz.id = newExam.id;
 
@@ -2408,65 +2420,606 @@ const App = {
     `, [{ label: 'Đóng', cls: 'btn-outline', action: () => UI.closeModal() }]);
   },
 
-  exportFullBundleWord() {
-    const wiz = this.state.wizard;
-    const curG = String(wiz.grade || '7');
-    const curT = this.getWizardTermKey();
-    const suite = this.getOfficialExamSuite(curG, curT);
-
-    const title = wiz.examTitle || `BÀI KIỂM TRA ĐÁNH GIÁ ${curT} – TIẾNG ANH ${curG}`;
-    const code1 = wiz.code1 || (curG + '01');
-    const code2 = wiz.code2 || (curG + '02');
-    const sec1 = wiz.selectedSections || (suite ? suite.sections_code1 : []);
-    const sec2 = wiz.sections_code2 || (suite ? suite.sections_code2 : sec1);
-
-    const doc1 = this.generateDocHtml(sec1, title, code1, false);
-    const doc2 = this.generateDocHtml(sec2, title, code2, false);
-
-    const fullHtml = `
+  // ── Hệ thống Xuất File Word (.doc) Chuẩn 100% Theo App Thầy Đinh Văn Thành ──────────
+  wrapDocHtml(contentHtml, title = 'De thi Tieng Anh') {
+    return `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-<head><meta charset='utf-8'><title>${curT} - Anh ${curG} Tron Bo 2 Ma De</title>
-<style>
-  @page Section1 { size: 21.0cm 29.7cm; margin: 1.5cm 1.5cm 1.5cm 2.0cm; mso-page-orientation: portrait; }
-  div.Section1 { page: Section1; }
-  body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.15; color: #000; }
-  table { width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; }
-</style>
+<head>
+  <meta charset='utf-8'>
+  <title>${esc(title)}</title>
+  <style>
+    @page Section1 { size: 21.0cm 29.7cm; margin: 1.27cm 1.52cm 1.27cm 1.52cm; mso-page-orientation: portrait; }
+    div.Section1 { page: Section1; }
+    body { font-family: 'Times New Roman', Times, serif; font-size: 13pt; line-height: 1.15; color: #000; }
+    table { width: 100%; border-collapse: collapse; font-family: 'Times New Roman', Times, serif; }
+    p { margin: 2pt 0; padding: 0; line-height: 1.15; }
+    .page-break { page-break-before: always; mso-break-type: page-break; }
+  </style>
 </head>
 <body>
 <div class="Section1">
-  <!-- MÃ ĐỀ 1 -->
-  ${doc1.replace(/<\/?html[^>]*>|<\/?head[^>]*>|<\/?body[^>]*>|<meta[^>]*>|<style[^>]*>[\s\S]*?<\/style>|<div class="Section1">|<\/div>$/gi, '')}
-  <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
-  <!-- MÃ ĐỀ 2 -->
-  ${doc2.replace(/<\/?html[^>]*>|<\/?head[^>]*>|<\/?body[^>]*>|<meta[^>]*>|<style[^>]*>[\s\S]*?<\/style>|<div class="Section1">|<\/div>$/gi, '')}
+  ${contentHtml}
 </div>
 </body>
 </html>`;
+  },
+
+  // 1. Trụ cột 1: MA TRẬN 15 CỘT CHUẨN CÔNG VĂN 7991/BGDĐT
+  buildMatrixWordHtml(cfg) {
+    const parentAgency = (cfg.parentAgency || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (cfg.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const titleUpper = (cfg.titleUpper || 'GIỮA HỌC KÌ I').toUpperCase();
+    const schoolYear = cfg.schoolYear || '2026 - 2027';
+    const grade = cfg.grade || '7';
+    const timeMinutes = cfg.timeMinutes || 60;
+    const subtitle = cfg.subtitle || 'Hình thức: 100% Bài kiểm tra Viết trên giấy (Thang điểm: 10,0 điểm - Giữa kỳ không thi Nói)';
+    const rows = cfg.matrixRows || [];
+
+    return `
+    <div style="text-align:center;margin-bottom:8pt">
+      <div style="font-size:11.5pt;font-weight:bold;line-height:1.2">${esc(parentAgency)} - ${esc(schoolName)}</div>
+      <div style="font-size:12pt;font-weight:bold;margin-top:2pt;line-height:1.25">MA TRẬN ĐỀ KIỂM TRA ĐÁNH GIÁ ${esc(titleUpper)} - NĂM HỌC ${esc(schoolYear)}</div>
+      <div style="font-size:11pt;font-weight:bold;line-height:1.2">MÔN: TIẾNG ANH ${esc(grade)} (GLOBAL SUCCESS) - THỜI GIAN LÀM BÀI: ${esc(timeMinutes)} PHÚT</div>
+      <div style="font-size:9.5pt;font-style:italic;line-height:1.2">${esc(subtitle)}</div>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-top:6pt">
+      <thead>
+        <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+          <th rowspan="2" style="border:1pt solid #000;padding:3pt 2pt;width:3.5%">TT</th>
+          <th rowspan="2" style="border:1pt solid #000;padding:3pt 2pt;width:15%">Chủ đề / Kĩ năng</th>
+          <th rowspan="2" style="border:1pt solid #000;padding:3pt 2pt;width:21.5%">Nội dung / Đơn vị kiến thức</th>
+          <th colspan="3" style="border:1pt solid #000;padding:3pt 2pt;width:15%">TNKQ nhiều lựa chọn</th>
+          <th colspan="3" style="border:1pt solid #000;padding:3pt 2pt;width:15%">TNKQ Đúng/Sai</th>
+          <th colspan="3" style="border:1pt solid #000;padding:3pt 2pt;width:15%">Tự luận</th>
+          <th colspan="3" style="border:1pt solid #000;padding:3pt 2pt;width:15%">Tổng</th>
+        </tr>
+        <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Biết</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Hiểu</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">VD</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Biết</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Hiểu</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">VD</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Biết</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Hiểu</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">VD</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Biết</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">Hiểu</th>
+          <th style="border:1pt solid #000;padding:2pt 1pt;width:5%">VD</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => {
+          const isTotal = (r[0] || '').startsWith('TỔNG');
+          return `
+          <tr style="${isTotal ? 'background:#f4f6f9;font-weight:bold' : ''}">
+            ${r.map((val, ci) => `
+              <td style="border:1pt solid #000;padding:2pt 3pt;font-size:8pt;text-align:${ci === 1 || ci === 2 ? 'left' : 'center'};${isTotal ? 'font-weight:bold' : ''}">
+                ${esc(val || '').replace(/\n/g, '<br/>')}
+              </td>
+            `).join('')}
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+  },
+
+  // 2. Trụ cột 2: BẢN ĐẶC TẢ KỸ THUẬT 7 CỘT CHUẨN CÔNG VĂN 7991/BGDĐT
+  buildSpecWordHtml(cfg) {
+    const titleUpper = (cfg.titleUpper || 'GIỮA HỌC KÌ I').toUpperCase();
+    const grade = cfg.grade || '7';
+    const subtitle = cfg.subtitle || 'CHƯƠNG TRÌNH GLOBAL SUCCESS';
+    const rows = cfg.specRows || [];
+
+    return `
+    <div style="text-align:center;margin-bottom:8pt">
+      <div style="font-size:11.5pt;font-weight:bold;line-height:1.25">BẢN ĐẶC TẢ KỸ THUẬT ĐỀ KIỂM TRA ${esc(titleUpper)} - TIẾNG ANH ${esc(grade)}</div>
+      <div style="font-size:9.5pt;font-style:italic;line-height:1.2">${esc(subtitle)}</div>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:8pt;margin-top:6pt">
+      <thead>
+        <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+          <th style="border:1pt solid #000;padding:3pt 2pt;width:5%">TT</th>
+          <th style="border:1pt solid #000;padding:3pt 4pt;width:15%">Chủ đề / Kĩ năng</th>
+          <th style="border:1pt solid #000;padding:3pt 4pt;width:18%">Đơn vị kiến thức</th>
+          <th style="border:1pt solid #000;padding:3pt 4pt;width:38%">Yêu cầu cần đạt</th>
+          <th style="border:1pt solid #000;padding:3pt 2pt;width:8%">TNKQ (MCQs)</th>
+          <th style="border:1pt solid #000;padding:3pt 2pt;width:8%">TNKQ (Đúng/Sai)</th>
+          <th style="border:1pt solid #000;padding:3pt 2pt;width:8%">Tự luận</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => `
+          <tr>
+            ${r.map((val, ci) => `
+              <td style="border:1pt solid #000;padding:3pt 4pt;font-size:8pt;text-align:${ci === 0 || ci >= 4 ? 'center' : 'left'}">
+                ${esc(val || '').replace(/\n/g, '<br/>')}
+              </td>
+            `).join('')}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+  },
+
+  // 3 & 4. Trụ cột 3 & 4: NỘI DUNG TỜ ĐỀ THI CHÍNH THỨC (Header 2x2, Marks box 4 cols, 8 Parts, 10 dòng chấm)
+  buildExamWordContentHtml(cfg) {
+    const parentAgency = (cfg.parentAgency || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (cfg.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const titleUpper = (cfg.titleUpper || 'GIỮA HỌC KÌ I').toUpperCase();
+    const schoolYear = cfg.schoolYear || '2026 - 2027';
+    const grade = cfg.grade || '7';
+    const examClass = cfg.examClass || (grade + 'A___');
+    const timeMinutes = cfg.timeMinutes || 60;
+    const code = cfg.code || (grade + '01');
+    const sections = cfg.sections || [];
+    const showAnswer = !!cfg.showAnswer;
+
+    let globalQNum = 1;
+
+    return `
+    <!-- HEADER 2x2 CHUẨN THCS ĐỒNG YÊN -->
+    <table style="width:100%;border:none;margin-bottom:4pt">
+      <tr>
+        <td style="width:38%;text-align:center;vertical-align:top;border:none;line-height:1.2">
+          <div style="font-size:11.5pt;font-weight:bold">${esc(parentAgency)}</div>
+          <div style="font-size:11.5pt;font-weight:bold;text-decoration:underline">${esc(schoolName)}</div>
+        </td>
+        <td style="width:62%;text-align:center;vertical-align:top;border:none;line-height:1.25">
+          <div style="font-size:12.5pt;font-weight:bold">BÀI KIỂM TRA ĐÁNH GIÁ ${esc(titleUpper)}</div>
+          <div style="font-size:11.5pt;font-weight:bold">NĂM HỌC: ${esc(schoolYear)}</div>
+          <div style="font-size:12.5pt;font-weight:bold">Môn: Tiếng Anh ${esc(grade)}</div>
+          <div style="font-size:11.5pt;font-style:italic">Thời gian làm bài: ${esc(timeMinutes)} phút (không kể thời gian giao đề)</div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- DÒNG FULL NAME, CLASS, MÃ ĐỀ -->
+    <table style="width:100%;border:none;margin:4pt 0 6pt 0;font-size:13pt">
+      <tr>
+        <td style="width:55%;border:none"><b>Full name:</b> __________________________,</td>
+        <td style="width:25%;border:none"><b>Class:</b> ${esc(examClass)}</td>
+        <td style="width:20%;text-align:right;border:none"><b style="color:#b91c1c;font-size:13pt">Mã đề: ${esc(code)}</b></td>
+      </tr>
+    </table>
+
+    <!-- BẢNG MARKS AUTO FIT TO WINDOW 4 CỘT -->
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10pt;font-size:11.5pt">
+      <tr style="text-align:center;font-weight:bold">
+        <td colspan="2" style="border:1pt solid #000;width:22%;padding:4pt">Marks</td>
+        <td rowspan="3" style="border:1pt solid #000;width:14%;padding:4pt;vertical-align:middle">Total</td>
+        <td rowspan="3" style="border:1pt solid #000;width:64%;padding:4pt 8pt;text-align:left;vertical-align:top">
+          <div style="text-align:center;font-weight:bold;margin-bottom:3pt">Teacher’s remarks</div>
+          <div style="color:#000;font-size:11pt">________________________________________________</div>
+          <div style="color:#000;font-size:11pt;margin-top:3pt">________________________________________________</div>
+        </td>
+      </tr>
+      <tr style="text-align:center;font-weight:bold">
+        <td style="border:1pt solid #000;width:11%;padding:3pt">Speak</td>
+        <td style="border:1pt solid #000;width:11%;padding:3pt">Write</td>
+      </tr>
+      <tr style="height:36pt;text-align:center">
+        <td style="border:1pt solid #000">&nbsp;</td>
+        <td style="border:1pt solid #000">&nbsp;</td>
+      </tr>
+    </table>
+
+    <!-- NỘI DUNG 8 PHẦN THI -->
+    ${sections.map((sec, si) => {
+      const secHeading = (sec.title || sec.name || `Part ${si + 1}`);
+
+      if (sec.type === 'speaking' || sec.scriptRows) {
+        return `
+        <div style="font-size:13pt;font-weight:bold;margin-top:12pt;margin-bottom:4pt">
+          ${esc(secHeading)}
+        </div>
+        <table style="width:100%;border-collapse:collapse;margin-top:6pt;font-size:11.5pt">
+          <thead>
+            <tr style="background:#f1f5f9;text-align:center;font-weight:bold">
+              <th style="border:1pt solid #000;padding:4pt;width:15%">Phần thi (Task)</th>
+              <th style="border:1pt solid #000;padding:4pt;width:40%">Kịch bản Giám khảo (Examiner's Script)</th>
+              <th style="border:1pt solid #000;padding:4pt;width:30%">Câu trả lời mong đợi của HS</th>
+              <th style="border:1pt solid #000;padding:4pt;width:15%">Thang điểm</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(sec.scriptRows || []).map(r => `
+              <tr>
+                <td style="border:1pt solid #000;padding:4pt;font-weight:bold;vertical-align:top">${esc(r[0] || '').replace(/\n/g, '<br/>')}</td>
+                <td style="border:1pt solid #000;padding:4pt;vertical-align:top">${esc(r[1] || '').replace(/\n/g, '<br/>')}</td>
+                <td style="border:1pt solid #000;padding:4pt;vertical-align:top">${esc(r[2] || '').replace(/\n/g, '<br/>')}</td>
+                <td style="border:1pt solid #000;padding:4pt;vertical-align:top;font-size:10pt">${esc(r[3] || '').replace(/\n/g, '<br/>')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+      }
+
+      return `
+      <div style="font-size:13pt;font-weight:bold;margin-top:10pt;margin-bottom:4pt">
+        ${esc(secHeading)}
+      </div>
+      ${sec.passage ? `
+      <div style="font-size:13pt;text-align:justify;text-indent:0.5in;line-height:1.25;margin:4pt 0 6pt 0">
+        ${formatExamText(sec.passage)}
+      </div>` : ''}
+
+      ${(sec.questions || []).map((q, qi) => {
+        const qNum = q.num || globalQNum++;
+        const maxLen = q.options ? Math.max(...q.options.map(o => (o || '').length)) : 0;
+        const isEssay = q.type === 'essay';
+
+        if (isEssay) {
+          return `
+          <div style="font-size:13pt;margin-bottom:10pt;line-height:1.25">
+            <div><b>${qNum}.</b> ${formatExamText(q.content).replace(/\n/g, '<br/>')}</div>
+            <div style="margin-top:8pt;color:#000;font-size:12pt;line-height:2.0;letter-spacing:1px">
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................
+            </div>
+            ${showAnswer && q.sampleText ? `
+            <div style="margin-top:6pt;padding:6pt 10pt;background:#eff6ff;font-size:11.5pt;color:#1e40af;line-height:1.3">
+              📝 <b>Bài viết mẫu tham khảo:</b><br/>${esc(q.sampleText)}
+            </div>` : ''}
+          </div>`;
+        }
+
+        return `
+        <div style="font-size:13pt;margin-bottom:6pt;line-height:1.25">
+          <div><b>${qNum}.</b> ${formatExamText(q.content)}</div>
+          ${q.options ? (maxLen > 30 || q.options.length > 3 ? `
+          <div style="padding-left:14pt;margin-top:2pt">
+            ${q.options.map(opt => `
+              <div style="margin:2pt 0;font-size:13pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
+                <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
+              </div>
+            `).join('')}
+          </div>` : `
+          <table style="width:100%;border:none;margin-top:2pt">
+            <tr>
+              ${q.options.map(opt => `
+                <td style="border:none;font-size:13pt;padding:1pt 4pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
+                  <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
+                </td>
+              `).join('')}
+            </tr>
+          </table>`) : ''}
+          ${showAnswer && q.solution ? `
+          <div style="margin-top:2pt;padding:3pt 8pt;background:#eff6ff;font-size:11pt;color:#1e40af">
+            💡 <b>Giải thích:</b> ${esc(q.solution)}
+          </div>` : ''}
+        </div>`;
+      }).join('')}
+      `;
+    }).join('')}
+
+    <div style="text-align:center;font-weight:bold;font-size:13pt;margin-top:16pt">
+      ------The end------
+    </div>`;
+  },
+
+  // 5. Trụ cột 5: HƯỚNG DẪN ĐÁP ÁN VÀ BIỂU ĐIỂM (Audio Scripts, Bảng TNKQ 4 cột 18 dòng so sánh 2 mã đề, Rubric tự luận, Kịch bản nói)
+  buildAnswerKeyWordHtml(cfg) {
+    const parentAgency = (cfg.parentAgency || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (cfg.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const titleUpper = (cfg.titleUpper || 'GIỮA HỌC KÌ I').toUpperCase();
+    const schoolYear = cfg.schoolYear || '2026 - 2027';
+    const grade = cfg.grade || '7';
+    const code1 = cfg.code1 || (grade + '01');
+    const code2 = cfg.code2 || (grade + '02');
+    const ans1 = cfg.ans1 || [];
+    const ans2 = cfg.ans2 || [];
+    const mcqTotalPts = cfg.mcqTotalPts || (cfg.hasSpeaking ? '7.2' : '8.5');
+    const part8Points = cfg.part8Points || (cfg.hasSpeaking ? '0.8 điểm' : '1.5 điểm');
+    const rubric = cfg.rubric || '';
+    const sampleWritingText = cfg.sampleWritingText || '';
+    const hasSpeaking = !!cfg.hasSpeaking;
+    const speakingScriptRows = cfg.speakingScriptRows || [];
+    const finalScoreSummary = cfg.finalScoreSummary || (hasSpeaking ? 'Tổng điểm toàn bài: 10,0 điểm (Trong đó: Viết 8.0 điểm + Nói 2.0 điểm). Điểm số quy về thang điểm 10 theo đúng quy định Thông tư 22/BGDĐT.' : 'Tổng điểm toàn bài: 10,0 điểm (36 câu TNKQ = 8.5 điểm + 1 câu Viết tự luận = 1.5 điểm). Điểm số làm tròn đến 0,1 theo quy định Bộ GD&ĐT.');
+
+    return `
+    <div style="text-align:left;line-height:1.2;font-size:12pt;font-weight:bold;margin-bottom:6pt">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${esc(parentAgency)}<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;${esc(schoolName)}
+    </div>
+    <div style="text-align:center;margin-bottom:12pt">
+      <div style="font-size:13.5pt;font-weight:bold;line-height:1.25">HƯỚNG DẪN ĐÁP ÁN VÀ BIỂU ĐIỂM</div>
+      <div style="font-size:13.5pt;font-weight:bold;line-height:1.25">KIỂM TRA ĐÁNH GIÁ ${esc(titleUpper)}</div>
+      <div style="font-size:12.5pt;font-weight:bold;margin-top:2pt">NĂM HỌC: ${esc(schoolYear)} - MÔN: TIẾNG ANH ${esc(grade)} (MÃ ĐỀ ${esc(code1)} & ${esc(code2)})</div>
+    </div>
+
+    <!-- Audio scripts -->
+    ${cfg.audioScript ? `
+    <div style="font-size:13pt;font-weight:bold;margin-top:10pt;margin-bottom:4pt">
+      NỘI DUNG BÀI NGHE (AUDIO SCRIPTS - DÙNG CHO CẢ 2 MÃ ĐỀ)
+    </div>
+    <div style="font-size:12pt;line-height:1.35;border:1pt dashed #0284c7;background:#fafafa;padding:8pt 12pt;margin-bottom:12pt">
+      ${esc(cfg.audioScript).replace(/\n/g, '<br/>')}
+    </div>` : ''}
+
+    <!-- I. TRẮC NGHIỆM KHÁCH QUAN 4 CỘT SO SÁNH 2 MÃ ĐỀ CHUẨN THẦY THÀNH -->
+    <div style="font-size:13pt;font-weight:bold;margin-top:12pt;margin-bottom:6pt">
+      I. PHẦN TRẮC NGHIỆM KHÁCH QUAN (36 CÂU = ${mcqTotalPts} ĐIỂM TRÊN ĐỀ VIẾT)
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12pt;margin-bottom:12pt">
+      <thead>
+        <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+          <th style="border:1pt solid #000;padding:5pt;width:12%">Câu</th>
+          <th style="border:1pt solid #000;padding:5pt;width:38%">Đáp án MÃ ĐỀ ${esc(code1)}</th>
+          <th style="border:1pt solid #000;padding:5pt;width:12%">Câu</th>
+          <th style="border:1pt solid #000;padding:5pt;width:38%">Đáp án MÃ ĐỀ ${esc(code2)}</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${(() => {
+          let rowsHtml = '';
+          for (let i = 0; i < 18; i++) {
+            const q1 = i + 1;
+            const a1 = ans1[i] || '';
+            const q2 = i + 19;
+            const a2 = ans2[i + 18] || '';
+            rowsHtml += `
+              <tr style="text-align:center">
+                <td style="border:1pt solid #000;padding:4pt;font-weight:bold">${q1}</td>
+                <td style="border:1pt solid #000;padding:4pt;font-weight:bold;color:#b91c1c">${esc(a1)}</td>
+                <td style="border:1pt solid #000;padding:4pt;font-weight:bold">${q2}</td>
+                <td style="border:1pt solid #000;padding:4pt;font-weight:bold;color:#0369a1">${esc(a2)}</td>
+              </tr>
+            `;
+          }
+          return rowsHtml;
+        })()}
+      </tbody>
+    </table>
+
+    <!-- II. TỰ LUẬN VIẾT -->
+    <div style="font-size:13pt;font-weight:bold;margin-top:12pt;margin-bottom:4pt">
+      II. PHẦN TỰ LUẬN VIẾT (PART 8: ${part8Points})
+    </div>
+    ${rubric ? `
+    <div style="font-size:12pt;line-height:1.35;margin-bottom:6pt">
+      ${esc(rubric).replace(/\n/g, '<br/>')}
+    </div>` : ''}
+
+    ${sampleWritingText ? `
+    <div style="font-size:12.5pt;font-weight:bold;font-style:italic;margin-top:6pt;margin-bottom:2pt">
+      * Đoạn văn mẫu tham khảo (Sample writing):
+    </div>
+    <div style="font-size:12.5pt;line-height:1.35;text-align:justify;text-indent:0.5in;margin-bottom:12pt">
+      ${esc(sampleWritingText)}
+    </div>` : ''}
+
+    <!-- III. THI NÓI (NẾU CÓ) -->
+    ${hasSpeaking && speakingScriptRows && speakingScriptRows.length ? `
+    <div style="font-size:13pt;font-weight:bold;margin-top:12pt;margin-bottom:6pt">
+      III. PHẦN THI NÓI (SPEAKING TEST: 2.0 ĐIỂM)
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:9.5pt;margin-bottom:12pt">
+      <thead>
+        <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+          <th style="border:1pt solid #000;padding:4pt;width:15%">To do</th>
+          <th style="border:1pt solid #000;padding:4pt;width:35%">To say (Examiner)</th>
+          <th style="border:1pt solid #000;padding:4pt;width:30%">Response (Students)</th>
+          <th style="border:1pt solid #000;padding:4pt;width:20%">Back-up</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${speakingScriptRows.map(row => `
+          <tr>
+            <td style="border:1pt solid #000;padding:4pt;font-weight:bold;text-align:center;vertical-align:top">${esc(row[0] || '').replace(/\n/g, '<br/>')}</td>
+            <td style="border:1pt solid #000;padding:4pt;vertical-align:top">${esc(row[1] || '').replace(/\n/g, '<br/>')}</td>
+            <td style="border:1pt solid #000;padding:4pt;vertical-align:top">${esc(row[2] || '').replace(/\n/g, '<br/>')}</td>
+            <td style="border:1pt solid #000;padding:4pt;vertical-align:top;font-size:9pt">${esc(row[3] || '').replace(/\n/g, '<br/>')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>` : ''}
+
+    <div style="font-size:12.5pt;font-weight:bold;margin-top:12pt;line-height:1.3">
+      ${esc(finalScoreSummary)}
+    </div>
+    <div style="margin-top:20pt;text-align:right;padding-right:20pt;font-size:11.5pt">
+      <b>GIÁO VIÊN RA ĐỀ</b><br/><br/><br/>
+      <b>${esc(cfg.teacher || 'Thầy Đinh Văn Thành')}</b>
+    </div>`;
+  },
+
+  // ── XUẤT TRỌN BỘ 5 PHẦN CHUẨN CÔNG VĂN 7991 (App Thầy Đinh Văn Thành) ──────────
+  exportFullBundleWord() {
+    const wiz = this.state.wizard;
+    const curG = String(wiz.grade || '7');
+    const curT = this.getWizardTermKey ? this.getWizardTermKey() : (wiz.term || 'GK1');
+    const suite = this.getOfficialExamSuite(curG, curT);
+
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const schoolYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const titleUpper = (wiz.termTitle || (suite ? suite.termTitle : curT)).toUpperCase();
+    const timeMinutes = wiz.examTime || (suite ? suite.timeMinutes : 60);
+
+    const code1 = wiz.code1 || (suite ? suite.code1 : (curG + '01'));
+    const code2 = wiz.code2 || (suite ? suite.code2 : (curG + '02'));
+    const sec1 = wiz.selectedSections || (suite ? suite.sections_code1 : []);
+    const sec2 = wiz.sections_code2 || (suite ? suite.sections_code2 : sec1);
+
+    const matrixRows = (wiz.matrixRows && wiz.matrixRows.length) ? wiz.matrixRows : (suite ? suite.matrixRows : []);
+    const specRows = (wiz.specRows && wiz.specRows.length) ? wiz.specRows : (suite ? suite.specRows : []);
+
+    const ans1 = (suite && suite.answers_code1) || sec1.flatMap(s => s.questions || []).filter(q => q.type !== 'essay').map(q => q.answer || 'A');
+    const ans2 = (suite && suite.answers_code2) || sec2.flatMap(s => s.questions || []).filter(q => q.type !== 'essay').map(q => q.answer || 'B');
+
+    const p8q = sec1.flatMap(s => s.questions || []).find(q => q.type === 'essay');
+    const rubric = wiz.writingRubric || (suite ? suite.writingRubric : (p8q ? p8q.rubric : ''));
+    const sampleWritingText = wiz.sampleWritingText || (suite ? suite.sampleWritingText : (p8q ? p8q.sampleText : ''));
+    const hasSpeaking = wiz.hasSpeaking !== undefined ? wiz.hasSpeaking : (suite ? suite.hasSpeaking : false);
+    const speakingScriptRows = wiz.speakingScriptRows || (suite ? suite.speakingScriptRows : []);
+    const finalScoreSummary = wiz.finalScoreSummary || (suite ? suite.finalScoreSummary : '');
+
+    // 1. Ma trận 15 cột
+    const part1Html = this.buildMatrixWordHtml({
+      parentAgency, schoolName, examYear: schoolYear, titleUpper, grade: curG, timeMinutes,
+      subtitle: wiz.matrixSubtitle || (suite ? suite.matrixSubtitle : ''),
+      matrixRows
+    });
+
+    // 2. Bản đặc tả 7 cột
+    const part2Html = this.buildSpecWordHtml({
+      titleUpper, grade: curG,
+      subtitle: wiz.specSubtitle || (suite ? suite.specSubtitle : ''),
+      specRows
+    });
+
+    // 3. Đề thi Mã 1
+    const part3Html = this.buildExamWordContentHtml({
+      sections: sec1, titleUpper, code: code1, schoolYear, parentAgency, schoolName,
+      grade: curG, examClass: wiz.examClass || (curG + 'A1'), timeMinutes
+    });
+
+    // 4. Đề thi Mã 2
+    const part4Html = this.buildExamWordContentHtml({
+      sections: sec2, titleUpper, code: code2, schoolYear, parentAgency, schoolName,
+      grade: curG, examClass: wiz.examClass || (curG + 'A1'), timeMinutes
+    });
+
+    // 5. Hướng dẫn đáp án và biểu điểm
+    const part5Html = this.buildAnswerKeyWordHtml({
+      parentAgency, schoolName, examYear: schoolYear, titleUpper, grade: curG,
+      code1, code2, audioScript: wiz.audioScript || (suite ? suite.fullAudioScript : ''),
+      ans1, ans2, mcqTotalPts: hasSpeaking ? '7.2' : '8.5',
+      part8Points: hasSpeaking ? '0.8 điểm' : '1.5 điểm',
+      rubric, sampleWritingText, hasSpeaking, speakingScriptRows,
+      finalScoreSummary, teacher: wiz.teacherName || 'Thầy Đinh Văn Thành'
+    });
+
+    const pageBreak = '<br clear="all" style="page-break-before:always;mso-break-type:page-break"/>';
+    const fullHtml = this.wrapDocHtml([part1Html, part2Html, part3Html, part4Html, part5Html].join(pageBreak), `${curT} - Anh ${curG} Tron Bo 5 Phan Chuan CV7991`);
 
     const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `${curT}_Anh_${curG}_Tron_Bo_2_Ma_De_${code1}_${code2}.doc`;
+    link.download = `${curT}_Anh_${curG}_Tron_Bo_5_Phan_Chuan_CV7991_${code1}_${code2}.doc`;
     link.click();
-    UI.toast(`📦 Đã xuất trọn bộ 2 Mã đề thi ${curT} (.doc)!`, 'success');
+    UI.toast(`📦 Đã xuất trọn bộ 5 phần chuẩn CV 7991 (.doc)!`, 'success');
   },
 
-  // ── Xem trước đề thi, Audio Player & Xuất Word ───────────────────
+  // ── XUẤT MA TRẬN & BẢN ĐẶC TẢ (.DOC) ──────────
+  exportMatrixAndSpecWord() {
+    const wiz = this.state.wizard;
+    const curG = String(wiz.grade || '7');
+    const curT = this.getWizardTermKey ? this.getWizardTermKey() : (wiz.term || 'GK1');
+    const suite = this.getOfficialExamSuite(curG, curT);
+
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const schoolYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const titleUpper = (wiz.termTitle || (suite ? suite.termTitle : curT)).toUpperCase();
+    const timeMinutes = wiz.examTime || (suite ? suite.timeMinutes : 60);
+
+    const matrixRows = (wiz.matrixRows && wiz.matrixRows.length) ? wiz.matrixRows : (suite ? suite.matrixRows : []);
+    const specRows = (wiz.specRows && wiz.specRows.length) ? wiz.specRows : (suite ? suite.specRows : []);
+
+    const part1Html = this.buildMatrixWordHtml({
+      parentAgency, schoolName, examYear: schoolYear, titleUpper, grade: curG, timeMinutes,
+      subtitle: wiz.matrixSubtitle || (suite ? suite.matrixSubtitle : ''),
+      matrixRows
+    });
+
+    const part2Html = this.buildSpecWordHtml({
+      titleUpper, grade: curG,
+      subtitle: wiz.specSubtitle || (suite ? suite.specSubtitle : ''),
+      specRows
+    });
+
+    const pageBreak = '<br clear="all" style="page-break-before:always;mso-break-type:page-break"/>';
+    const fullHtml = this.wrapDocHtml([part1Html, part2Html].join(pageBreak), `${curT} - Anh ${curG} Ma Tran va Ban Dac Ta`);
+
+    const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${curT}_Anh_${curG}_Ma_Tran_Va_Ban_Dac_Ta_7991.doc`;
+    link.click();
+    UI.toast(`📊 Đã xuất Ma trận 15 cột & Bản đặc tả 7 cột (.doc)!`, 'success');
+  },
+
+  // ── XUẤT ĐÁP ÁN & HƯỚNG DẪN CHẤM (.DOC) ──────────
+  exportAnswerKeyWord() {
+    const wiz = this.state.wizard;
+    const curG = String(wiz.grade || '7');
+    const curT = this.getWizardTermKey ? this.getWizardTermKey() : (wiz.term || 'GK1');
+    const suite = this.getOfficialExamSuite(curG, curT);
+
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const schoolYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const titleUpper = (wiz.termTitle || (suite ? suite.termTitle : curT)).toUpperCase();
+    const code1 = wiz.code1 || `${curG}01`;
+    const code2 = wiz.code2 || `${curG}02`;
+
+    const sec1 = wiz.sections || [];
+    const sec2 = wiz.sectionsCode2 && wiz.sectionsCode2.length ? wiz.sectionsCode2 : sec1;
+
+    const ans1 = sec1.flatMap(s => (s.questions || []).map((q, idx) => ({ num: idx + 1, ans: q.correctAnswer || 'A' })));
+    const ans2 = sec2.flatMap(s => (s.questions || []).map((q, idx) => ({ num: idx + 1, ans: q.correctAnswer || 'A' })));
+
+    const p8q = sec1.flatMap(s => s.questions || []).find(q => q.type === 'essay');
+    const rubric = wiz.writingRubric || (suite ? suite.writingRubric : (p8q ? p8q.rubric : ''));
+    const sampleWritingText = wiz.sampleWritingText || (suite ? suite.sampleWritingText : (p8q ? p8q.sampleText : ''));
+    const hasSpeaking = wiz.hasSpeaking !== undefined ? wiz.hasSpeaking : (suite ? suite.hasSpeaking : false);
+    const speakingScriptRows = wiz.speakingScriptRows || (suite ? suite.speakingScriptRows : []);
+    const finalScoreSummary = wiz.finalScoreSummary || (suite ? suite.finalScoreSummary : '');
+
+    const ansHtml = this.buildAnswerKeyWordHtml({
+      parentAgency, schoolName, examYear: schoolYear, titleUpper, grade: curG,
+      code1, code2, audioScript: wiz.audioScript || (suite ? suite.fullAudioScript : ''),
+      ans1, ans2, mcqTotalPts: hasSpeaking ? '7.2' : '8.5',
+      part8Points: hasSpeaking ? '0.8 điểm' : '1.5 điểm',
+      rubric, sampleWritingText, hasSpeaking, speakingScriptRows,
+      finalScoreSummary, teacher: wiz.teacherName || 'Thầy Đinh Văn Thành'
+    });
+
+    const fullHtml = this.wrapDocHtml(ansHtml, `${curT} - Anh ${curG} Dap An va Huong Dan Cham`);
+    const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${curT}_Anh_${curG}_Dap_An_Va_Huong_Dan_Cham_${code1}_${code2}.doc`;
+    link.click();
+    UI.toast(`👩‍🏫 Đã xuất Đáp án & Hướng dẫn chấm (.doc)!`, 'success');
+  },
+
   renderPreview() {
     const wiz = this.state.wizard;
     const curG = String(wiz.grade || '7');
-    const curT = this.getWizardTermKey();
-    if (!wiz.selectedSections || wiz.selectedSections.length < 5) {
-      this.syncWizardOfficialTemplate(curG, curT);
-    }
-    const isCode2 = (wiz.previewCodeIndex === 2);
-    const secs = isCode2 ? (wiz.sections_code2 || wiz.selectedSections) : wiz.selectedSections;
-    const curCode = isCode2 ? (wiz.code2 || (curG + '02')) : (wiz.code1 || (curG + '01'));
-    const hasAudio = wiz.audioScript || wiz.audioUrl || secs.some(s => s.skill === 'listening');
+    const curT = this.getWizardTermKey ? this.getWizardTermKey() : (wiz.term || 'GK1');
+    const suite = this.getOfficialExamSuite(curG, curT);
     const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
     const schoolName = (wiz.schoolName || localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
     const examYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const isCode2 = (wiz.selectedPreviewCode === 2);
+    const curCode = isCode2 ? (wiz.code2 || `${curG}02`) : (wiz.code1 || `${curG}01`);
+    const secs = isCode2 && wiz.sectionsCode2 && wiz.sectionsCode2.length ? wiz.sectionsCode2 : (wiz.sections || []);
+    const hasAudio = !!(wiz.audioUrl || wiz.audioScript);
+
+    // Dữ liệu đáp án và bổ trợ
+    const sec1 = wiz.sections || [];
+    const sec2 = wiz.sectionsCode2 && wiz.sectionsCode2.length ? wiz.sectionsCode2 : sec1;
+    const ans1 = sec1.flatMap(s => (s.questions || []).map((q, idx) => ({ num: idx + 1, ans: q.correctAnswer || 'A' })));
+    const ans2 = sec2.flatMap(s => (s.questions || []).map((q, idx) => ({ num: idx + 1, ans: q.correctAnswer || 'A' })));
+    const p8q = sec1.flatMap(s => s.questions || []).find(q => q.type === 'essay');
+    const rubric = wiz.writingRubric || (suite ? suite.writingRubric : (p8q ? p8q.rubric : ''));
+    const sampleWritingText = wiz.sampleWritingText || (suite ? suite.sampleWritingText : (p8q ? p8q.sampleText : ''));
+    const hasSpeaking = wiz.hasSpeaking !== undefined ? wiz.hasSpeaking : (suite ? suite.hasSpeaking : false);
+    const speakingScriptRows = wiz.speakingScriptRows || (suite ? suite.speakingScriptRows : []);
+    const finalScoreSummary = wiz.finalScoreSummary || (suite ? suite.finalScoreSummary : '');
 
     return `
     <div class="page-body slide-up">
@@ -2481,8 +3034,10 @@ const App = {
             <button class="tab-btn ${wiz.previewMode === 'matrix' ? 'active' : ''}" onclick="App.setPreviewMode('matrix')">📊 Ma Trận & Bản Đặc Tả 7991</button>
           </div>
           <button class="btn btn-warn" onclick="App.generateRandomizedOfficialExam('${curG}', '${curT}')" title="Bốc một đề thi hoàn toàn khác từ kho tổ hợp 10^28 đề">🎲 Bốc Đề Khác</button>
-          <button class="btn btn-primary" onclick="App.exportWord(null, null, '${esc(curCode)}', false)">📄 Xuất Word Mã ${isCode2 ? '2' : '1'} (.doc)</button>
-          <button class="btn btn-success" onclick="App.exportFullBundleWord()">📦 Trọn Bộ 2 Mã Đề (.doc)</button>
+          <button class="btn btn-primary" onclick="App.exportWord(null, null, '${esc(curCode)}', false)">📄 Xuất Đề Mã ${isCode2 ? '2' : '1'} (.doc)</button>
+          <button class="btn" style="background:#0284c7;color:#fff;font-weight:700" onclick="App.exportMatrixAndSpecWord()" title="Xuất riêng Ma trận 15 cột và Bản đặc tả 7 cột (.doc)">📊 Xuất Ma Trận & Đặc Tả (.doc)</button>
+          <button class="btn" style="background:#d97706;color:#fff;font-weight:700" onclick="App.exportAnswerKeyWord()" title="Xuất Audio Script, bảng so sánh 4 cột và hướng dẫn chấm (.doc)">👩‍🏫 Xuất Đáp Án & HD Chấm (.doc)</button>
+          <button class="btn btn-success" onclick="App.exportFullBundleWord()" title="Xuất trọn bộ 5 phần chuẩn Công văn 7991 như app Desktop">📦 Trọn Bộ 5 Phần Chuẩn App (.doc)</button>
           <button class="btn" style="background:#7c3aed;color:#fff;font-weight:700" onclick="App.assignWizardExamOnline()">🚀 Giao bài Online</button>
           <button class="btn btn-outline" onclick="window.print()">🖨️ In đề A4</button>
         </div>
@@ -2518,38 +3073,88 @@ const App = {
       <!-- Exam Sheet: Chuẩn 100% Mẫu Thầy Đinh Văn Thành (THCS Đồng Yên) -->
       ${wiz.previewMode === 'matrix' ? `
         <div class="card p-24" style="background:#fff">
-          <h3 style="font-size:16px;font-weight:800;color:#1e3a8a;margin-bottom:12px">📊 MA TRẬN & BẢN ĐẶC TẢ KỸ THUẬT CV 7991/BGDĐT - TIẾNG ANH ${curG}</h3>
-          ${(wiz.matrixRows && wiz.matrixRows.length) ? `
-          <div style="overflow-x:auto;margin-bottom:20px">
-            <table style="width:100%;border-collapse:collapse;font-size:11.5pt">
+          <div style="text-align:center;margin-bottom:14px">
+            <div style="font-size:12pt;font-weight:bold;color:#1e293b">${esc(parentAgency)} - ${esc(schoolName)}</div>
+            <div style="font-size:14pt;font-weight:bold;color:#1e3a8a;margin-top:3px">MA TRẬN ĐỀ KIỂM TRA ĐÁNH GIÁ ${esc((wiz.termTitle || curT).toUpperCase())} – NĂM HỌC ${esc(examYear)}</div>
+            <div style="font-size:11.5pt;font-weight:bold;color:#334155">MÔN: TIẾNG ANH ${curG} (GLOBAL SUCCESS) - THỜI GIAN LÀM BÀI: ${wiz.examTime || 60} PHÚT</div>
+            <div style="font-size:10.5pt;font-style:italic;color:#64748b">${esc(wiz.matrixSubtitle || (suite ? suite.matrixSubtitle : 'Hình thức: 100% Bài kiểm tra Viết trên giấy (Thang điểm: 10,0 điểm - Giữa kỳ không thi Nói)'))}</div>
+          </div>
+
+          <!-- Bảng 1: Ma trận 15 cột chuẩn CV 7991 -->
+          <div style="overflow-x:auto;margin-bottom:24px">
+            <table style="width:100%;border-collapse:collapse;font-size:9.5pt;min-width:900px">
               <thead>
-                <tr style="background:#f1f5f9;font-weight:bold;text-align:center">
-                  <th style="border:1px solid #000;padding:6px">TT</th>
-                  <th style="border:1px solid #000;padding:6px">Kĩ năng</th>
-                  <th style="border:1px solid #000;padding:6px">Đơn vị kiến thức / Kĩ năng</th>
-                  <th style="border:1px solid #000;padding:6px">Nhận biết</th>
-                  <th style="border:1px solid #000;padding:6px">Thông hiểu</th>
-                  <th style="border:1px solid #000;padding:6px">Vận dụng</th>
-                  <th style="border:1px solid #000;padding:6px">Tổng câu</th>
-                  <th style="border:1px solid #000;padding:6px">Tổng điểm</th>
+                <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+                  <th rowspan="2" style="border:1px solid #000;padding:6px 4px;width:4%">TT</th>
+                  <th rowspan="2" style="border:1px solid #000;padding:6px 4px;width:15%">Chủ đề / Kĩ năng</th>
+                  <th rowspan="2" style="border:1px solid #000;padding:6px 4px;width:21%">Nội dung / Đơn vị kiến thức</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">TNKQ nhiều lựa chọn</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">TNKQ Đúng/Sai</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">Tự luận</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">Tổng</th>
+                </tr>
+                <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">VD</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">VD</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">VD</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:5%">VD</th>
                 </tr>
               </thead>
               <tbody>
-                ${wiz.matrixRows.map(r => `
+                ${(wiz.matrixRows || (suite ? suite.matrixRows : [])).map(r => {
+                  const isTotal = (r[0] || '').startsWith('TỔNG');
+                  return `
+                  <tr style="${isTotal ? 'background:#f4f6f9;font-weight:bold' : ''}">
+                    ${r.map((val, ci) => `
+                      <td style="border:1px solid #000;padding:5px 4px;text-align:${ci === 1 || ci === 2 ? 'left' : 'center'};${isTotal ? 'font-weight:bold' : ''}">
+                        ${esc(val || '').replace(/\n/g, '<br/>')}
+                      </td>
+                    `).join('')}
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bảng 2: Bản đặc tả 7 cột chuẩn CV 7991 -->
+          <div style="text-align:center;margin:20px 0 12px 0">
+            <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a">BẢN ĐẶC TẢ KỸ THUẬT ĐỀ KIỂM TRA ${esc((wiz.termTitle || curT).toUpperCase())} - TIẾNG ANH ${curG}</div>
+            <div style="font-size:10.5pt;font-style:italic;color:#64748b">${esc(wiz.specSubtitle || (suite ? suite.specSubtitle : 'CHƯƠNG TRÌNH GLOBAL SUCCESS'))}</div>
+          </div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:9.5pt;min-width:900px">
+              <thead>
+                <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+                  <th style="border:1px solid #000;padding:6px 4px;width:4%">TT</th>
+                  <th style="border:1px solid #000;padding:6px 6px;width:15%">Chủ đề / Kĩ năng</th>
+                  <th style="border:1px solid #000;padding:6px 6px;width:18%">Đơn vị kiến thức</th>
+                  <th style="border:1px solid #000;padding:6px 8px;width:37%">Yêu cầu cần đạt</th>
+                  <th style="border:1px solid #000;padding:6px 4px;width:8.5%">TNKQ (MCQs)</th>
+                  <th style="border:1px solid #000;padding:6px 4px;width:8.5%">TNKQ (Đúng/Sai)</th>
+                  <th style="border:1px solid #000;padding:6px 4px;width:9%">Tự luận</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(wiz.specRows || (suite ? suite.specRows : [])).map(r => `
                   <tr>
-                    <td style="border:1px solid #000;padding:5px;text-align:center">${esc(r[0] || '')}</td>
-                    <td style="border:1px solid #000;padding:5px;font-weight:bold">${esc(r[1] || '').replace(/\n/g, '<br/>')}</td>
-                    <td style="border:1px solid #000;padding:5px">${esc(r[2] || '')}</td>
-                    <td style="border:1px solid #000;padding:5px;text-align:center">${esc(r[3] || '')}</td>
-                    <td style="border:1px solid #000;padding:5px;text-align:center">${esc(r[4] || '')}</td>
-                    <td style="border:1px solid #000;padding:5px;text-align:center">${esc(r[5] || '')}</td>
-                    <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:bold">${esc(r[12] || r[3] || '')}</td>
-                    <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:bold">${esc(r[14] || '')}</td>
+                    ${r.map((val, ci) => `
+                      <td style="border:1px solid #000;padding:5px 6px;text-align:${ci === 0 || ci >= 4 ? 'center' : 'left'}">
+                        ${esc(val || '').replace(/\n/g, '<br/>')}
+                      </td>
+                    `).join('')}
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-          </div>` : '<p>Chưa có dữ liệu ma trận.</p>'}
+          </div>
         </div>
       ` : `
       <div class="exam-preview-wrap">
@@ -2562,10 +3167,10 @@ const App = {
                 <div style="font-size:11.5pt;font-weight:bold;text-decoration:underline">${esc(schoolName)}</div>
               </td>
               <td style="width:62%;text-align:center;vertical-align:top;border:none;line-height:1.25">
-                <div style="font-size:12.5pt;font-weight:bold">${esc(wiz.examTitle.toUpperCase())}</div>
+                <div style="font-size:12.5pt;font-weight:bold">${esc((wiz.examTitle || wiz.termTitle || 'BÀI KIỂM TRA ĐÁNH GIÁ').toUpperCase())}</div>
                 <div style="font-size:11.5pt;font-weight:bold">NĂM HỌC: ${esc(examYear)}</div>
                 <div style="font-size:12.5pt;font-weight:bold">Môn: Tiếng Anh ${curG}</div>
-                <div style="font-size:11.5pt;font-style:italic">Thời gian làm bài: ${wiz.examTime} phút (không kể thời gian giao đề)</div>
+                <div style="font-size:11.5pt;font-style:italic">Thời gian làm bài: ${wiz.examTime || 60} phút (không kể thời gian giao đề)</div>
               </td>
             </tr>
           </table>
@@ -2648,7 +3253,12 @@ const App = {
                   return `
                   <div style="font-size:13pt;margin-bottom:12pt;line-height:1.3">
                     <div><b>${qNum}.</b> ${formatExamText(q.content).replace(/\n/g, '<br/>')}</div>
-                    <div style="margin-top:8pt;color:#94a3b8;font-size:12pt;line-height:2.0;letter-spacing:1px">
+                    <!-- 10 dòng kẻ chấm chuẩn bài thi viết Thầy Đinh Văn Thành -->
+                    <div style="margin-top:8pt;color:#000;font-size:12pt;line-height:2.0;letter-spacing:1px">
+                      ...................................................................................................................................................................<br/>
+                      ...................................................................................................................................................................<br/>
+                      ...................................................................................................................................................................<br/>
+                      ...................................................................................................................................................................<br/>
                       ...................................................................................................................................................................<br/>
                       ...................................................................................................................................................................<br/>
                       ...................................................................................................................................................................<br/>
@@ -2656,10 +3266,6 @@ const App = {
                       ...................................................................................................................................................................<br/>
                       ...................................................................................................................................................................
                     </div>
-                    ${wiz.previewMode === 'teacher' && q.sampleText ? `
-                    <div style="margin-top:8pt;padding:8pt 12pt;background:#eff6ff;border-left:3px solid #2563eb;font-size:11.5pt;color:#1e40af;line-height:1.4">
-                      📝 <b>Bài viết mẫu tham khảo:</b><br/>${esc(q.sampleText)}
-                    </div>` : ''}
                   </div>`;
                 }
 
@@ -2669,8 +3275,8 @@ const App = {
                   ${q.options ? `
                   <div style="padding-left:16pt;margin-top:3pt;display:grid;grid-template-columns:1fr 1fr;gap:4pt;font-size:13pt">
                     ${q.options.map(opt => `
-                    <div class="${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? 'correct-answer' : ''}">
-                      ${formatExamText(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? ' ✓' : ''}
+                    <div class="${wiz.previewMode === 'teacher' && opt.charAt(0) === (q.correctAnswer || q.answer) ? 'correct-answer' : ''}">
+                      ${formatExamText(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === (q.correctAnswer || q.answer) ? ' ✓' : ''}
                     </div>`).join('')}
                   </div>` : ''}
                   ${wiz.previewMode === 'teacher' && q.solution ? `
@@ -2683,9 +3289,125 @@ const App = {
             }).join('');
           })()}
 
-          <div style="text-align:center;font-weight:bold;font-style:italic;margin-top:18pt;font-size:11pt">
-            --- HẾT ---
+          <div style="text-align:center;font-weight:bold;font-style:italic;margin-top:20pt;font-size:12pt">
+            ------The end------
           </div>
+
+          <!-- Nếu ở chế độ Giáo viên: Hiện Đáp Án & Hướng Dẫn Chấm chi tiết chuẩn Thầy Thành -->
+          ${wiz.previewMode === 'teacher' ? `
+          <div style="margin-top:30pt;border-top:2px dashed #0284c7;padding-top:20pt">
+            <div style="text-align:center;margin-bottom:14pt">
+              <div style="font-size:12pt;font-weight:bold">${esc(parentAgency)} - ${esc(schoolName)}</div>
+              <div style="font-size:14pt;font-weight:bold;color:#b91c1c;margin-top:4pt">
+                HƯỚNG DẪN CHẤM, ĐÁP ÁN VÀ BIỂU ĐIỂM CHI TIẾT
+              </div>
+              <div style="font-size:11.5pt;font-style:italic">Môn: Tiếng Anh ${curG} • ${esc(wiz.termTitle || curT)} • Năm học ${esc(examYear)}</div>
+            </div>
+
+            <!-- 1. Audio Scripts -->
+            ${(wiz.audioScript || (suite ? suite.fullAudioScript : '')) ? `
+            <div style="font-size:12.5pt;font-weight:bold;color:#0284c7;margin:12pt 0 6pt 0">
+              I. NỘI DUNG BÀI NGHE (AUDIO SCRIPTS - DÙNG CHO CẢ 2 MÃ ĐỀ)
+            </div>
+            <div style="border:1.5px dashed #0284c7;background:#f8fafc;padding:12px 16px;border-radius:8px;font-size:11.5pt;line-height:1.5;white-space:pre-wrap;margin-bottom:16pt">
+${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
+            </div>` : ''}
+
+            <!-- 2. Bảng Đáp Án TNKQ Đối Chiếu 4 Cột 18 Hàng -->
+            <div style="font-size:12.5pt;font-weight:bold;color:#1e3a8a;margin-bottom:6pt">
+              II. BẢNG ĐÁP ÁN TRẮC NGHIỆM ĐỐI CHIẾU 2 MÃ ĐỀ (${hasSpeaking ? '7.2 điểm' : '8.5 điểm'})
+            </div>
+            <div style="font-size:10.5pt;font-style:italic;color:#64748b;margin-bottom:6pt">
+              * Gồm 36 câu trắc nghiệm khách quan (Mỗi câu đúng = ${hasSpeaking ? '0.2 điểm' : '0.236 điểm'})
+            </div>
+            <div style="overflow-x:auto;margin-bottom:16pt">
+              <table style="width:100%;border-collapse:collapse;font-size:11pt">
+                <thead>
+                  <tr style="background:#e8eef5;text-align:center;font-weight:bold">
+                    <th style="border:1px solid #000;padding:6px;width:12%">Câu</th>
+                    <th style="border:1px solid #000;padding:6px;width:38%;color:#1e3a8a">Đáp án MÃ ĐỀ ${esc(wiz.code1 || curG + '01')}</th>
+                    <th style="border:1px solid #000;padding:6px;width:12%">Câu</th>
+                    <th style="border:1px solid #000;padding:6px;width:38%;color:#b91c1c">Đáp án MÃ ĐỀ ${esc(wiz.code2 || curG + '02')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(() => {
+                    let rHtml = '';
+                    for (let i = 0; i < 18; i++) {
+                      const c1 = ans1[i];
+                      const c2 = ans2[i];
+                      const c3 = ans1[i + 18];
+                      const c4 = ans2[i + 18];
+                      rHtml += `
+                      <tr>
+                        <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:5px">${c1 ? c1.num : (i + 1)}</td>
+                        <td style="border:1px solid #000;text-align:center;font-weight:bold;color:#1e3a8a;padding:5px">${c1 ? c1.ans : ''}</td>
+                        <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:5px">${c3 ? c3.num : (i + 19)}</td>
+                        <td style="border:1px solid #000;text-align:center;font-weight:bold;color:#b91c1c;padding:5px">${c4 ? c4.ans : ''}</td>
+                      </tr>`;
+                    }
+                    return rHtml;
+                  })()}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 3. Hướng dẫn chấm tự luận Writing -->
+            <div style="font-size:12.5pt;font-weight:bold;color:#1e3a8a;margin-bottom:6pt">
+              III. HƯỚNG DẪN CHẤM BÀI VIẾT (WRITING - ${hasSpeaking ? '0.8 điểm' : '1.5 điểm'})
+            </div>
+            ${rubric ? `
+            <div style="border:1px solid #cbd5e1;background:#f8fafc;padding:10px 14px;border-radius:6px;font-size:11pt;line-height:1.5;margin-bottom:10pt">
+              <b>1. Tiêu chí chấm điểm (Rubric):</b><br/>
+              ${esc(rubric).replace(/\n/g, '<br/>')}
+            </div>` : ''}
+
+            ${sampleWritingText ? `
+            <div style="border:1px solid #cbd5e1;background:#eff6ff;padding:10px 14px;border-radius:6px;font-size:11pt;line-height:1.5;margin-bottom:16pt">
+              <b>2. Bài viết mẫu tham khảo (Sample Model Paragraph):</b><br/>
+              ${esc(sampleWritingText).replace(/\n/g, '<br/>')}
+            </div>` : ''}
+
+            <!-- 4. Kịch bản thi nói Speaking Test (nếu có thi học kỳ) -->
+            ${(hasSpeaking && speakingScriptRows && speakingScriptRows.length) ? `
+            <div style="font-size:12.5pt;font-weight:bold;color:#7c3aed;margin:14pt 0 6pt 0">
+              IV. KỊCH BẢN KHẢO THÍ BÀI THI NÓI (SPEAKING TEST - 2.0 ĐIỂM)
+            </div>
+            <div style="overflow-x:auto;margin-bottom:16pt">
+              <table style="width:100%;border-collapse:collapse;font-size:10.5pt">
+                <thead>
+                  <tr style="background:#ede9fe;text-align:center;font-weight:bold">
+                    <th style="border:1px solid #000;padding:6px;width:15%">Phần thi (Task)</th>
+                    <th style="border:1px solid #000;padding:6px;width:40%">Kịch bản Giám khảo (Examiner's Script)</th>
+                    <th style="border:1px solid #000;padding:6px;width:30%">Câu trả lời mong đợi của HS</th>
+                    <th style="border:1px solid #000;padding:6px;width:15%">Thang điểm & Gợi ý</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${speakingScriptRows.map(r => `
+                    <tr>
+                      <td style="border:1px solid #000;padding:6px;font-weight:bold;vertical-align:top">${esc(r[0]).replace(/\n/g, '<br/>')}</td>
+                      <td style="border:1px solid #000;padding:6px;vertical-align:top">${esc(r[1]).replace(/\n/g, '<br/>')}</td>
+                      <td style="border:1px solid #000;padding:6px;vertical-align:top">${esc(r[2]).replace(/\n/g, '<br/>')}</td>
+                      <td style="border:1px solid #000;padding:6px;vertical-align:top">${esc(r[3] || '').replace(/\n/g, '<br/>')}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>` : ''}
+
+            <!-- 5. Tóm tắt biểu điểm tổng -->
+            ${finalScoreSummary ? `
+            <div style="font-size:12pt;font-weight:bold;color:#15803d;margin-top:10pt">
+              ${esc(finalScoreSummary)}
+            </div>` : ''}
+
+            <div style="margin-top:24pt;text-align:right;font-size:11pt">
+              <b>GIÁO VIÊN RA ĐỀ</b><br/>
+              <span style="font-style:italic;font-size:10pt;color:#64748b">(Ký và ghi rõ họ tên)</span><br/><br/><br/>
+              <b>${esc(wiz.teacherName || 'Thầy Đinh Văn Thành')}</b>
+            </div>
+          </div>` : ''}
 
           <div style="margin-top:20pt;border-top:1pt solid #000;padding-top:8pt;font-size:10.5pt;display:flex;justify-content:space-between;color:#475569">
             <span>Bản quyền: <b>Thầy Đinh Văn Thành – Trường THCS Đồng Yên (0915.213717)</b></span>
@@ -2696,6 +3418,7 @@ const App = {
       `}
     </div>`;
   },
+
 
   setPreviewMode(mode) {
     this.state.wizard.previewMode = mode;
@@ -2855,7 +3578,11 @@ const App = {
           return `
           <div style="font-size:13pt;margin-bottom:10pt;line-height:1.25">
             <div><b>${qNum}.</b> ${formatExamText(q.content).replace(/\n/g, '<br/>')}</div>
-            <div style="margin-top:8pt;color:#64748b;font-size:12pt;line-height:2.1">
+            <div style="margin-top:8pt;color:#000;font-size:12pt;line-height:2.0;letter-spacing:1px">
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
+              ...................................................................................................................................................................<br/>
               ...................................................................................................................................................................<br/>
               ...................................................................................................................................................................<br/>
               ...................................................................................................................................................................<br/>
@@ -4500,16 +5227,22 @@ const App = {
           <!-- Quick Action Buttons -->
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <a href="${item.p}" download="${item.f}" class="btn btn-primary" style="text-decoration:none;font-weight:700">
-              📥 Tải File Word Gốc (.docx)
+              📥 Tải File Gốc (.docx)
             </a>
-            <button onclick="App.exportOfficialCustomWord(1)" class="btn btn-outline" title="Xuất file Word theo tên trường đang cấu hình">
-              📄 Xuất Word Mã 1 (.doc)
+            <button onclick="App.exportOfficialCustomWord(1)" class="btn btn-outline" title="Xuất file Word đề Mã 1 theo tên trường">
+              📄 Xuất Đề Mã 1 (.doc)
             </button>
-            <button onclick="App.exportOfficialCustomWord(2)" class="btn btn-outline" title="Xuất file Word đề hoán vị theo tên trường đang cấu hình">
-              🔀 Xuất Word Mã 2 (.doc)
+            <button onclick="App.exportOfficialCustomWord(2)" class="btn btn-outline" title="Xuất file Word đề Mã 2 theo tên trường">
+              🔀 Xuất Đề Mã 2 (.doc)
             </button>
-            <button onclick="App.exportOfficialFullBundleWord()" class="btn btn-success" title="Xuất trọn bộ 2 mã đề + ma trận + audio + đáp án">
-              📦 Trọn Bộ 2 Mã Đề (.doc)
+            <button onclick="App.exportOfficialMatrixAndSpecWord()" class="btn" style="background:#0284c7;color:#fff;font-weight:700" title="Xuất riêng Ma trận 15 cột và Bản đặc tả 7 cột (.doc)">
+              📊 Xuất Ma Trận & Đặc Tả (.doc)
+            </button>
+            <button onclick="App.exportOfficialAnswerKeyWord()" class="btn" style="background:#d97706;color:#fff;font-weight:700" title="Xuất Audio Script, bảng so sánh 4 cột 18 hàng và hướng dẫn chấm (.doc)">
+              👩‍🏫 Xuất Đáp Án & HD Chấm (.doc)
+            </button>
+            <button onclick="App.exportOfficialFullBundleWord()" class="btn btn-success" title="Xuất trọn bộ 5 phần chuẩn Công văn 7991 như app Desktop">
+              📦 Trọn Bộ 5 Phần Chuẩn App (.doc)
             </button>
             <button onclick="App.assignOfficialExamOnline()" class="btn" style="background:#7c3aed;color:#fff;font-weight:700" title="Gửi link học sinh làm trực tiếp trên điện thoại">
               🚀 Giao Bài Thi Online
@@ -4701,6 +5434,7 @@ const App = {
     // TAB 3: Đáp án 4 cột & Lời giải
     if (tab === 'solutions') {
       const answers = suite.answers_code1 || [];
+      const answers2 = suite.answers_code2 || [];
       return `
       <div class="exam-preview-wrap">
         <div class="exam-sheet" style="font-family:'Times New Roman',serif;font-size:12.5pt;line-height:1.25">
@@ -4712,44 +5446,90 @@ const App = {
             <div style="font-size:12pt;font-style:italic">Môn: Tiếng Anh ${grade} • ${esc(suite.termTitle)} • Năm học ${esc(examYear)}</div>
           </div>
 
-          <div style="font-size:13pt;font-weight:bold;margin-bottom:6pt;color:#1e3a8a">
-            I. BẢNG ĐÁP ÁN TRẮC NGHIỆM ĐỐI CHIẾU (36 CÂU = ${suite.hasSpeaking ? '7.2' : '8.5'} ĐIỂM)
+          <!-- 1. Audio Scripts -->
+          ${suite.fullAudioScript ? `
+          <div style="font-size:12.5pt;font-weight:bold;color:#0284c7;margin:10pt 0 6pt 0">
+            I. NỘI DUNG BÀI NGHE (AUDIO SCRIPTS - DÙNG CHO CẢ 2 MÃ ĐỀ)
           </div>
-          <table style="width:100%;border-collapse:collapse;font-size:11.5pt;margin-bottom:14pt">
+          <div style="border:1.5px dashed #0284c7;background:#f8fafc;padding:12px 16px;border-radius:8px;font-size:11.5pt;line-height:1.5;white-space:pre-wrap;margin-bottom:16pt">
+${esc(suite.fullAudioScript)}
+          </div>` : ''}
+
+          <!-- 2. Bảng Đáp Án TNKQ Đối Chiếu 4 Cột 18 Hàng -->
+          <div style="font-size:13pt;font-weight:bold;margin-bottom:6pt;color:#1e3a8a">
+            II. BẢNG ĐÁP ÁN TRẮC NGHIỆM ĐỐI CHIẾU 2 MÃ ĐỀ (${suite.hasSpeaking ? '7.2 điểm' : '8.5 điểm'})
+          </div>
+          <div style="font-size:10.5pt;font-style:italic;color:#64748b;margin-bottom:6pt">
+            * Bảng đối chiếu 4 cột gồm 18 hàng so sánh trực diện Mã đề ${esc(suite.code1)} và Mã đề ${esc(suite.code2)}
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:11pt;margin-bottom:16pt">
             <thead>
               <tr style="background:#e8eef5;text-align:center;font-weight:bold">
-                <th style="border:1px solid #000;padding:5px;width:12%">Câu</th>
-                <th style="border:1px solid #000;padding:5px;width:25%">Đáp án Mã ${suite.code1}</th>
-                <th style="border:1px solid #000;padding:5px;width:25%">Đáp án Mã ${suite.code2}</th>
-                <th style="border:1px solid #000;padding:5px;width:38%">Ghi chú / Mức độ</th>
+                <th style="border:1px solid #000;padding:6px;width:12%">Câu</th>
+                <th style="border:1px solid #000;padding:6px;width:38%;color:#1e3a8a">Đáp án MÃ ĐỀ ${esc(suite.code1)}</th>
+                <th style="border:1px solid #000;padding:6px;width:12%">Câu</th>
+                <th style="border:1px solid #000;padding:6px;width:38%;color:#b91c1c">Đáp án MÃ ĐỀ ${esc(suite.code2)}</th>
               </tr>
             </thead>
             <tbody>
-              ${answers.map((aStr, idx) => {
-                const a2Str = (suite.answers_code2 && suite.answers_code2[idx]) || aStr;
-                return `
-                <tr>
-                  <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:4px">${idx + 1}</td>
-                  <td style="border:1px solid #000;text-align:center;color:#b91c1c;font-weight:bold;padding:4px">${esc(aStr)}</td>
-                  <td style="border:1px solid #000;text-align:center;color:#0369a1;font-weight:bold;padding:4px">${esc(a2Str)}</td>
-                  <td style="border:1px solid #000;padding:4px 8px">${idx < 10 ? 'Nghe hiểu (0.2đ/câu)' : (idx < 22 ? 'Kiến thức ngôn ngữ' : (idx < 32 ? 'Đọc hiểu' : 'Viết lại câu & Trật tự từ'))}</td>
-                </tr>`;
-              }).join('')}
+              ${(() => {
+                let rHtml = '';
+                for (let i = 0; i < 18; i++) {
+                  rHtml += `
+                  <tr>
+                    <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:5px">${i + 1}</td>
+                    <td style="border:1px solid #000;text-align:center;font-weight:bold;color:#1e3a8a;padding:5px">${esc(answers[i] || '')}</td>
+                    <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:5px">${i + 19}</td>
+                    <td style="border:1px solid #000;text-align:center;font-weight:bold;color:#b91c1c;padding:5px">${esc(answers2[i + 18] || answers[i + 18] || '')}</td>
+                  </tr>`;
+                }
+                return rHtml;
+              })()}
             </tbody>
           </table>
 
+          <!-- 3. Hướng Dẫn Chấm Writing -->
           <div style="font-size:13pt;font-weight:bold;margin-top:14pt;margin-bottom:6pt;color:#1e3a8a">
-            II. HƯỚNG DẪN CHẤM BÀI VIẾT ĐOẠN VĂN (PARAGRAPH WRITING: ${suite.hasSpeaking ? '0.8' : '1.5'} ĐIỂM)
+            III. HƯỚNG DẪN CHẤM BÀI VIẾT ĐOẠN VĂN (PARAGRAPH WRITING: ${suite.hasSpeaking ? '0.8' : '1.5'} ĐIỂM)
           </div>
-          <div style="background:#f8fafc;border:1px solid #cbd5e1;padding:12px 16px;border-radius:8px;font-size:12pt;line-height:1.5;white-space:pre-wrap;margin-bottom:12pt">
+          <div style="background:#f8fafc;border:1px solid #cbd5e1;padding:12px 16px;border-radius:8px;font-size:11.5pt;line-height:1.5;white-space:pre-wrap;margin-bottom:12pt">
             <b>1. Tiêu chí chấm điểm (Rubric):</b>\n${esc(suite.writingRubric)}
           </div>
-          <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:12px 16px;border-radius:8px;font-size:12pt;line-height:1.5;margin-bottom:16pt">
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:12px 16px;border-radius:8px;font-size:11.5pt;line-height:1.5;margin-bottom:16pt">
             <b>2. Bài viết mẫu tham khảo (Sample Writing):</b><br/>
             ${esc(suite.sampleWritingText)}
           </div>
 
-          <div style="font-size:13pt;font-weight:bold;color:#15803d;margin-top:12pt">
+          <!-- 4. Kịch bản thi nói Speaking Test (nếu có) -->
+          ${(suite.hasSpeaking && suite.speakingScriptRows && suite.speakingScriptRows.length) ? `
+          <div style="font-size:13pt;font-weight:bold;color:#7c3aed;margin:14pt 0 6pt 0">
+            IV. KỊCH BẢN KHẢO THÍ BÀI THI NÓI (SPEAKING TEST - 2.0 ĐIỂM)
+          </div>
+          <div style="overflow-x:auto;margin-bottom:16pt">
+            <table style="width:100%;border-collapse:collapse;font-size:10.5pt">
+              <thead>
+                <tr style="background:#ede9fe;text-align:center;font-weight:bold">
+                  <th style="border:1px solid #000;padding:6px;width:15%">Phần thi (Task)</th>
+                  <th style="border:1px solid #000;padding:6px;width:40%">Kịch bản Giám khảo (Examiner's Script)</th>
+                  <th style="border:1px solid #000;padding:6px;width:30%">Câu trả lời mong đợi của HS</th>
+                  <th style="border:1px solid #000;padding:6px;width:15%">Thang điểm & Gợi ý</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${suite.speakingScriptRows.map(r => `
+                  <tr>
+                    <td style="border:1px solid #000;padding:6px;font-weight:bold;vertical-align:top">${esc(r[0]).replace(/\n/g, '<br/>')}</td>
+                    <td style="border:1px solid #000;padding:6px;vertical-align:top">${esc(r[1]).replace(/\n/g, '<br/>')}</td>
+                    <td style="border:1px solid #000;padding:6px;vertical-align:top">${esc(r[2]).replace(/\n/g, '<br/>')}</td>
+                    <td style="border:1px solid #000;padding:6px;vertical-align:top">${esc(r[3] || '').replace(/\n/g, '<br/>')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>` : ''}
+
+          <!-- 5. Tóm tắt biểu điểm tổng -->
+          <div style="font-size:12.5pt;font-weight:bold;color:#15803d;margin-top:12pt">
             ${esc(suite.finalScoreSummary)}
           </div>
         </div>
@@ -4761,83 +5541,96 @@ const App = {
       return `
       <div class="exam-preview-wrap">
         <div class="exam-sheet" style="font-family:'Times New Roman',serif;font-size:11.5pt;line-height:1.2">
-          <div style="text-align:center;margin-bottom:12pt">
+          <div style="text-align:center;margin-bottom:14pt">
             <div style="font-size:11.5pt;font-weight:bold">${esc(parentAgency.toUpperCase())} - ${esc(schoolName.toUpperCase())}</div>
-            <div style="font-size:13pt;font-weight:bold;color:#1e3a8a;margin-top:3pt">
+            <div style="font-size:14pt;font-weight:bold;color:#1e3a8a;margin-top:3pt">
               MA TRẬN ĐỀ KIỂM TRA ĐÁNH GIÁ ${suite.termTitle.toUpperCase()} – NĂM HỌC ${esc(examYear)}
             </div>
-            <div style="font-size:11pt;font-style:italic">Môn: Tiếng Anh ${grade} • ${esc(suite.matrixSubtitle)}</div>
+            <div style="font-size:11pt;font-style:italic;color:#64748b">Môn: TIẾNG ANH ${grade} (GLOBAL SUCCESS) - THỜI GIAN LÀM BÀI: ${suite.timeMinutes || 60} PHÚT</div>
+            <div style="font-size:10.5pt;font-style:italic;color:#64748b">${esc(suite.matrixSubtitle)}</div>
           </div>
 
-          <!-- Bảng Ma Trận -->
-          <table style="width:100%;border-collapse:collapse;font-size:10.5pt;margin-bottom:16pt">
-            <thead>
-              <tr style="background:#e2e8f0;text-align:center;font-weight:bold">
-                <th rowspan="2" style="border:1px solid #000;padding:4px;width:5%">TT</th>
-                <th rowspan="2" style="border:1px solid #000;padding:4px;width:20%">Kĩ năng / Nội dung</th>
-                <th rowspan="2" style="border:1px solid #000;padding:4px;width:30%">Đơn vị kiến thức / Kĩ năng</th>
-                <th colspan="3" style="border:1px solid #000;padding:4px">Mức độ nhận thức (Số câu)</th>
-                <th colspan="3" style="border:1px solid #000;padding:4px">Tổng điểm</th>
-              </tr>
-              <tr style="background:#f1f5f9;text-align:center;font-weight:bold">
-                <th style="border:1px solid #000;padding:3px">NB</th>
-                <th style="border:1px solid #000;padding:3px">TH</th>
-                <th style="border:1px solid #000;padding:3px">VD</th>
-                <th style="border:1px solid #000;padding:3px">TNKQ</th>
-                <th style="border:1px solid #000;padding:3px">TL</th>
-                <th style="border:1px solid #000;padding:3px">Tổng</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${(suite.matrixRows || []).map(r => `
-                <tr style="${r[0] === 'TỔNG CÂU' || r[0] === 'TỔNG ĐIỂM' ? 'font-weight:bold;background:#f8fafc' : ''}">
-                  <td style="border:1px solid #000;text-align:center;padding:3px">${esc(r[0])}</td>
-                  <td style="border:1px solid #000;padding:3px 5px">${esc(r[1]).replace(/\n/g, '<br/>')}</td>
-                  <td style="border:1px solid #000;padding:3px 5px">${esc(r[2])}</td>
-                  <td style="border:1px solid #000;text-align:center;padding:3px">${esc(r[3] || '')}</td>
-                  <td style="border:1px solid #000;text-align:center;padding:3px">${esc(r[4] || '')}</td>
-                  <td style="border:1px solid #000;text-align:center;padding:3px">${esc(r[5] || '')}</td>
-                  <td style="border:1px solid #000;text-align:center;padding:3px">${esc(r[12] || '')}</td>
-                  <td style="border:1px solid #000;text-align:center;padding:3px">${esc(r[13] || '')}</td>
-                  <td style="border:1px solid #000;text-align:center;font-weight:bold;padding:3px">${esc(r[14] || '')}</td>
+          <!-- Bảng 1: Ma trận 15 cột chuẩn CV 7991 -->
+          <div style="overflow-x:auto;margin-bottom:24px">
+            <table style="width:100%;border-collapse:collapse;font-size:9.5pt;min-width:900px">
+              <thead>
+                <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+                  <th rowspan="2" style="border:1px solid #000;padding:6px 4px;width:4%">TT</th>
+                  <th rowspan="2" style="border:1px solid #000;padding:6px 4px;width:15%">Chủ đề / Kĩ năng</th>
+                  <th rowspan="2" style="border:1px solid #000;padding:6px 4px;width:21%">Nội dung / Đơn vị kiến thức</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">TNKQ nhiều lựa chọn</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">TNKQ Đúng/Sai</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">Tự luận</th>
+                  <th colspan="3" style="border:1px solid #000;padding:6px 4px">Tổng</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
+                <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">VD</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">VD</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:4.5%">VD</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:5%">Biết</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:5%">Hiểu</th>
+                  <th style="border:1px solid #000;padding:4px 2px;width:5%">VD</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(suite.matrixRows || []).map(r => {
+                  const isTotal = (r[0] || '').startsWith('TỔNG');
+                  return `
+                  <tr style="${isTotal ? 'background:#f4f6f9;font-weight:bold' : ''}">
+                    ${r.map((val, ci) => `
+                      <td style="border:1px solid #000;padding:5px 4px;text-align:${ci === 1 || ci === 2 ? 'left' : 'center'};${isTotal ? 'font-weight:bold' : ''}">
+                        ${esc(val || '').replace(/\n/g, '<br/>')}
+                      </td>
+                    `).join('')}
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
 
-          <div style="text-align:center;margin:16pt 0 10pt 0">
-            <div style="font-size:13pt;font-weight:bold;color:#1e3a8a">
-              BẢN ĐẶC TẢ KĨ THUẬT ĐỀ KIỂM TRA ĐÁNH GIÁ ${suite.termTitle.toUpperCase()}
+          <!-- Bảng 2: Bản đặc tả 7 cột chuẩn CV 7991 -->
+          <div style="text-align:center;margin:20px 0 12px 0">
+            <div style="font-size:13.5pt;font-weight:bold;color:#1e3a8a">
+              BẢN ĐẶC TẢ KỸ THUẬT ĐỀ KIỂM TRA ${suite.termTitle.toUpperCase()} - TIẾNG ANH ${grade}
             </div>
-            <div style="font-size:11pt;font-style:italic">${esc(suite.specSubtitle)}</div>
+            <div style="font-size:10.5pt;font-style:italic;color:#64748b">${esc(suite.specSubtitle)}</div>
           </div>
-
-          <!-- Bảng Bản Đặc Tả -->
-          <table style="width:100%;border-collapse:collapse;font-size:10.5pt">
-            <thead>
-              <tr style="background:#e2e8f0;text-align:center;font-weight:bold">
-                <th style="border:1px solid #000;padding:4px;width:5%">TT</th>
-                <th style="border:1px solid #000;padding:4px;width:15%">Kĩ năng</th>
-                <th style="border:1px solid #000;padding:4px;width:28%">Đơn vị kiến thức</th>
-                <th style="border:1px solid #000;padding:4px;width:37%">Mức độ đánh giá</th>
-                <th style="border:1px solid #000;padding:4px;width:15%">Số câu hỏi</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${(suite.specRows || []).map(r => `
-                <tr>
-                  <td style="border:1px solid #000;text-align:center;padding:3px;font-weight:bold">${esc(r[0])}</td>
-                  <td style="border:1px solid #000;padding:3px 5px;font-weight:bold">${esc(r[1]).replace(/\n/g, '<br/>')}</td>
-                  <td style="border:1px solid #000;padding:3px 5px">${esc(r[2])}</td>
-                  <td style="border:1px solid #000;padding:3px 5px">${esc(r[3]).replace(/\n/g, '<br/>')}</td>
-                  <td style="border:1px solid #000;text-align:center;padding:3px;font-weight:bold">${esc(r[4] || r[5] || r[6] || '').replace(/\n/g, '<br/>')}</td>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:9.5pt;min-width:900px">
+              <thead>
+                <tr style="background:#e8eef5;font-weight:bold;text-align:center">
+                  <th style="border:1px solid #000;padding:6px 4px;width:4%">TT</th>
+                  <th style="border:1px solid #000;padding:6px 6px;width:15%">Chủ đề / Kĩ năng</th>
+                  <th style="border:1px solid #000;padding:6px 6px;width:18%">Đơn vị kiến thức</th>
+                  <th style="border:1px solid #000;padding:6px 8px;width:37%">Yêu cầu cần đạt</th>
+                  <th style="border:1px solid #000;padding:6px 4px;width:8.5%">TNKQ (MCQs)</th>
+                  <th style="border:1px solid #000;padding:6px 4px;width:8.5%">TNKQ (Đúng/Sai)</th>
+                  <th style="border:1px solid #000;padding:6px 4px;width:9%">Tự luận</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                ${(suite.specRows || []).map(r => `
+                  <tr>
+                    ${r.map((val, ci) => `
+                      <td style="border:1px solid #000;padding:5px 6px;text-align:${ci === 0 || ci >= 4 ? 'center' : 'left'}">
+                        ${esc(val || '').replace(/\n/g, '<br/>')}
+                      </td>
+                    `).join('')}
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>`;
     }
+
 
     // TAB 5: Audio Scripts
     if (tab === 'audio') {
@@ -4970,6 +5763,80 @@ ${esc(suite.fullAudioScript)}
     UI.toast(`📥 Đã xuất file Word Mã ${code} (.doc)!`, 'success');
   },
 
+  exportOfficialMatrixAndSpecWord() {
+    const oState = this.state.officialExams;
+    const curG = oState.grade || '7';
+    const curT = oState.term || 'GK1';
+    const suite = this.getOfficialExamSuite(curG, curT);
+    if (!suite) return;
+
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const examYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const titleUpper = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`.toUpperCase();
+
+    const part1Html = this.buildMatrixWordHtml({
+      parentAgency, schoolName, examYear, titleUpper, grade: curG,
+      timeMinutes: suite.timeMinutes || 60,
+      subtitle: suite.matrixSubtitle || '',
+      matrixRows: suite.matrixRows || []
+    });
+
+    const part2Html = this.buildSpecWordHtml({
+      titleUpper, grade: curG,
+      subtitle: suite.specSubtitle || '',
+      specRows: suite.specRows || []
+    });
+
+    const pageBreak = '<br clear="all" style="page-break-before:always;mso-break-type:page-break"/>';
+    const fullHtml = this.wrapDocHtml([part1Html, part2Html].join(pageBreak), `${curT} - Anh ${curG} Ma Tran va Ban Dac Ta`);
+
+    const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${curT}_Anh_${curG}_Ma_Tran_Va_Ban_Dac_Ta_7991.doc`;
+    link.click();
+    UI.toast(`📊 Đã xuất Ma trận 15 cột & Bản đặc tả 7 cột (.doc)!`, 'success');
+  },
+
+  exportOfficialAnswerKeyWord() {
+    const oState = this.state.officialExams;
+    const curG = oState.grade || '7';
+    const curT = oState.term || 'GK1';
+    const suite = this.getOfficialExamSuite(curG, curT);
+    if (!suite) return;
+
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const examYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const titleUpper = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`.toUpperCase();
+
+    const ans1 = (suite.answers_code1 || []).map((ans, idx) => ({ num: idx + 1, ans }));
+    const ans2 = (suite.answers_code2 || []).map((ans, idx) => ({ num: idx + 1, ans }));
+
+    const ansHtml = this.buildAnswerKeyWordHtml({
+      parentAgency, schoolName, examYear, titleUpper, grade: curG,
+      code1: suite.code1, code2: suite.code2,
+      audioScript: suite.fullAudioScript || '',
+      ans1, ans2, mcqTotalPts: suite.hasSpeaking ? '7.2' : '8.5',
+      part8Points: suite.hasSpeaking ? '0.8 điểm' : '1.5 điểm',
+      rubric: suite.writingRubric || '',
+      sampleWritingText: suite.sampleWritingText || '',
+      hasSpeaking: suite.hasSpeaking,
+      speakingScriptRows: suite.speakingScriptRows || [],
+      finalScoreSummary: suite.finalScoreSummary || '',
+      teacher: 'Thầy Đinh Văn Thành'
+    });
+
+    const fullHtml = this.wrapDocHtml(ansHtml, `${curT} - Anh ${curG} Dap An va Huong Dan Cham`);
+    const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${curT}_Anh_${curG}_Dap_An_Va_Huong_Dan_Cham_${suite.code1}_${suite.code2}.doc`;
+    link.click();
+    UI.toast(`👩‍🏫 Đã xuất Đáp án & Hướng dẫn chấm (.doc)!`, 'success');
+  },
+
   exportOfficialFullBundleWord() {
     const oState = this.state.officialExams;
     const curG = oState.grade || '7';
@@ -4977,37 +5844,66 @@ ${esc(suite.fullAudioScript)}
     const suite = this.getOfficialExamSuite(curG, curT);
     if (!suite) return;
 
-    const title = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`;
-    const doc1 = this.generateDocHtml(suite.sections_code1, title, suite.code1, false);
-    const doc2 = this.generateDocHtml(suite.sections_code2, title, suite.code2, false);
+    const parentAgency = (localStorage.getItem('cfg_parent_agency') || 'UBND XÃ ĐỒNG YÊN').toUpperCase();
+    const schoolName = (localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN').toUpperCase();
+    const examYear = localStorage.getItem('cfg_school_year') || '2026 - 2027';
+    const titleUpper = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`.toUpperCase();
 
-    const fullHtml = `
-<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-<head><meta charset='utf-8'><title>${curT} - Anh ${curG} Tron Bo 2 Ma De</title>
-<style>
-  @page Section1 { size: 21.0cm 29.7cm; margin: 1.5cm 1.5cm 1.5cm 2.0cm; mso-page-orientation: portrait; }
-  div.Section1 { page: Section1; }
-  body { font-family: 'Times New Roman', serif; font-size: 13pt; line-height: 1.15; color: #000; }
-  table { width: 100%; border-collapse: collapse; font-family: 'Times New Roman', serif; }
-</style>
-</head>
-<body>
-<div class="Section1">
-  <!-- MÃ ĐỀ 1 -->
-  ${doc1.replace(/<\/?html[^>]*>|<\/?head[^>]*>|<\/?body[^>]*>|<meta[^>]*>|<style[^>]*>[\s\S]*?<\/style>|<div class="Section1">|<\/div>$/gi, '')}
-  <br clear="all" style="page-break-before:always;mso-break-type:page-break"/>
-  <!-- MÃ ĐỀ 2 -->
-  ${doc2.replace(/<\/?html[^>]*>|<\/?head[^>]*>|<\/?body[^>]*>|<meta[^>]*>|<style[^>]*>[\s\S]*?<\/style>|<div class="Section1">|<\/div>$/gi, '')}
-</div>
-</body>
-</html>`;
+    // 1. Ma trận 15 cột
+    const part1Html = this.buildMatrixWordHtml({
+      parentAgency, schoolName, examYear, titleUpper, grade: curG,
+      timeMinutes: suite.timeMinutes || 60,
+      subtitle: suite.matrixSubtitle || '',
+      matrixRows: suite.matrixRows || []
+    });
+
+    // 2. Bản đặc tả 7 cột
+    const part2Html = this.buildSpecWordHtml({
+      titleUpper, grade: curG,
+      subtitle: suite.specSubtitle || '',
+      specRows: suite.specRows || []
+    });
+
+    // 3. Đề thi Mã 1
+    const part3Html = this.buildExamWordContentHtml({
+      sections: suite.sections_code1, titleUpper, code: suite.code1, schoolYear: examYear,
+      parentAgency, schoolName, grade: curG, examClass: curG + 'A1',
+      timeMinutes: suite.timeMinutes || 60
+    });
+
+    // 4. Đề thi Mã 2
+    const part4Html = this.buildExamWordContentHtml({
+      sections: suite.sections_code2, titleUpper, code: suite.code2, schoolYear: examYear,
+      parentAgency, schoolName, grade: curG, examClass: curG + 'A1',
+      timeMinutes: suite.timeMinutes || 60
+    });
+
+    // 5. Hướng dẫn chấm & biểu điểm
+    const ans1 = (suite.answers_code1 || []).map((ans, idx) => ({ num: idx + 1, ans }));
+    const ans2 = (suite.answers_code2 || []).map((ans, idx) => ({ num: idx + 1, ans }));
+    const part5Html = this.buildAnswerKeyWordHtml({
+      parentAgency, schoolName, examYear, titleUpper, grade: curG,
+      code1: suite.code1, code2: suite.code2,
+      audioScript: suite.fullAudioScript || '',
+      ans1, ans2, mcqTotalPts: suite.hasSpeaking ? '7.2' : '8.5',
+      part8Points: suite.hasSpeaking ? '0.8 điểm' : '1.5 điểm',
+      rubric: suite.writingRubric || '',
+      sampleWritingText: suite.sampleWritingText || '',
+      hasSpeaking: suite.hasSpeaking,
+      speakingScriptRows: suite.speakingScriptRows || [],
+      finalScoreSummary: suite.finalScoreSummary || '',
+      teacher: 'Thầy Đinh Văn Thành'
+    });
+
+    const pageBreak = '<br clear="all" style="page-break-before:always;mso-break-type:page-break"/>';
+    const fullHtml = this.wrapDocHtml([part1Html, part2Html, part3Html, part4Html, part5Html].join(pageBreak), `${curT} - Anh ${curG} Tron Bo 5 Phan Chuan CV7991`);
 
     const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `${curT}_Anh_${curG}_Tron_Bo_2_Ma_De_${suite.code1}_${suite.code2}.doc`;
+    link.download = `${curT}_Anh_${curG}_Tron_Bo_5_Phan_Chuan_CV7991_${suite.code1}_${suite.code2}.doc`;
     link.click();
-    UI.toast(`📦 Đã xuất trọn bộ 2 Mã đề thi ${curT} (.doc)!`, 'success');
+    UI.toast(`📦 Đã xuất trọn bộ 5 phần chuẩn CV 7991 (.doc)!`, 'success');
   },
 
   assignOfficialExamOnline() {
