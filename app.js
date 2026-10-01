@@ -55,6 +55,19 @@ function esc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function formatExamText(s) {
+  if (!s) return '';
+  let safe = esc(s);
+  return safe
+    .replace(/&lt;u&gt;/gi, '<u>')
+    .replace(/&lt;\/u&gt;/gi, '</u>')
+    .replace(/&lt;b&gt;/gi, '<b>')
+    .replace(/&lt;\/b&gt;/gi, '</b>')
+    .replace(/&lt;i&gt;/gi, '<i>')
+    .replace(/&lt;\/i&gt;/gi, '</i>')
+    .replace(/&lt;br\s*\/?&gt;/gi, '<br/>');
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -1923,10 +1936,12 @@ const App = {
     for (const sec of wiz.sections) {
       const sectionQs = [];
       const secType = sec.type || 'mc';
+      const secSkill = sec.skill;
 
       for (const sl of sec.slots) {
         let pool = allQ.filter(q => {
           if (usedIds.has(q.id)) return false;
+          if (secSkill && q.skill !== secSkill) return false;
           if (q.grade !== grade) return false;
           if (secType && (q.type || 'mc') !== secType) return false;
           if (sl.chapterId && q.chapterId !== sl.chapterId) return false;
@@ -1935,14 +1950,17 @@ const App = {
           return true;
         });
 
+        // Fallback 1: cùng khối lớp, cùng kỹ năng, cùng loại câu hỏi
         if (pool.length < sl.count) {
-          pool = allQ.filter(q => !usedIds.has(q.id) && q.grade === grade && (q.type || 'mc') === secType);
+          pool = allQ.filter(q => !usedIds.has(q.id) && q.grade === grade && (!secSkill || q.skill === secSkill) && (q.type || 'mc') === secType);
         }
+        // Fallback 2: cùng kỹ năng chuẩn từ các khối tương đương (tuyệt đối không lấy nhầm kỹ năng khác)
         if (pool.length < sl.count) {
-          pool = allQ.filter(q => !usedIds.has(q.id) && (q.type || 'mc') === secType);
+          pool = allQ.filter(q => !usedIds.has(q.id) && (!secSkill || q.skill === secSkill) && (q.type || 'mc') === secType);
         }
+        // Fallback 3: nếu vẫn thiếu, tái sử dụng trong cùng kỹ năng
         if (pool.length < sl.count) {
-          pool = allQ.filter(q => (q.type || 'mc') === secType);
+          pool = allQ.filter(q => (!secSkill || q.skill === secSkill) && (q.type || 'mc') === secType);
         }
 
         const picked = shuffle(pool).slice(0, sl.count);
@@ -2080,20 +2098,18 @@ const App = {
           <table style="width:100%;border-collapse:collapse;margin-bottom:12pt;font-family:'Times New Roman',serif;font-size:11.5pt">
             <tr style="text-align:center;font-weight:bold">
               <td colspan="2" style="border:1px solid #000;width:22%;padding:4px">Marks</td>
-              <td rowspan="2" style="border:1px solid #000;width:14%;padding:4px;vertical-align:middle">Total</td>
-              <td rowspan="2" style="border:1px solid #000;width:64%;padding:4px 8px;text-align:left;vertical-align:top">
-                <div style="text-align:center;font-weight:bold;margin-bottom:4px">Teacher’s remarks</div>
-                <div style="color:#64748b;font-size:11pt">____________________________________________________________________</div>
-                <div style="color:#64748b;font-size:11pt;margin-top:2px">____________________________________________________________________</div>
+              <td rowspan="3" style="border:1px solid #000;width:14%;padding:4px;vertical-align:middle">Total</td>
+              <td rowspan="3" style="border:1px solid #000;width:64%;padding:6px 12px;text-align:left;vertical-align:top">
+                <div style="text-align:center;font-weight:bold;margin-bottom:6px">Teacher’s remarks</div>
+                <div style="color:#000;font-size:11pt">____________________________________________________________________</div>
+                <div style="color:#000;font-size:11pt;margin-top:6px">____________________________________________________________________</div>
               </td>
             </tr>
             <tr style="text-align:center;font-weight:bold">
               <td style="border:1px solid #000;width:11%;padding:3px">Speak</td>
               <td style="border:1px solid #000;width:11%;padding:3px">Write</td>
             </tr>
-            <tr style="height:36px;text-align:center">
-              <td style="border:1px solid #000">&nbsp;</td>
-              <td style="border:1px solid #000">&nbsp;</td>
+            <tr style="height:38px;text-align:center">
               <td style="border:1px solid #000">&nbsp;</td>
               <td style="border:1px solid #000">&nbsp;</td>
             </tr>
@@ -2102,21 +2118,21 @@ const App = {
           <!-- 4. Nội dung câu hỏi theo chuẩn CV 7991 (Cỡ chữ 13 Times New Roman) -->
           ${secs.map((sec, si) => `
             <div style="font-size:13pt;font-weight:bold;margin-top:12pt;margin-bottom:4pt">
-              Part ${si + 1}. ${esc(sec.name)}: (${sec.questions.length} câu)
+              ${(sec.name.match(/^(part|phần)\s+/i)) ? sec.name : `Part ${si + 1}. ${sec.name}`}: (${sec.questions.length} câu)
             </div>
             ${sec.questions.map((q, qi) => `
               <div style="font-size:13pt;margin-bottom:8pt;line-height:1.25">
-                <div><b>${qi + 1}.</b> ${esc(q.content)}</div>
+                <div><b>${qi + 1}.</b> ${formatExamText(q.content)}</div>
                 ${q.options ? `
                 <div style="padding-left:16pt;margin-top:3pt;display:grid;grid-template-columns:1fr 1fr;gap:4pt;font-size:13pt">
                   ${q.options.map(opt => `
                   <div class="${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? 'correct-answer' : ''}">
-                    ${esc(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? ' ✓' : ''}
+                    ${formatExamText(opt)} ${wiz.previewMode === 'teacher' && opt.charAt(0) === q.answer ? ' ✓' : ''}
                   </div>`).join('')}
                 </div>` : ''}
                 ${wiz.previewMode === 'teacher' && q.solution ? `
                 <div style="margin-top:4pt;padding:4pt 10pt;background:#eff6ff;border-left:3px solid #2563eb;font-size:11pt;color:#1e40af">
-                  💡 <b>Giải thích:</b> ${esc(q.solution)}
+                  💡 <b>Giải thích:</b> ${formatExamText(q.solution)}
                 </div>` : ''}
               </div>
             `).join('')}
@@ -2225,8 +2241,8 @@ const App = {
   <table style="width:100%;border-collapse:collapse;margin-bottom:10pt;font-size:11.5pt">
     <tr style="text-align:center;font-weight:bold">
       <td colspan="2" style="border:1pt solid #000;width:22%;padding:4pt">Marks</td>
-      <td rowspan="2" style="border:1pt solid #000;width:14%;padding:4pt;vertical-align:middle">Total</td>
-      <td rowspan="2" style="border:1pt solid #000;width:64%;padding:4pt 8pt;text-align:left;vertical-align:top">
+      <td rowspan="3" style="border:1pt solid #000;width:14%;padding:4pt;vertical-align:middle">Total</td>
+      <td rowspan="3" style="border:1pt solid #000;width:64%;padding:4pt 8pt;text-align:left;vertical-align:top">
         <div style="text-align:center;font-weight:bold;margin-bottom:3pt">Teacher’s remarks</div>
         <div style="color:#000;font-size:11pt">________________________________________________</div>
         <div style="color:#000;font-size:11pt;margin-top:3pt">________________________________________________</div>
@@ -2239,25 +2255,25 @@ const App = {
     <tr style="height:36pt;text-align:center">
       <td style="border:1pt solid #000">&nbsp;</td>
       <td style="border:1pt solid #000">&nbsp;</td>
-      <td style="border:1pt solid #000">&nbsp;</td>
-      <td style="border:1pt solid #000">&nbsp;</td>
     </tr>
   </table>
 
   <!-- 4. NỘI DUNG CÁC PHẦN THI (CỠ CHỮ 13 TIMES NEW ROMAN) -->
-  ${sections.map((sec, si) => `
+  ${sections.map((sec, si) => {
+    const secHeading = (sec.name.match(/^(part|phần)\s+/i)) ? sec.name : `Part ${si + 1}. ${sec.name}`;
+    return `
     <div style="font-size:13pt;font-weight:bold;margin-top:10pt;margin-bottom:4pt">
-      Part ${si + 1}. ${esc(sec.name)}: (${sec.questions.length} câu)
+      ${esc(secHeading)}: (${sec.questions.length} câu)
     </div>
     ${sec.questions.map((q, qi) => `
       <div style="font-size:13pt;margin-bottom:6pt;line-height:1.25">
-        <div><b>${qi + 1}.</b> ${esc(q.content)}</div>
+        <div><b>${qi + 1}.</b> ${formatExamText(q.content)}</div>
         ${q.options ? `
         <table style="width:100%;border:none;margin-top:2pt">
           <tr>
             ${q.options.map(opt => `
               <td style="border:none;font-size:13pt;padding:1pt 4pt;${showAnswer && opt.charAt(0) === q.answer ? 'font-weight:bold;color:#b91c1c' : ''}">
-                <b>${esc(opt.charAt(0))}.</b> ${esc(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
+                <b>${esc(opt.charAt(0))}.</b> ${formatExamText(opt.slice(3) || opt)} ${showAnswer && opt.charAt(0) === q.answer ? ' ✓' : ''}
               </td>
             `).join('')}
           </tr>
@@ -2268,7 +2284,8 @@ const App = {
         </div>` : ''}
       </div>
     `).join('')}
-  `).join('')}
+  `;
+  }).join('')}
 
   <div style="text-align:center;font-weight:bold;font-size:13pt;margin-top:16pt">
     ------The end------
