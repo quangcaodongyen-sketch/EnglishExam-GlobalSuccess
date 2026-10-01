@@ -1,0 +1,25 @@
+# Logs & Environment
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary folders
+scratch/
+.system_generated/
+
+# Heavy local tool folders (exclude from web git & vercel)
+05 - Global - 15 mins/
+Tạo đề Tiếng Anh THCS - Using/
+

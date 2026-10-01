@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "name": "englishexam-pro",
+  "cleanUrls": true,
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
