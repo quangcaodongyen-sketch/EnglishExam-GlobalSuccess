@@ -267,7 +267,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -336,7 +336,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -400,7 +400,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -553,7 +553,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Our environment is facing serious trouble today due to human activities. People throw too much (23) ________ into the rivers, lakes, and public green parks. To save the Earth effectively, all students should follow the 3Rs rule carefully every day. First, we should (24) ________ the amount of plastic bags, single-use cups, and bottles we use. Second, we can (25) ________ old glass jars and sturdy cardboard boxes for different practical purposes. Finally, we should recycle waste paper to protect many forests. If we all (26) ________ these useful actions together, we will definitely (27) ________ protect our green living world and keep the environment fresh for future generations.",
@@ -623,7 +623,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Hi, my name is Minh. In the year 2050, I think I will live in a very modern and comfortable smart house on the ocean. There will be helpful robots to do all my heavy housework like washing clothes, cleaning large rooms, and watering beautiful flowers. I will not need a traditional kitchen because the hi-tech robot will prepare and bring delicious hot meals directly to me. I will also have a super smart TV in the living room to watch interesting programs from other planets and contact my best friends. I will study online with my friendly foreign teachers at home every morning.",
@@ -693,7 +693,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -726,7 +726,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -759,7 +759,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -778,7 +778,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -847,7 +847,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -911,7 +911,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -1064,7 +1064,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Our environment is facing serious trouble today due to human activities. People throw too much (23) ________ into the rivers, lakes, and public green parks. To save the Earth effectively, all students should follow the 3Rs rule carefully every day. First, we should (24) ________ the amount of plastic bags, single-use cups, and bottles we use. Second, we can (25) ________ old glass jars and sturdy cardboard boxes for different practical purposes. Finally, we should recycle waste paper to protect many forests. If we all (26) ________ these useful actions together, we will definitely (27) ________ protect our green living world and keep the environment fresh for future generations.",
@@ -1134,7 +1134,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Hi, my name is Minh. In the year 2050, I think I will live in a very modern and comfortable smart house on the ocean. There will be helpful robots to do all my heavy housework like washing clothes, cleaning large rooms, and watering beautiful flowers. I will not need a traditional kitchen because the hi-tech robot will prepare and bring delicious hot meals directly to me. I will also have a super smart TV in the living room to watch interesting programs from other planets and contact my best friends. I will study online with my friendly foreign teachers at home every morning.",
@@ -1204,7 +1204,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -1237,7 +1237,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -1270,7 +1270,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -1644,7 +1644,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -1713,7 +1713,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -1777,7 +1777,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -1930,7 +1930,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -2000,7 +2000,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -2070,7 +2070,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -2103,7 +2103,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -2136,7 +2136,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -2183,7 +2183,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -2252,7 +2252,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -2316,7 +2316,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -2469,7 +2469,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -2539,7 +2539,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -2609,7 +2609,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -2642,7 +2642,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -2675,7 +2675,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -3080,7 +3080,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -3149,7 +3149,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -3213,7 +3213,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -3366,7 +3366,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -3436,7 +3436,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -3506,7 +3506,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -3539,7 +3539,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -3572,7 +3572,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -3591,7 +3591,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -3660,7 +3660,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -3724,7 +3724,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -3877,7 +3877,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -3947,7 +3947,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -4017,7 +4017,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -4050,7 +4050,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -4083,7 +4083,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -4458,7 +4458,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -4527,7 +4527,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -4591,7 +4591,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -4744,7 +4744,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -4814,7 +4814,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -4884,7 +4884,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -4917,7 +4917,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -4950,7 +4950,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -4997,7 +4997,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -5066,7 +5066,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -5130,7 +5130,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -5283,7 +5283,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -5353,7 +5353,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -5423,7 +5423,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -5456,7 +5456,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -5489,7 +5489,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -5894,7 +5894,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -5963,7 +5963,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -6027,7 +6027,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -6180,7 +6180,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -6250,7 +6250,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -6320,7 +6320,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -6353,7 +6353,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -6386,7 +6386,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -6405,7 +6405,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -6474,7 +6474,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -6538,7 +6538,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -6691,7 +6691,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -6761,7 +6761,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -6831,7 +6831,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -6864,7 +6864,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -6897,7 +6897,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -7257,7 +7257,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -7326,7 +7326,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -7390,7 +7390,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -7543,7 +7543,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Maintaining a healthy lifestyle is very essential for every teenager today. First, we should have a balanced diet with plenty of green (23) ________ and fresh fruits. Second, doing regular physical exercise like swimming or cycling (24) ________ our muscles and relieves stress. We should also drink at least two litres of pure (25) ________ every day to stay hydrated. Finally, getting eight hours of good sleep at night helps (26) ________ recharge energy effectively. If we (27) ________ these simple health habits, we will always feel active and happy.",
@@ -7613,7 +7613,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "The Green Volunteer Club was founded in 2022 by a dedicated group of secondary students in Dong Yen. Every Saturday morning, the members gather at the town square to clean up public streets and collect recyclable plastic bottles. They also organize free tutoring classes for underprivileged children in the commune. Last year, the club raised ten million dong to buy notebooks and warm blankets for poor students in mountainous regions. Their meaningful activities have inspired hundreds of young people to build a greener and kinder community.",
@@ -7683,7 +7683,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -7716,7 +7716,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -7749,7 +7749,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -7768,7 +7768,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -7837,7 +7837,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -7901,7 +7901,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -8054,7 +8054,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Maintaining a healthy lifestyle is very essential for every teenager today. First, we should have a balanced diet with plenty of green (23) ________ and fresh fruits. Second, doing regular physical exercise like swimming or cycling (24) ________ our muscles and relieves stress. We should also drink at least two litres of pure (25) ________ every day to stay hydrated. Finally, getting eight hours of good sleep at night helps (26) ________ recharge energy effectively. If we (27) ________ these simple health habits, we will always feel active and happy.",
@@ -8124,7 +8124,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "The Green Volunteer Club was founded in 2022 by a dedicated group of secondary students in Dong Yen. Every Saturday morning, the members gather at the town square to clean up public streets and collect recyclable plastic bottles. They also organize free tutoring classes for underprivileged children in the commune. Last year, the club raised ten million dong to buy notebooks and warm blankets for poor students in mountainous regions. Their meaningful activities have inspired hundreds of young people to build a greener and kinder community.",
@@ -8194,7 +8194,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -8227,7 +8227,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -8260,7 +8260,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -8634,7 +8634,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -8703,7 +8703,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -8767,7 +8767,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -8920,7 +8920,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -8990,7 +8990,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -9060,7 +9060,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -9093,7 +9093,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -9126,7 +9126,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -9173,7 +9173,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -9242,7 +9242,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -9306,7 +9306,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -9459,7 +9459,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -9529,7 +9529,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -9599,7 +9599,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -9632,7 +9632,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -9665,7 +9665,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -10070,7 +10070,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -10139,7 +10139,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -10203,7 +10203,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -10356,7 +10356,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -10426,7 +10426,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -10496,7 +10496,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -10529,7 +10529,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -10562,7 +10562,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -10581,7 +10581,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -10650,7 +10650,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -10714,7 +10714,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -10867,7 +10867,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -10937,7 +10937,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -11007,7 +11007,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -11040,7 +11040,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -11073,7 +11073,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -11448,7 +11448,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -11517,7 +11517,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -11581,7 +11581,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -11734,7 +11734,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -11804,7 +11804,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -11874,7 +11874,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -11907,7 +11907,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -11940,7 +11940,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -11987,7 +11987,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -12056,7 +12056,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -12120,7 +12120,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -12273,7 +12273,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -12343,7 +12343,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -12413,7 +12413,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -12446,7 +12446,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -12479,7 +12479,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -12884,7 +12884,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -12953,7 +12953,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -13017,7 +13017,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -13170,7 +13170,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -13240,7 +13240,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -13310,7 +13310,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -13343,7 +13343,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -13376,7 +13376,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -13395,7 +13395,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -13464,7 +13464,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -13528,7 +13528,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -13681,7 +13681,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -13751,7 +13751,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -13821,7 +13821,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -13854,7 +13854,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -13887,7 +13887,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -14247,7 +14247,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -14316,7 +14316,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -14380,7 +14380,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -14533,7 +14533,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -14603,7 +14603,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -14673,7 +14673,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -14706,7 +14706,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -14739,7 +14739,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -14758,7 +14758,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -14827,7 +14827,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -14891,7 +14891,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -15044,7 +15044,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -15114,7 +15114,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -15184,7 +15184,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -15217,7 +15217,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -15250,7 +15250,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -15625,7 +15625,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -15694,7 +15694,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -15758,7 +15758,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -15911,7 +15911,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -15981,7 +15981,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -16051,7 +16051,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -16084,7 +16084,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -16117,7 +16117,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -16164,7 +16164,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -16233,7 +16233,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -16297,7 +16297,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -16450,7 +16450,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -16520,7 +16520,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -16590,7 +16590,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -16623,7 +16623,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -16656,7 +16656,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -17061,7 +17061,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -17130,7 +17130,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -17194,7 +17194,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -17347,7 +17347,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -17417,7 +17417,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -17487,7 +17487,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -17520,7 +17520,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -17553,7 +17553,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -17572,7 +17572,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -17641,7 +17641,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -17705,7 +17705,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -17858,7 +17858,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -17928,7 +17928,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -17998,7 +17998,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -18031,7 +18031,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -18064,7 +18064,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -18439,7 +18439,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -18508,7 +18508,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -18572,7 +18572,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -18725,7 +18725,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -18795,7 +18795,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -18865,7 +18865,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -18898,7 +18898,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -18931,7 +18931,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -18978,7 +18978,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -19047,7 +19047,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -19111,7 +19111,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -19264,7 +19264,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -19334,7 +19334,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -19404,7 +19404,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -19437,7 +19437,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -19470,7 +19470,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -19875,7 +19875,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -19944,7 +19944,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -20008,7 +20008,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -20161,7 +20161,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -20231,7 +20231,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -20301,7 +20301,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -20334,7 +20334,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -20367,7 +20367,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -20386,7 +20386,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -20455,7 +20455,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -20519,7 +20519,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -20672,7 +20672,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -20742,7 +20742,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -20812,7 +20812,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -20845,7 +20845,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -20878,7 +20878,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -21238,7 +21238,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -21307,7 +21307,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -21371,7 +21371,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -21524,7 +21524,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -21594,7 +21594,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -21664,7 +21664,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -21697,7 +21697,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -21730,7 +21730,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -21749,7 +21749,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -21818,7 +21818,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -21882,7 +21882,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -22035,7 +22035,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -22105,7 +22105,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -22175,7 +22175,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -22208,7 +22208,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -22241,7 +22241,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -22616,7 +22616,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -22685,7 +22685,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -22749,7 +22749,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -22902,7 +22902,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -22972,7 +22972,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -23042,7 +23042,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -23075,7 +23075,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -23108,7 +23108,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -23155,7 +23155,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -23224,7 +23224,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -23288,7 +23288,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -23441,7 +23441,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -23511,7 +23511,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -23581,7 +23581,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -23614,7 +23614,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -23647,7 +23647,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -24052,7 +24052,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -24121,7 +24121,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -24185,7 +24185,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -24338,7 +24338,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -24408,7 +24408,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -24478,7 +24478,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -24511,7 +24511,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -24544,7 +24544,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -24563,7 +24563,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -24632,7 +24632,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -24696,7 +24696,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -24849,7 +24849,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -24919,7 +24919,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -24989,7 +24989,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -25022,7 +25022,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -25055,7 +25055,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -25430,7 +25430,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -25499,7 +25499,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -25563,7 +25563,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -25716,7 +25716,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -25786,7 +25786,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -25856,7 +25856,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -25889,7 +25889,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -25922,7 +25922,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -25969,7 +25969,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -26038,7 +26038,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -26102,7 +26102,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (2.4 pts)",
           "skill": "language",
           "type": "mc",
@@ -26255,7 +26255,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.0 pt)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -26325,7 +26325,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.0 pt)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -26395,7 +26395,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -26428,7 +26428,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.4 pt)",
           "skill": "writing",
           "type": "mc",
@@ -26461,7 +26461,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (0.8 pt)",
           "skill": "writing",
           "type": "essay",
@@ -26866,7 +26866,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code1": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -26935,7 +26935,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -26999,7 +26999,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -27152,7 +27152,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -27222,7 +27222,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -27292,7 +27292,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -27325,7 +27325,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -27358,7 +27358,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",
@@ -27377,7 +27377,7 @@ var OFFICIAL_EXAM_SUITES = {
       "sections_code2": [
         {
           "id": "sec1",
-          "name": "PART A. LISTENING - SECTION 1",
+          "name": "Part 1: Listening (Multiple Choice)",
           "title": "Part 1: Listen to the conversation and circle the correct answer A, B, or C (1.0 pt)",
           "skill": "listening",
           "type": "mc",
@@ -27446,7 +27446,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec2",
-          "name": "PART A. LISTENING - SECTION 2",
+          "name": "Part 2: Listening (True / False)",
           "title": "Part 2: Listen to the recording and circle A (True) or B (False) (1.0 pt)",
           "skill": "listening",
           "type": "tf",
@@ -27510,7 +27510,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec3",
-          "name": "PART B. LANGUAGE FOCUS",
+          "name": "Part 3: Language Focus (Pronunciation & Grammar)",
           "title": "Part 3: Choose the best answer A, B, or C to complete each sentence (3.0 pts)",
           "skill": "language",
           "type": "mc",
@@ -27663,7 +27663,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec4",
-          "name": "PART C. READING - CLOZE TEST",
+          "name": "Part 4: Reading (Cloze Test)",
           "title": "Part 4: Read the passage and choose the best word A, B, or C to fill each blank (1.25 pts)",
           "skill": "reading",
           "passage": "Education plays a vital role in the comprehensive development of young teenagers. In modern secondary schools, students not only acquire useful academic knowledge but also develop essential practical (23) ________. Teachers always encourage students to participate in group projects (24) ________ they can learn how to cooperate effectively. Furthermore, school libraries offer (25) ________ large selection of fascinating books on science, history, and foreign cultures. If students (26) ________ hard every day, they will surely achieve remarkable success and contribute (27) ________ to the prosperity of their country.",
@@ -27733,7 +27733,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec5",
-          "name": "PART C. READING - COMPREHENSION",
+          "name": "Part 5: Reading Comprehension",
           "title": "Part 5: Read the passage and choose the best answer A, B, or C (1.25 pts)",
           "skill": "reading",
           "passage": "Dong Yen Secondary School is renowned for its high quality of teaching and friendly learning environment. Established over thirty years ago, the school has constantly upgraded its facilities with well-equipped computer rooms, modern laboratories, and a spacious green schoolyard. Every term, the school organizes vibrant extracurricular clubs such as the English Speaking Club, Science Innovation Club, and Green Volunteers. Students actively participate in community services and charity campaigns to support poor children in mountainous communes. Teachers and parents are always proud of their students' excellent academic achievements and moral values.",
@@ -27803,7 +27803,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec6",
-          "name": "PART D. WRITING - SENTENCE TRANSFORMATION",
+          "name": "Part 6: Writing (Sentence Transformation)",
           "title": "Part 6: Rewrite each sentence so that it means the same as the first one (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -27836,7 +27836,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec7",
-          "name": "PART D. WRITING - WORD ORDER",
+          "name": "Part 7: Writing (Word Order)",
           "title": "Part 7: Put the words in correct order to make meaningful sentences (0.5 pt)",
           "skill": "writing",
           "type": "mc",
@@ -27869,7 +27869,7 @@ var OFFICIAL_EXAM_SUITES = {
         },
         {
           "id": "sec8",
-          "name": "PART D. WRITING - PARAGRAPH WRITING",
+          "name": "Part 8: Writing (Paragraph Writing)",
           "title": "Part 8: Paragraph Writing (1.5 pts)",
           "skill": "writing",
           "type": "essay",

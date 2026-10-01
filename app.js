@@ -4052,71 +4052,129 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
               </div>
             </div>` : ''}
 
-            ${exam.sections.map(sec => `
-              <div style="font-size:15px;font-weight:800;color:#1e293b;margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid #e2e8f0">
-                ${esc(sec.name)}
-              </div>
-              ${sec.questions.map(q => {
-                qGlobalIndex++;
-                const isCompoundTF = (q.type === 'tf' || q.type === 'compound_tf') && Array.isArray(q.items) && q.items.length > 0;
-                const isEssay = q.type === 'essay';
-                const isMC = !isCompoundTF && !isEssay;
-                const qi = qGlobalIndex;
-                const qId = q.id || `q_${qi}`;
+            ${(() => {
+              let lastMainSkill = '';
+              return exam.sections.map((sec, sIdx) => {
+                // Phân nhóm kỹ năng chính (PART A, PART B, PART C, PART D, PART E)
+                let mainSkillTitle = '';
+                let skillIcon = '📝';
+                const rawName = (sec.name || '').toUpperCase();
+                const rawTitle = (sec.title || '').toUpperCase();
+                const rawSkill = (sec.skill || '').toUpperCase();
 
-                // Chuẩn hóa danh sách lựa chọn: nếu là câu hỏi trắc nghiệm hoặc TF đơn lẻ mà thiếu options thì tự động bổ sung A. True / B. False
-                let qOptions = q.options;
-                if (!qOptions || !Array.isArray(qOptions) || qOptions.length === 0) {
-                  if (q.type === 'tf' || (!isEssay && !isCompoundTF)) {
-                    qOptions = ['A. True', 'B. False'];
-                  } else {
-                    qOptions = [];
-                  }
+                if (rawName.includes('PART A') || rawName.includes('LISTENING') || rawSkill.includes('LISTEN') || rawTitle.includes('LISTEN') || sIdx === 0 || sIdx === 1) {
+                  mainSkillTitle = 'PART A. LISTENING (KỸ NĂNG NGHE - 2.0 ĐIỂM)';
+                  skillIcon = '🎧';
+                } else if (rawName.includes('PART B') || rawName.includes('LANGUAGE') || rawSkill.includes('LANG') || rawTitle.includes('LANGUAGE') || sIdx === 2) {
+                  mainSkillTitle = 'PART B. LANGUAGE FOCUS (KIẾN THỨC NGÔN NGỮ - 3.0 ĐIỂM)';
+                  skillIcon = '⚡';
+                } else if (rawName.includes('PART C') || rawName.includes('READING') || rawSkill.includes('READ') || rawTitle.includes('READ') || sIdx === 3 || sIdx === 4) {
+                  mainSkillTitle = 'PART C. READING (KỸ NĂNG ĐỌC HIỂU - 2.5 ĐIỂM)';
+                  skillIcon = '📖';
+                } else if (rawName.includes('PART D') || rawName.includes('WRITING') || rawSkill.includes('WRITE') || rawTitle.includes('WRITE') || sIdx >= 5) {
+                  mainSkillTitle = 'PART D. WRITING (KỸ NĂNG VIẾT - 2.5 ĐIỂM)';
+                  skillIcon = '✍️';
+                } else if (rawName.includes('PART E') || rawName.includes('SPEAKING') || rawSkill.includes('SPEAK') || rawTitle.includes('SPEAK')) {
+                  mainSkillTitle = 'PART E. SPEAKING (KỸ NĂNG NÓI - 2.0 ĐIỂM)';
+                  skillIcon = '🎤';
+                }
+
+                const showMainSkill = mainSkillTitle && (mainSkillTitle !== lastMainSkill);
+                if (showMainSkill) {
+                  lastMainSkill = mainSkillTitle;
+                }
+
+                // Tiêu đề phần cụ thể: ưu tiên sec.title (ví dụ "Part 1: Listen to the conversation...")
+                let subTitle = sec.title || sec.name || `Phần ${sIdx + 1}`;
+                if (!sec.title && sec.name) {
+                  subTitle = sec.name.replace(/^PART\s+[A-E]\.\s*[^-\n]+\s*-\s*/i, '');
                 }
 
                 return `
-                <div class="student-card" id="st-q-${qId}">
-                  <div style="font-size:14.5px;font-weight:700;color:#0f172a;line-height:1.6">
-                    Câu ${qi}: ${formatExamText(q.content)}
+                ${showMainSkill ? `
+                <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#ffffff;padding:12px 18px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:0.3px;margin:28px 0 12px;box-shadow:0 4px 14px rgba(30,58,138,0.25);display:flex;align-items:center;gap:10px">
+                  <span style="font-size:20px">${skillIcon}</span>
+                  <span>${mainSkillTitle}</span>
+                </div>` : ''}
+
+                <div style="font-size:14px;font-weight:800;color:#0f172a;margin:${showMainSkill ? '8px' : '22px'} 0 12px;padding:8px 14px;background:#f8fafc;border-left:4px solid #2563eb;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between">
+                  <span>${esc(subTitle)}</span>
+                  ${sec.questions ? `<span class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700">${sec.questions.length} câu</span>` : ''}
+                </div>
+
+                ${sec.passage ? `
+                <div style="font-size:13.5px;line-height:1.65;color:#1e293b;background:#f8fafc;border:1.5px dashed #0284c7;border-radius:10px;padding:14px 18px;margin-bottom:14px">
+                  <div style="font-weight:800;color:#0369a1;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                    <span>📖</span><span>Đoạn văn đọc hiểu (Reading Passage):</span>
                   </div>
-                  ${isMC ? `
-                  <div class="student-opt-list">
-                    ${qOptions.map((opt, optIdx) => {
-                      const match = String(opt).match(/^([A-Da-d])[\.\:\)]\s*(.*)$/);
-                      const letter = match ? match[1].toUpperCase() : (String(opt).toUpperCase().startsWith('TRUE') || String(opt).toUpperCase().startsWith('ĐÚNG') ? 'A' : (String(opt).toUpperCase().startsWith('FALSE') || String(opt).toUpperCase().startsWith('SAI') ? 'B' : String.fromCharCode(65 + optIdx)));
-                      const text = match ? match[2] : opt;
-                      const isSel = this.state.studentAnswers[qId] === letter;
-                      return `
-                      <div class="student-opt-btn ${isSel ? 'selected' : ''}" onclick="App.selectStudentMCOption('${qId}','${letter}')">
-                        <div class="student-opt-indicator">${letter}</div>
-                        <div>${formatExamText(text)}</div>
-                      </div>`;
-                    }).join('')}
-                  </div>` : ''}
+                  <div style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic">
+                    ${formatExamText(sec.passage)}
+                  </div>
+                </div>` : ''}
 
-                  ${isCompoundTF ? `
-                  <div style="margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
-                    ${(q.items || []).map(it => {
-                      const curVal = this.state.studentAnswers[qId + '_' + it.label];
-                      return `
-                      <div class="student-tf-row" data-tf-label="${it.label}">
-                        <div style="font-size:13.5px;flex:1"><b>${it.label})</b> ${formatExamText(it.text)}</div>
-                        <div class="student-tf-pills">
-                          <button class="student-tf-pill btn-tf-true ${curVal === true ? 'active-true' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',true)">Đúng</button>
-                          <button class="student-tf-pill btn-tf-false ${curVal === false ? 'active-false' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',false)">Sai</button>
-                        </div>
-                      </div>`;
-                    }).join('')}
-                  </div>` : ''}
+                ${sec.questions.map(q => {
+                  qGlobalIndex++;
+                  const isCompoundTF = (q.type === 'tf' || q.type === 'compound_tf') && Array.isArray(q.items) && q.items.length > 0;
+                  const isEssay = q.type === 'essay';
+                  const isMC = !isCompoundTF && !isEssay;
+                  const qi = qGlobalIndex;
+                  const qId = q.id || `q_${qi}`;
 
-                  ${isEssay ? `
-                  <div style="margin-top:10px">
-                    <textarea rows="3" placeholder="Nhập câu trả lời..." oninput="App.inputStudentEssay('${qId}',this.value)"
-                      style="width:100%;padding:10px;border:1.5px solid #cbd5e1;border-radius:10px;font-family:inherit">${esc(this.state.studentAnswers[qId] || '')}</textarea>
-                  </div>` : ''}
-                </div>`;
-              }).join('')}
-            `).join('')}
+                  // Chuẩn hóa danh sách lựa chọn: nếu là câu hỏi trắc nghiệm hoặc TF đơn lẻ mà thiếu options thì tự động bổ sung A. True / B. False
+                  let qOptions = q.options;
+                  if (!qOptions || !Array.isArray(qOptions) || qOptions.length === 0) {
+                    if (q.type === 'tf' || (!isEssay && !isCompoundTF)) {
+                      qOptions = ['A. True', 'B. False'];
+                    } else {
+                      qOptions = [];
+                    }
+                  }
+
+                  return `
+                  <div class="student-card" id="st-q-${qId}">
+                    <div style="font-size:14.5px;font-weight:700;color:#0f172a;line-height:1.6">
+                      Câu ${qi}: ${formatExamText(q.content)}
+                    </div>
+                    ${isMC ? `
+                    <div class="student-opt-list">
+                      ${qOptions.map((opt, optIdx) => {
+                        const match = String(opt).match(/^([A-Da-d])[\.\:\)]\s*(.*)$/);
+                        const letter = match ? match[1].toUpperCase() : (String(opt).toUpperCase().startsWith('TRUE') || String(opt).toUpperCase().startsWith('ĐÚNG') ? 'A' : (String(opt).toUpperCase().startsWith('FALSE') || String(opt).toUpperCase().startsWith('SAI') ? 'B' : String.fromCharCode(65 + optIdx)));
+                        const text = match ? match[2] : opt;
+                        const isSel = this.state.studentAnswers[qId] === letter;
+                        return `
+                        <div class="student-opt-btn ${isSel ? 'selected' : ''}" onclick="App.selectStudentMCOption('${qId}','${letter}')">
+                          <div class="student-opt-indicator">${letter}</div>
+                          <div>${formatExamText(text)}</div>
+                        </div>`;
+                      }).join('')}
+                    </div>` : ''}
+
+                    ${isCompoundTF ? `
+                    <div style="margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+                      ${(q.items || []).map(it => {
+                        const curVal = this.state.studentAnswers[qId + '_' + it.label];
+                        return `
+                        <div class="student-tf-row" data-tf-label="${it.label}">
+                          <div style="font-size:13.5px;flex:1"><b>${it.label})</b> ${formatExamText(it.text)}</div>
+                          <div class="student-tf-pills">
+                            <button class="student-tf-pill btn-tf-true ${curVal === true ? 'active-true' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',true)">Đúng</button>
+                            <button class="student-tf-pill btn-tf-false ${curVal === false ? 'active-false' : ''}" onclick="App.selectStudentTF('${qId}','${it.label}',false)">Sai</button>
+                          </div>
+                        </div>`;
+                      }).join('')}
+                    </div>` : ''}
+
+                    ${isEssay ? `
+                    <div style="margin-top:10px">
+                      <textarea rows="3" placeholder="Nhập câu trả lời..." oninput="App.inputStudentEssay('${qId}',this.value)"
+                        style="width:100%;padding:10px;border:1.5px solid #cbd5e1;border-radius:10px;font-family:inherit">${esc(this.state.studentAnswers[qId] || '')}</textarea>
+                    </div>` : ''}
+                  </div>`;
+                }).join('')}
+                `;
+              }).join('');
+            })()}
           </div>
 
           <div>
