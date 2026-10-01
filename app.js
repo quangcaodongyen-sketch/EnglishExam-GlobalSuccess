@@ -285,10 +285,30 @@ const App = {
       score: 0,
       model: null
     },
+
+    // ── Knowledge Hub & Elite Modules State ──
+    grammarFilterGrade: 'all',
+    grammarSearchQuery: '',
+    grammarQuizAnswers: {},
+    phoneticsActiveTab: 's_es',
+    phoneticsQuizAnswers: {},
+    writingFilterGrade: 'all',
+    writingSearchQuery: '',
+    writingShowVi: {},
+    answerSheetConfig: {
+      school: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+      examTitle: 'BÀI KIỂM TRA ĐỊNH KỲ TIẾNG ANH THCS',
+      examCode: '701'
+    },
   },
 
   init() {
     Auth.initStorage();
+
+    // Áp dụng Theme (Sáng / Tối) đã lưu
+    const savedTheme = localStorage.getItem('app_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
 
     // Kiểm tra nếu mở link làm bài thi (?mode=student&examId=...)
     const urlParams = new URLSearchParams(window.location.search);
@@ -367,6 +387,9 @@ const App = {
       { view: 'quiz-15m', icon: '⚡', label: 'Tạo Đề 15 Phút (48 Units)' },
       { view: 'official-exams', icon: '🏛️', label: 'Bộ Đề Chuẩn (GK, CK, KSCL)' },
       { view: 'generate', icon: '📝', label: 'Soạn đề Tùy biến (CV 7991)', badge: remaining === Infinity ? null : remaining },
+      { view: 'answer-sheet', icon: '🖨️', label: 'Phiếu Tô Trắc Nghiệm BGD' },
+      { view: 'grammar-studio', icon: '⚡', label: 'Cẩm nang Ngữ pháp SGK' },
+      { view: 'writing-lab', icon: '✍️', label: 'Kho Đoạn Văn Mẫu CV 7991' },
       { view: 'classrooms', icon: '🏫', label: 'Quản lý Lớp học' },
       { view: 'submissions', icon: '📥', label: 'Thu bài & Chấm điểm', badge: subCount > 0 ? subCount : null },
       { view: 'bank', icon: '📚', label: 'Ngân hàng Global Success' },
@@ -379,6 +402,9 @@ const App = {
     const studentNav = [
       { view: 'student-hub', icon: '🌟', label: 'Góc học tập' },
       { view: 'student-15m-practice', icon: '⚡', label: 'Luyện Đề 15 Phút (48 Units)' },
+      { view: 'grammar-studio', icon: '⚡', label: 'Cẩm nang Ngữ pháp Thần tốc' },
+      { view: 'phonetics-lab', icon: '🎯', label: 'Bí kíp Ngữ âm & Trọng âm' },
+      { view: 'writing-lab', icon: '✍️', label: 'Kho Văn Mẫu 80-100 Từ' },
       { view: 'vocab-studio', icon: '📖', label: 'Luyện Từ vựng (Flashcards)' },
       { view: 'listening-lab', icon: '🎧', label: 'Luyện Nghe (Audio Lab)' },
       { view: 'student-exams-list', icon: '✍️', label: 'Phòng thi trực tuyến' },
@@ -442,6 +468,12 @@ const App = {
           <button class="btn btn-ghost btn-icon" id="sidebar-toggle" onclick="App.toggleSidebar()">☰</button>
           <div class="topbar-title" id="topbar-title">EnglishExam Pro</div>
           <div class="topbar-actions">
+            <!-- Dark / Light Mode Switcher -->
+            <button class="theme-toggle-btn" onclick="App.toggleTheme()" id="btn-theme-toggle" title="Chuyển chế độ Giao diện Sáng / Tối">
+              <span id="theme-toggle-icon">${(document.documentElement.getAttribute('data-theme') === 'dark') ? '☀️' : '🌙'}</span>
+              <span id="theme-toggle-text">${(document.documentElement.getAttribute('data-theme') === 'dark') ? 'Sáng' : 'Tối'}</span>
+            </button>
+
             ${isStudent ? `
               <button class="btn btn-success" onclick="App.navigate('student-exams-list')">✍️ Làm bài thi</button>
             ` : `
@@ -497,6 +529,10 @@ const App = {
       'listening-lab': '🎧 Phòng Luyện Nghe Audio & Kịch bản',
       'student-exams-list': '✍️ Danh sách Đề thi trực tuyến',
       'student-badges': '🏆 Bảng thành tích & Điểm thưởng',
+      'grammar-studio': '⚡ Cẩm nang Ngữ pháp Thần tốc SGK Global Success 6-9',
+      'phonetics-lab': '🎯 Bí kíp Bất bại: Ngữ âm -s/ed & Trọng âm THCS',
+      'writing-lab': '✍️ Kho Đoạn Văn Mẫu 80-100 Từ (Band 9-10) CV 7991',
+      'answer-sheet': '🖨️ Phiếu Tô Trắc Nghiệm 36 Câu Chuẩn Bộ GD&ĐT',
     };
     if (document.getElementById('topbar-title')) {
       document.getElementById('topbar-title').textContent = titles[this.state.view] || 'EnglishExam Pro';
@@ -507,6 +543,10 @@ const App = {
     if (view === 'quiz-15m') el.innerHTML = this.renderQuiz15m();
     else if (view === 'official-exams') el.innerHTML = this.renderOfficialExams();
     else if (view === 'student-15m-practice') el.innerHTML = this.renderStudent15mPractice();
+    else if (view === 'grammar-studio') el.innerHTML = this.renderGrammarStudio();
+    else if (view === 'phonetics-lab') el.innerHTML = this.renderPhoneticsLab();
+    else if (view === 'writing-lab') el.innerHTML = this.renderWritingLab();
+    else if (view === 'answer-sheet') el.innerHTML = this.renderAnswerSheetView();
     else if (view === 'dashboard') el.innerHTML = this.renderDashboard();
     else if (view === 'generate') el.innerHTML = this.renderGenerate();
     else if (view === 'classrooms') el.innerHTML = this.renderClassrooms();
@@ -815,28 +855,52 @@ const App = {
 
       <!-- Feature Grid for Student -->
       <div class="grid grid-3 gap-16 mb-24">
-        <!-- 1. Học từ vựng -->
-        <div class="card" style="border-top:4px solid #3b82f6;cursor:pointer" onclick="App.navigate('vocab-studio')">
+        <!-- 1. Luyện Đề 15 Phút -->
+        <div class="card" style="border-top:4px solid #f59e0b;cursor:pointer;transition:transform .2s" onclick="App.navigate('student-15m-practice')">
+          <div style="font-size:32px;margin-bottom:8px">⚡</div>
+          <div style="font-weight:800;font-size:16px;color:var(--ink)">Luyện Đề 15 Phút (48 Units)</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Luyện nhanh 20 câu trắc nghiệm từ vựng & ngữ pháp chuẩn SGK, có đồng hồ bấm giờ và chấm điểm tự động.</p>
+          <div style="margin-top:12px;font-size:13px;font-weight:700;color:#d97706">Bắt đầu làm đề 15P →</div>
+        </div>
+
+        <!-- 2. Cẩm nang Ngữ pháp -->
+        <div class="card" style="border-top:4px solid #6366f1;cursor:pointer;transition:transform .2s" onclick="App.navigate('grammar-studio')">
+          <div style="font-size:32px;margin-bottom:8px">⚡</div>
+          <div style="font-weight:800;font-size:16px;color:var(--ink)">Cẩm nang Ngữ pháp Thần tốc</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Bí kíp công thức chuẩn, mẹo nhớ thần tốc độc quyền và trắc nghiệm thực chiến bám sát SGK 6-9.</p>
+          <div style="margin-top:12px;font-size:13px;font-weight:700;color:#4f46e5">Xem cẩm nang ngữ pháp →</div>
+        </div>
+
+        <!-- 3. Bí kíp Ngữ âm & Trọng âm -->
+        <div class="card" style="border-top:4px solid #10b981;cursor:pointer;transition:transform .2s" onclick="App.navigate('phonetics-lab')">
+          <div style="font-size:32px;margin-bottom:8px">🎯</div>
+          <div style="font-weight:800;font-size:16px;color:var(--ink)">Bí kíp Ngữ âm & Trọng âm</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Quy tắc -s/es, -ed, trọng âm 2 & 3 âm tiết. Bấm nghe phát âm AI chuẩn bản xứ và làm bài tập trắc nghiệm.</p>
+          <div style="margin-top:12px;font-size:13px;font-weight:700;color:#059669">Luyện âm & trọng âm →</div>
+        </div>
+
+        <!-- 4. Kho Đoạn Văn Mẫu 80-100 Từ -->
+        <div class="card" style="border-top:4px solid #ea580c;cursor:pointer;transition:transform .2s" onclick="App.navigate('writing-lab')">
+          <div style="font-size:32px;margin-bottom:8px">✍️</div>
+          <div style="font-weight:800;font-size:16px;color:var(--ink)">Kho Văn Mẫu 80-100 Từ (Band 9-10)</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">12 bài mẫu tự luận chuẩn CV 7991, công thức 3 bước vàng, cụm từ vựng nâng cao và bản dịch song ngữ.</p>
+          <div style="margin-top:12px;font-size:13px;font-weight:700;color:#c2410c">Khám phá văn mẫu →</div>
+        </div>
+
+        <!-- 5. Học từ vựng Flashcards -->
+        <div class="card" style="border-top:4px solid #3b82f6;cursor:pointer;transition:transform .2s" onclick="App.navigate('vocab-studio')">
           <div style="font-size:32px;margin-bottom:8px">📖</div>
-          <div style="font-weight:800;font-size:16px;color:#0f172a">Học Từ vựng Flashcards 3D</div>
-          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Tra cứu từ vựng chuẩn SGK Global Success, nghe phát âm giọng bản xứ và lật thẻ ghi nhớ.</p>
+          <div style="font-weight:800;font-size:16px;color:var(--ink)">Học Từ vựng Flashcards 3D</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Tra cứu từ vựng chuẩn SGK Global Success, nghe phát âm giọng bản xứ và lật thẻ 3D ghi nhớ sâu.</p>
           <div style="margin-top:12px;font-size:13px;font-weight:700;color:#2563eb">Mở thẻ từ vựng →</div>
         </div>
 
-        <!-- 2. Luyện nghe Audio -->
-        <div class="card" style="border-top:4px solid #0ea5e9;cursor:pointer" onclick="App.navigate('listening-lab')">
+        <!-- 6. Luyện nghe Audio Lab -->
+        <div class="card" style="border-top:4px solid #0ea5e9;cursor:pointer;transition:transform .2s" onclick="App.navigate('listening-lab')">
           <div style="font-size:32px;margin-bottom:8px">🎧</div>
-          <div style="font-weight:800;font-size:16px;color:#0f172a">Phòng Luyện Nghe Audio Lab</div>
-          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Luyện nghe hội thoại và bài đọc theo từng Unit, kèm phụ đề kịch bản và câu hỏi trắc nghiệm.</p>
+          <div style="font-weight:800;font-size:16px;color:var(--ink)">Phòng Luyện Nghe Audio Lab</div>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Luyện nghe hội thoại và bài đọc theo từng Unit, kèm phụ đề kịch bản và câu hỏi trắc nghiệm tương tác.</p>
           <div style="margin-top:12px;font-size:13px;font-weight:700;color:#0284c7">Bắt đầu luyện nghe →</div>
-        </div>
-
-        <!-- 3. Phòng thi bài tập -->
-        <div class="card" style="border-top:4px solid #10b981;cursor:pointer" onclick="App.navigate('student-exams-list')">
-          <div style="font-size:32px;margin-bottom:8px">✍️</div>
-          <div style="font-weight:800;font-size:16px;color:#0f172a">Đề thi Giáo viên giao</div>
-          <p style="font-size:13px;color:var(--ink-soft);margin-top:6px">Làm các bài kiểm tra 15 phút, giữa kỳ trực tiếp trên điện thoại, tự động chấm điểm tức thì.</p>
-          <div style="margin-top:12px;font-size:13px;font-weight:700;color:#059669">Xem các đề thi mở →</div>
         </div>
       </div>
 
@@ -5047,6 +5111,647 @@ ${esc(suite.fullAudioScript)}
     this.state.student15m.answers = {};
     if (this.state.student15m.timer) clearInterval(this.state.student15m.timer);
     this.renderPage();
+  },
+
+  // ================================================================
+  // GIAO DIỆN DARK / LIGHT MODE & TIỆN ÍCH ÂM THANH
+  // ================================================================
+  toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.body.setAttribute('data-theme', next);
+    localStorage.setItem('app_theme', next);
+    const icon = document.getElementById('theme-toggle-icon');
+    const txt = document.getElementById('theme-toggle-text');
+    if (icon) icon.textContent = next === 'dark' ? '☀️' : '🌙';
+    if (txt) txt.textContent = next === 'dark' ? 'Sáng' : 'Tối';
+    UI.toast(`Đã chuyển sang ${next === 'dark' ? 'Giao diện Tối (Dark Mode)' : 'Giao diện Sáng (Light Mode)'}!`, 'info');
+  },
+
+  speakWord(word) {
+    if (!word) return;
+    AudioEngine.playScript(word, 0.82);
+    UI.toast(`🔊 Đang phát âm: "${word}"`, 'info', 1600);
+  },
+
+  // ================================================================
+  // CẨM NANG NGỮ PHÁP THẦN TỐC GLOBAL SUCCESS (LỚP 6 - 9)
+  // ================================================================
+  renderGrammarStudio() {
+    const data = typeof GLOBAL_GRAMMAR_MASTER !== 'undefined' ? GLOBAL_GRAMMAR_MASTER : [];
+    const filterGrade = this.state.grammarFilterGrade || 'all';
+    const query = (this.state.grammarSearchQuery || '').toLowerCase().trim();
+
+    const filtered = data.filter(item => {
+      const matchGrade = filterGrade === 'all' || String(item.grade) === String(filterGrade);
+      const matchQuery = !query || item.title.toLowerCase().includes(query) || item.target.toLowerCase().includes(query) || item.formula.toLowerCase().includes(query);
+      return matchGrade && matchQuery;
+    });
+
+    return `
+    <div class="page-body slide-up">
+      <!-- Header Banner -->
+      <div class="welcome-banner" style="background:linear-gradient(135deg,#1e1b4b 0%,#4338ca 50%,#6366f1 100%)">
+        <div>
+          <h2>⚡ Cẩm Nang Ngữ Pháp Thần Tốc Global Success</h2>
+          <p>Hệ thống toàn diện Lớp 6 – 9: Công thức chuẩn hóa, "thần chú ghi nhớ độc quyền", ví dụ thực tế và bài tập kiểm tra trúng điểm 10.</p>
+          <div class="row gap-8 mt-12">
+            <span class="badge" style="background:rgba(255,255,255,0.2);color:#fff">📚 ${data.length} Chuyên đề Cốt lõi</span>
+            <span class="badge" style="background:rgba(255,255,255,0.2);color:#fff">🎯 Bám sát SGK & Đề thi BGD</span>
+            <span class="badge" style="background:rgba(255,255,255,0.2);color:#fff">💡 Phương pháp Thần chú độc quyền</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls & Filter Bar -->
+      <div class="card mb-16" style="padding:14px 20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <!-- Grade filter tabs -->
+          <div class="btn-group">
+            <button class="btn btn-sm ${filterGrade === 'all' ? 'btn-primary' : 'btn-outline'}" onclick="App.setGrammarGrade('all')">Tất cả (${data.length})</button>
+            <button class="btn btn-sm ${filterGrade === '6' ? 'btn-primary' : 'btn-outline'}" onclick="App.setGrammarGrade('6')">Lớp 6</button>
+            <button class="btn btn-sm ${filterGrade === '7' ? 'btn-primary' : 'btn-outline'}" onclick="App.setGrammarGrade('7')">Lớp 7</button>
+            <button class="btn btn-sm ${filterGrade === '8' ? 'btn-primary' : 'btn-outline'}" onclick="App.setGrammarGrade('8')">Lớp 8</button>
+            <button class="btn btn-sm ${filterGrade === '9' ? 'btn-primary' : 'btn-outline'}" onclick="App.setGrammarGrade('9')">Lớp 9</button>
+          </div>
+
+          <!-- Search input -->
+          <div style="position:relative;min-width:260px">
+            <input type="text" class="input input-sm" style="padding-left:32px" placeholder="Tìm kiếm chuyên đề ngữ pháp..."
+              value="${esc(this.state.grammarSearchQuery || '')}"
+              oninput="App.filterGrammarSearch(this.value)">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grammar Cards List -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        ${filtered.length === 0 ? `
+          <div class="card text-center" style="padding:48px 20px;color:var(--ink-soft)">
+            <div style="font-size:40px;margin-bottom:12px">🔍</div>
+            <div style="font-size:16px;font-weight:700">Không tìm thấy chuyên đề phù hợp</div>
+            <p style="font-size:13px;margin-top:6px">Vui lòng thử chọn khối lớp khác hoặc xóa từ khóa tìm kiếm.</p>
+          </div>
+        ` : filtered.map(item => {
+          const userAns = this.state.grammarQuizAnswers[item.id];
+          const isAnswered = userAns !== undefined;
+          const isCorrect = isAnswered && userAns === item.quiz.answer;
+
+          return `
+          <div class="grammar-card">
+            <!-- Card Header -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <span class="tag tag-nb" style="font-weight:800">LỚP ${item.grade}</span>
+                  <span style="font-size:12px;color:var(--ink-soft);font-weight:600">SGK GLOBAL SUCCESS</span>
+                </div>
+                <h3 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px">${esc(item.title)}</h3>
+                <div style="font-size:13px;color:var(--primary);font-weight:600">🎯 Mục tiêu: ${esc(item.target)}</div>
+              </div>
+            </div>
+
+            <!-- Formula Box -->
+            <div class="formula-box">
+              <div style="font-weight:800;color:var(--primary-dark);margin-bottom:6px;font-size:12px;letter-spacing:0.5px">📌 CÔNG THỨC CHUẨN:</div>
+              <div style="font-family:'Courier New',Consolas,monospace;font-size:14px;font-weight:700;color:var(--ink);line-height:1.6">${esc(item.formula)}</div>
+            </div>
+
+            <!-- Magic Rule Callout -->
+            <div class="magic-rule-pill">
+              <span style="font-size:18px">💡</span>
+              <div>
+                <b style="color:#d97706">Thần chú nhớ nhanh: </b>
+                <span>${esc(item.magicRule)}</span>
+              </div>
+            </div>
+
+            <!-- Examples Section -->
+            <div style="background:var(--surface-hover);padding:14px 16px;border-radius:12px;margin-bottom:16px;border:1px solid var(--line)">
+              <div style="font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px">📖 Ví dụ thực tế SGK:</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                ${item.examples.map(ex => `
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);padding:8px 12px;border-radius:8px">
+                    <div style="font-size:13.5px">
+                      <span style="font-weight:700;color:var(--ink)">${esc(ex.en)}</span>
+                      <span style="color:var(--ink-soft);margin-left:8px">— <i>${esc(ex.vi)}</i></span>
+                    </div>
+                    <button class="word-audio-pill" onclick="App.speakWord('${esc(ex.en).replace(/'/g, "\\'")}')" title="Nghe phát âm">
+                      🔊 Nghe
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Interactive Quiz Section -->
+            <div style="border-top:1px dashed var(--line);padding-top:14px">
+              <div style="font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+                <span>⚡ Thử thách nhanh:</span>
+                <span style="font-weight:normal;color:var(--ink-soft)">Chọn phương án đúng nhất</span>
+              </div>
+              <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:10px">
+                ${esc(item.quiz.question)}
+              </div>
+              <div class="grid grid-2 gap-8 mb-12">
+                ${item.quiz.options.map((opt, optIdx) => {
+                  let btnStyle = 'background:var(--surface);border:1px solid var(--line);color:var(--ink)';
+                  if (isAnswered) {
+                    if (optIdx === item.quiz.answer) {
+                      btnStyle = 'background:#dcfce7;border:2px solid #16a34a;color:#166534;font-weight:800';
+                    } else if (optIdx === userAns) {
+                      btnStyle = 'background:#fee2e2;border:2px solid #dc2626;color:#991b1b;font-weight:700';
+                    } else {
+                      btnStyle = 'opacity:0.6;background:var(--surface);border:1px solid var(--line)';
+                    }
+                  }
+                  return `
+                  <button class="btn btn-sm" style="${btnStyle};text-align:left;justify-content:flex-start;padding:8px 12px;border-radius:8px"
+                    ${isAnswered ? 'disabled' : ''}
+                    onclick="App.answerGrammarQuiz('${item.id}', ${optIdx})">
+                    <span>${esc(opt)}</span>
+                  </button>`;
+                }).join('')}
+              </div>
+
+              ${isAnswered ? `
+                <div style="background:${isCorrect ? '#f0fdf4' : '#fef2f2'};border-left:4px solid ${isCorrect ? '#22c55e' : '#ef4444'};padding:10px 14px;border-radius:8px;font-size:13px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                  <div>
+                    <b style="color:${isCorrect ? '#166534' : '#991b1b'}">${isCorrect ? '🎉 Chính xác!' : '❌ Chưa chính xác!'}</b>
+                    <div style="color:var(--ink);margin-top:4px">${esc(item.quiz.explanation)}</div>
+                  </div>
+                  <button class="btn btn-xs btn-outline" onclick="App.resetGrammarQuiz('${item.id}')">Làm lại</button>
+                </div>
+              ` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  },
+
+  setGrammarGrade(grade) {
+    this.state.grammarFilterGrade = grade;
+    this.renderPage();
+  },
+
+  filterGrammarSearch(query) {
+    this.state.grammarSearchQuery = query;
+    this.renderPage();
+  },
+
+  answerGrammarQuiz(cardId, optionIndex) {
+    this.state.grammarQuizAnswers[cardId] = optionIndex;
+    const item = (typeof GLOBAL_GRAMMAR_MASTER !== 'undefined' ? GLOBAL_GRAMMAR_MASTER : []).find(x => x.id === cardId);
+    if (item && optionIndex === item.quiz.answer) {
+      UI.toast('🎉 Chính xác! Bạn được cộng +5 điểm XP!', 'success');
+      if (this.state.user) this.state.user.points = (this.state.user.points || 0) + 5;
+    } else {
+      UI.toast('Chưa đúng rồi! Hãy đọc lại phần giải thích chi tiết nhé.', 'warn');
+    }
+    this.renderPage();
+  },
+
+  resetGrammarQuiz(cardId) {
+    delete this.state.grammarQuizAnswers[cardId];
+    this.renderPage();
+  },
+
+  // ================================================================
+  // BÍ KÍP BẤT BẠI: NGỮ ÂM & TRỌNG ÂM THCS
+  // ================================================================
+  renderPhoneticsLab() {
+    const data = typeof GLOBAL_PHONETICS_MASTER !== 'undefined' ? GLOBAL_PHONETICS_MASTER : { rules: {}, interactiveTest: [] };
+    const activeTab = this.state.phoneticsActiveTab || 's_es';
+
+    const tabConfig = {
+      s_es: { label: 'Phát âm -s / -es', icon: '⚡', rule: data.rules.s_es },
+      ed: { label: 'Phát âm -ed', icon: '🎯', rule: data.rules.ed },
+      two_syllables: { label: 'Trọng âm 2 âm tiết', icon: '🔔', rule: data.rules.two_syllables },
+      three_syllables: { label: 'Trọng âm 3 âm tiết & Hậu tố', icon: '🌟', rule: data.rules.three_syllables }
+    };
+
+    const currentRule = tabConfig[activeTab]?.rule;
+
+    return `
+    <div class="page-body slide-up">
+      <!-- Header Banner -->
+      <div class="welcome-banner" style="background:linear-gradient(135deg,#047857 0%,#059669 50%,#10b981 100%)">
+        <div>
+          <h2>🎯 Bí Kíp Bất Bại: Ngữ Âm & Trọng Âm THCS</h2>
+          <p>Quy tắc chuẩn quốc tế, mẹo nhớ siêu nhanh độc quyền của Thầy Đinh Văn Thành. Bấm vào từ bất kỳ để AI đọc giọng bản ngữ!</p>
+          <div class="row gap-8 mt-12">
+            <span class="badge" style="background:rgba(255,255,255,0.25);color:#fff">🔊 Tích hợp Web Speech AI</span>
+            <span class="badge" style="background:rgba(255,255,255,0.25);color:#fff">💡 Thần chú thời phong kiến & tiền đô</span>
+            <span class="badge" style="background:rgba(255,255,255,0.25);color:#fff">✍️ 4 Dạng bài trắc nghiệm then chốt</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rule Tabs -->
+      <div class="tabs mb-20">
+        ${Object.keys(tabConfig).map(k => `
+          <button class="tab-btn ${activeTab === k ? 'active' : ''}" onclick="App.setPhoneticsTab('${k}')">
+            <span>${tabConfig[k].icon}</span>
+            <span>${tabConfig[k].label}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- Main Rule Content Card -->
+      ${currentRule ? `
+        <div class="phonetics-card mb-24">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap">
+            <h3 style="font-size:20px;font-weight:800;color:var(--ink);margin:0">${esc(currentRule.title)}</h3>
+            <span class="tag tag-vd" style="font-weight:700">Chuẩn thi THCS Global Success</span>
+          </div>
+
+          <!-- Mnemonic Banner -->
+          <div class="magic-rule-pill mb-16">
+            <span style="font-size:20px">💡</span>
+            <div>
+              <b style="color:#d97706;font-size:14px">Thần chú nhớ bất bại:</b>
+              <div style="font-size:14px;color:var(--ink);margin-top:2px;font-weight:700">${esc(currentRule.mnemonic)}</div>
+            </div>
+          </div>
+
+          <!-- Groups -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            ${currentRule.groups.map(grp => `
+              <div style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+                  ${grp.sound ? `<div class="sound-badge-large">${esc(grp.sound)}</div>` : ''}
+                  ${grp.type ? `<span class="tag tag-nb" style="font-weight:800;font-size:13px">${esc(grp.type)}</span>` : ''}
+                  ${grp.pattern ? `<span class="tag tag-th" style="font-weight:800;font-size:13px">${esc(grp.pattern)}</span>` : ''}
+                  <div style="font-size:13px;font-weight:600;color:var(--ink)">${esc(grp.when || grp.rule || '')}</div>
+                </div>
+
+                <!-- Word pills with Audio TTS -->
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+                  ${grp.examples.map(w => `
+                    <button class="word-audio-pill" onclick="App.speakWord('${esc(w).replace(/'/g, "\\'")}')" title="Bấm để nghe phát âm giọng chuẩn">
+                      <span>🔊</span>
+                      <span>${esc(w)}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Interactive Practice Test Section -->
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">✍️ Đấu Trường Luyện Tập Ngữ Âm & Trọng Âm</div>
+            <div class="section-desc">Trích từ ngân hàng đề kiểm tra chuẩn CV 7991 của Thầy Đinh Văn Thành</div>
+          </div>
+          <span class="tag tag-vd">4 Câu Tiêu Biểu</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:16px">
+          ${(data.interactiveTest || []).map((q, qIdx) => {
+            const userAns = this.state.phoneticsQuizAnswers[qIdx];
+            const isAnswered = userAns !== undefined;
+            const isCorrect = isAnswered && userAns === q.answer;
+
+            return `
+            <div style="background:var(--surface-hover);border:1px solid var(--line);border-radius:12px;padding:16px">
+              <div style="font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:12px">
+                <span class="tag tag-th" style="margin-right:8px">Câu ${qIdx + 1}</span>
+                <span>${esc(q.question)}</span>
+              </div>
+
+              <!-- Options -->
+              <div class="grid grid-4 gap-8 mb-12">
+                ${q.options.map((opt, optLetterIdx) => {
+                  const letters = ['A', 'B', 'C', 'D'];
+                  const letter = letters[optLetterIdx];
+                  const word = opt.replace(/^[A-D]\.\s*/, '');
+                  let btnCls = 'btn-outline';
+                  let inlineBg = '';
+
+                  if (isAnswered) {
+                    if (letter === q.answer) {
+                      inlineBg = 'background:#dcfce7;border-color:#16a34a;color:#166534;font-weight:800';
+                    } else if (letter === userAns) {
+                      inlineBg = 'background:#fee2e2;border-color:#dc2626;color:#991b1b;font-weight:700';
+                    } else {
+                      inlineBg = 'opacity:0.6';
+                    }
+                  }
+
+                  return `
+                  <button class="btn btn-sm ${btnCls}" style="${inlineBg};display:flex;align-items:center;justify-content:space-between;padding:10px 14px"
+                    ${isAnswered ? 'disabled' : ''}
+                    onclick="App.answerPhoneticsQuiz(${qIdx}, '${letter}')">
+                    <span><b>${letter}.</b> ${esc(word)}</span>
+                    <span onclick="event.stopPropagation();App.speakWord('${esc(word).replace(/'/g, "\\'")}')" style="cursor:pointer;padding:2px 4px" title="Nghe đọc">🔊</span>
+                  </button>`;
+                }).join('')}
+              </div>
+
+              ${isAnswered ? `
+                <div style="background:${isCorrect ? '#f0fdf4' : '#fef2f2'};border-left:4px solid ${isCorrect ? '#22c55e' : '#ef4444'};padding:10px 14px;border-radius:8px;font-size:13px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                  <div>
+                    <b style="color:${isCorrect ? '#166534' : '#991b1b'}">${isCorrect ? '🎉 Tuyệt vời! Bạn chọn đúng rồi!' : `❌ Chưa đúng! Đáp án đúng là: ${q.answer}`}</b>
+                    <div style="color:var(--ink);margin-top:4px">${esc(q.explanation)}</div>
+                  </div>
+                  <button class="btn btn-xs btn-outline" onclick="App.resetPhoneticsQuiz(${qIdx})">Làm lại</button>
+                </div>
+              ` : ''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  setPhoneticsTab(tab) {
+    this.state.phoneticsActiveTab = tab;
+    this.renderPage();
+  },
+
+  answerPhoneticsQuiz(qIdx, letter) {
+    this.state.phoneticsQuizAnswers[qIdx] = letter;
+    const data = typeof GLOBAL_PHONETICS_MASTER !== 'undefined' ? GLOBAL_PHONETICS_MASTER : { interactiveTest: [] };
+    const q = (data.interactiveTest || [])[qIdx];
+    if (q && q.answer === letter) {
+      UI.toast('🎉 Xuất sắc! Bạn được cộng +5 điểm XP!', 'success');
+      if (this.state.user) this.state.user.points = (this.state.user.points || 0) + 5;
+    } else {
+      UI.toast(`Chưa chính xác! Đáp án đúng là ${q?.answer}. Hãy bấm biểu tượng loa để nghe lại nhé!`, 'warn');
+    }
+    this.renderPage();
+  },
+
+  resetPhoneticsQuiz(qIdx) {
+    delete this.state.phoneticsQuizAnswers[qIdx];
+    this.renderPage();
+  },
+
+  // ================================================================
+  // KHO ĐOẠN VĂN MẪU 80 - 100 TỪ (BAND 9-10) CV 7991
+  // ================================================================
+  renderWritingLab() {
+    const data = typeof GLOBAL_WRITING_MASTER !== 'undefined' ? GLOBAL_WRITING_MASTER : { formula: {}, topics: [] };
+    const filterGrade = this.state.writingFilterGrade || 'all';
+    const query = (this.state.writingSearchQuery || '').toLowerCase().trim();
+
+    const filtered = (data.topics || []).filter(item => {
+      const matchGrade = filterGrade === 'all' || String(item.grade) === String(filterGrade);
+      const matchQuery = !query || item.title.toLowerCase().includes(query) || item.topic.toLowerCase().includes(query) || item.content.toLowerCase().includes(query);
+      return matchGrade && matchQuery;
+    });
+
+    return `
+    <div class="page-body slide-up">
+      <!-- Header Banner -->
+      <div class="welcome-banner" style="background:linear-gradient(135deg,#7c2d12 0%,#ea580c 50%,#f97316 100%)">
+        <div>
+          <h2>✍️ Kho Đoạn Văn Mẫu 80 – 100 Từ (Band 9-10)</h2>
+          <p>Chuẩn dạng tự luận CV 7991: Công thức 3 phần đỉnh cao, từ nối mạch lạc, từ vựng nâng cao và bản dịch song ngữ chuẩn xác.</p>
+          <div class="row gap-8 mt-12">
+            <span class="badge" style="background:rgba(255,255,255,0.25);color:#fff">📝 12 Đoạn Văn Trọng Tâm 6-9</span>
+            <span class="badge" style="background:rgba(255,255,255,0.25);color:#fff">💡 Cấu trúc Topic - Supporting - Concluding</span>
+            <span class="badge" style="background:rgba(255,255,255,0.25);color:#fff">🔊 Tích hợp giọng đọc AI bản xứ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Writing Formula Showcase -->
+      <div class="card mb-20" style="background:linear-gradient(to right,var(--surface),var(--surface-hover));border-left:5px solid #ea580c">
+        <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:8px">
+          🏆 CÔNG THỨC VÀNG VIẾT ĐOẠN VĂN 80–100 TỪ (BGD THCS)
+        </div>
+        <div class="grid grid-3 gap-12 mt-12">
+          <div style="background:var(--surface);padding:12px;border-radius:10px;border:1px solid var(--line)">
+            <div style="font-weight:800;font-size:12px;color:#ea580c;margin-bottom:4px">1. CÂU MỞ ĐẦU (TOPIC SENTENCE)</div>
+            <div style="font-size:12.5px;color:var(--ink);line-height:1.5">${esc(data.formula.structure?.split('\n')[0] || 'Nêu thẳng chủ đề bài viết bằng 1 câu rõ ràng')}</div>
+          </div>
+          <div style="background:var(--surface);padding:12px;border-radius:10px;border:1px solid var(--line)">
+            <div style="font-weight:800;font-size:12px;color:#2563eb;margin-bottom:4px">2. THÂN ĐOẠN (SUPPORTING SENTENCES)</div>
+            <div style="font-size:12.5px;color:var(--ink);line-height:1.5">${esc(data.formula.structure?.split('\n')[1] || 'Đưa 2-3 ý triển khai cùng ví dụ và từ nối')}</div>
+          </div>
+          <div style="background:var(--surface);padding:12px;border-radius:10px;border:1px solid var(--line)">
+            <div style="font-weight:800;font-size:12px;color:#16a34a;margin-bottom:4px">3. KẾT ĐOẠN (CONCLUDING SENTENCE)</div>
+            <div style="font-size:12.5px;color:var(--ink);line-height:1.5">${esc(data.formula.structure?.split('\n')[2] || 'Khẳng định lại cảm nghĩ hoặc tầm quan trọng')}</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:12.5px;color:var(--ink-soft);background:rgba(234,88,12,0.08);padding:8px 12px;border-radius:8px">
+          💡 <b>Từ nối ăn điểm:</b> <code>First / Firstly</code>, <code>Second / In addition</code>, <code>Furthermore</code>, <code>Finally / In short</code>.
+        </div>
+      </div>
+
+      <!-- Filters Bar -->
+      <div class="card mb-16" style="padding:14px 20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div class="btn-group">
+            <button class="btn btn-sm ${filterGrade === 'all' ? 'btn-primary' : 'btn-outline'}" onclick="App.setWritingGrade('all')">Tất cả (${(data.topics || []).length})</button>
+            <button class="btn btn-sm ${filterGrade === '6' ? 'btn-primary' : 'btn-outline'}" onclick="App.setWritingGrade('6')">Lớp 6</button>
+            <button class="btn btn-sm ${filterGrade === '7' ? 'btn-primary' : 'btn-outline'}" onclick="App.setWritingGrade('7')">Lớp 7</button>
+            <button class="btn btn-sm ${filterGrade === '8' ? 'btn-primary' : 'btn-outline'}" onclick="App.setWritingGrade('8')">Lớp 8</button>
+            <button class="btn btn-sm ${filterGrade === '9' ? 'btn-primary' : 'btn-outline'}" onclick="App.setWritingGrade('9')">Lớp 9</button>
+          </div>
+
+          <div style="position:relative;min-width:260px">
+            <input type="text" class="input input-sm" style="padding-left:32px" placeholder="Tìm theo chủ đề đoạn văn..."
+              value="${esc(this.state.writingSearchQuery || '')}"
+              oninput="App.filterWritingSearch(this.value)">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Essays List -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        ${filtered.length === 0 ? `
+          <div class="card text-center" style="padding:48px 20px;color:var(--ink-soft)">
+            <div style="font-size:40px;margin-bottom:12px">✍️</div>
+            <div style="font-size:16px;font-weight:700">Chưa có bài văn mẫu cho bộ lọc này</div>
+          </div>
+        ` : filtered.map(item => {
+          const isViShown = this.state.writingShowVi[item.id] !== false; // default true
+
+          return `
+          <div class="writing-card" id="writing-card-${item.id}">
+            <!-- Header -->
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                  <span class="tag tag-nb" style="font-weight:800">LỚP ${item.grade} · UNIT ${item.unit}</span>
+                  <span class="tag tag-vd" style="font-weight:700">ĐỘ DÀI: ${item.wordCount} TỪ</span>
+                  <span class="badge" style="background:#fef3c7;color:#92400e;font-weight:700">⭐ ĐIỂM 9-10</span>
+                </div>
+                <h3 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px">${esc(item.title)}</h3>
+                <div style="font-size:13px;color:var(--ink-soft)">Chủ đề tiếng Anh: <b>${esc(item.topic)}</b></div>
+              </div>
+
+              <!-- Quick action buttons -->
+              <div class="row gap-8">
+                <button class="btn btn-sm btn-outline" onclick="App.speakWritingEssay('${item.id}')" title="Nghe AI đọc cả đoạn văn">
+                  🔊 Nghe đọc
+                </button>
+                <button class="btn btn-sm btn-outline" onclick="App.copyWritingEssay('${item.id}')" title="Sao chép bài mẫu">
+                  📋 Sao chép
+                </button>
+                <button class="btn btn-sm btn-outline" onclick="App.toggleWritingVi('${item.id}')">
+                  ${isViShown ? 'Ẩn bản dịch' : 'Hiện bản dịch'}
+                </button>
+              </div>
+            </div>
+
+            <!-- English Essay Paragraph -->
+            <div style="background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:16px;font-size:14.5px;line-height:1.75;color:var(--ink);font-weight:500;margin-bottom:14px">
+              ${esc(item.content)}
+            </div>
+
+            <!-- Vietnamese Translation -->
+            ${isViShown ? `
+              <div style="background:var(--surface-hover);border-left:4px solid var(--primary);border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.65;color:var(--ink-soft);margin-bottom:14px">
+                <b style="color:var(--ink);display:block;margin-bottom:4px">🇻🇳 Bản dịch nghĩa tiếng Việt:</b>
+                ${esc(item.vietnamese)}
+              </div>
+            ` : ''}
+
+            <!-- Collocations Highlight -->
+            <div style="border-top:1px dashed var(--line);padding-top:12px">
+              <div style="font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px">
+                💎 Cụm từ vựng ghi điểm (Key Collocations):
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                ${(item.keyCollocations || []).map(c => `
+                  <button class="collocation-tag" onclick="App.speakWord('${esc(c).replace(/'/g, "\\'")}')" title="Bấm để nghe đọc cụm từ">
+                    <span>${esc(c)}</span>
+                    <span style="font-size:11px">🔊</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  },
+
+  setWritingGrade(grade) {
+    this.state.writingFilterGrade = grade;
+    this.renderPage();
+  },
+
+  filterWritingSearch(query) {
+    this.state.writingSearchQuery = query;
+    this.renderPage();
+  },
+
+  toggleWritingVi(id) {
+    if (this.state.writingShowVi[id] === undefined) {
+      this.state.writingShowVi[id] = false;
+    } else {
+      this.state.writingShowVi[id] = !this.state.writingShowVi[id];
+    }
+    this.renderPage();
+  },
+
+  copyWritingEssay(id) {
+    const data = typeof GLOBAL_WRITING_MASTER !== 'undefined' ? GLOBAL_WRITING_MASTER : { topics: [] };
+    const item = (data.topics || []).find(x => x.id === id);
+    if (!item) return;
+    navigator.clipboard.writeText(item.content).then(() => {
+      UI.toast(` Đã sao chép đoạn văn "${item.title}" vào bộ nhớ tạm!`, 'success');
+    }).catch(() => {
+      UI.toast('Đã copy nội dung bài viết', 'info');
+    });
+  },
+
+  speakWritingEssay(id) {
+    const data = typeof GLOBAL_WRITING_MASTER !== 'undefined' ? GLOBAL_WRITING_MASTER : { topics: [] };
+    const item = (data.topics || []).find(x => x.id === id);
+    if (!item) return;
+    AudioEngine.playScript(item.content, 0.85);
+    UI.toast(`🔊 Đang đọc bài văn mẫu: "${item.title}"`, 'info', 3000);
+  },
+
+  // ================================================================
+  // PHIẾU TÔ TRẮC NGHIỆM 36 CÂU CHUẨN BGD
+  // ================================================================
+  renderAnswerSheetView() {
+    const cfg = this.state.answerSheetConfig || {
+      school: localStorage.getItem('cfg_school_name') || 'TRƯỜNG THCS ĐỒNG YÊN',
+      examTitle: 'BÀI KIỂM TRA ĐỊNH KỲ TIẾNG ANH THCS',
+      examCode: '701'
+    };
+
+    const sheetHtml = typeof ANSWER_SHEET_HELPER !== 'undefined'
+      ? ANSWER_SHEET_HELPER.generateAnswerSheetHTML(cfg)
+      : '<p>Phiếu trả lời trắc nghiệm đang sẵn sàng...</p>';
+
+    return `
+    <div class="page-body slide-up">
+      <!-- Toolbar (Hidden when printing) -->
+      <div class="card mb-16 no-print">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:16px;font-weight:800;color:var(--ink)">🖨️ Phiếu Tô Trắc Nghiệm 36 Câu Chuẩn Bộ GD&ĐT</div>
+            <div style="font-size:12.5px;color:var(--ink-soft)">Khổ giấy chuẩn A4 – Căn lề chuẩn mực cho học sinh luyện tập tô chì 2B và viết bài tự luận</div>
+          </div>
+          <div class="row gap-8">
+            <button class="btn btn-primary" onclick="App.printAnswerSheet()">
+              🖨️ In Phiếu Tô Ngay (Khổ A4)
+            </button>
+            <button class="btn btn-outline" onclick="App.navigate('dashboard')">
+              ← Về Bàn làm việc
+            </button>
+          </div>
+        </div>
+
+        <!-- Sheet Config Inputs -->
+        <div class="grid grid-3 gap-12 mt-16 pt-16" style="border-top:1px solid var(--line)">
+          <div>
+            <label class="form-label" style="font-size:12px">Tên Đơn Vị / Trường Học</label>
+            <input type="text" class="input input-sm" value="${esc(cfg.school)}"
+              onchange="App.updateAnswerSheetField('school', this.value)">
+          </div>
+          <div>
+            <label class="form-label" style="font-size:12px">Tiêu Đề Bài Kiểm Tra</label>
+            <input type="text" class="input input-sm" value="${esc(cfg.examTitle)}"
+              onchange="App.updateAnswerSheetField('examTitle', this.value)">
+          </div>
+          <div>
+            <label class="form-label" style="font-size:12px">Mã Đề Mặc Định (3 chữ số)</label>
+            <input type="text" class="input input-sm" value="${esc(cfg.examCode)}" maxlength="3"
+              onchange="App.updateAnswerSheetField('examCode', this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Printable Sheet Wrapper -->
+      <div class="exam-preview-wrap" style="background:#e2e8f0;padding:24px;border-radius:12px;overflow-x:auto">
+        <div class="exam-sheet" id="printable-answer-sheet" style="background:#fff;margin:0 auto;box-shadow:0 10px 25px rgba(0,0,0,0.1);max-width:210mm">
+          ${sheetHtml}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  updateAnswerSheetField(field, val) {
+    if (!this.state.answerSheetConfig) {
+      this.state.answerSheetConfig = {
+        school: 'TRƯỜNG THCS ĐỒNG YÊN',
+        examTitle: 'BÀI KIỂM TRA ĐỊNH KỲ TIẾNG ANH THCS',
+        examCode: '701'
+      };
+    }
+    this.state.answerSheetConfig[field] = val;
+    this.renderPage();
+  },
+
+  printAnswerSheet() {
+    window.print();
   }
 };
 
