@@ -659,25 +659,31 @@ const App = {
   // ── Màn hình Đăng nhập & Đăng ký Học sinh ────────────────────────
   renderLogin() {
     return `
-    <div style="min-height:100vh;display:flex;background:var(--bg)">
-      <!-- Left Hero Banner -->
-      <div style="flex:1;background:linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0284c7 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px;color:#fff;min-height:100vh" class="no-print">
-        <div style="font-size:68px;margin-bottom:16px;animation:audioPulse 2s infinite">🇬🇧</div>
+    <div class="login-page-wrap">
+      <!-- Mobile Header (only visible on small screens) -->
+      <div class="login-mobile-header">
+        <div style="font-size:40px;margin-bottom:8px;animation:audioPulse 2s infinite">&#127891;</div>
+        <h1 style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">EnglishExam Pro</h1>
+        <p style="font-size:12px;color:#93c5fd;font-weight:500">H&#7885;c Ti&#7871;ng Anh THCS &middot; Global Success 6-9</p>
+      </div>
+
+      <!-- Left Hero Banner (desktop only) -->
+      <div class="login-hero-panel no-print">
+        <div style="font-size:68px;margin-bottom:16px;animation:audioPulse 2s infinite">&#127891;</div>
         <h1 style="font-size:36px;font-weight:900;letter-spacing:-0.03em;margin-bottom:12px;text-align:center">EnglishExam Pro</h1>
         <p style="font-size:16px;opacity:0.95;text-align:center;max-width:480px;line-height:1.7">
-          Nền tảng Học tập & Đánh giá Tiếng Anh THCS<br/>
-          <strong>Bám sát giáo trình Global Success (Lớp 6, 7, 8, 9)</strong><br/>
-          <span style="font-size:13.5px;color:#93c5fd;margin-top:6px;display:inline-block">Tác giả & Bản quyền: Thầy Đinh Văn Thành – THCS Đồng Yên (0915.213717)</span>
+          N&#7873;n t&#7843;ng H&#7885;c t&#7853;p &amp; &#272;&#225;nh gi&#225; Ti&#7871;ng Anh THCS<br/>
+          <strong>B&#225;m s&#225;t gi&#225;o tr&#236;nh Global Success (L&#7899;p 6, 7, 8, 9)</strong><br/>
+          <span style="font-size:13.5px;color:#93c5fd;margin-top:6px;display:inline-block">T&#225;c gi&#7843; &amp; B&#7843;n quy&#7873;n: Th&#7847;y &#272;inh V&#259;n Th&#224;nh - THCS &#272;&#7891;ng Y&#234;n (0915.213717)</span>
         </p>
-
         <div style="margin-top:36px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:520px">
           ${[
-            ['📖', 'Học Từ vựng 3D'],
-            ['🎧', 'Luyện Nghe Audio'],
-            ['📱', 'Thi trực tiếp Mobile'],
-            ['🏫', 'Quản lý Lớp học'],
-            ['📊', 'Ma trận CV 7991'],
-            ['📜', 'Nghị định 30']
+            ['&#128218;','H&#7885;c T&#7915; v&#7921;ng 3D'],
+            ['&#127911;','Luy&#7879;n Nghe Audio'],
+            ['&#128241;','Thi tr&#7921;c ti&#7871;p Mobile'],
+            ['&#127979;','Qu&#7843;n l&yacute; L&#7899;p h&#7885;c'],
+            ['&#128203;','Ma tr&#7853;n CV 7991'],
+            ['&#11088;','Ngh&#7883; &#273;&#7883;nh 30']
           ].map(([icon, label]) => `
           <div style="text-align:center;background:rgba(255,255,255,0.18);padding:10px 16px;border-radius:14px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.25)">
             <div style="font-size:20px">${icon}</div>
@@ -687,60 +693,155 @@ const App = {
       </div>
 
       <!-- Right Form Box -->
-      <div style="width:500px;display:flex;align-items:center;justify-content:center;padding:40px;flex-shrink:0">
-        <div style="width:100%;max-width:390px">
-          <!-- Role Selector Tab -->
-          <div class="tabs mb-20" style="padding:4px">
-            <button class="tab-btn active" id="tab-login-teacher" onclick="App.switchLoginForm('teacher')">👨‍🏫 Giáo viên</button>
-            <button class="tab-btn" id="tab-login-student" onclick="App.switchLoginForm('student')">🎒 Học sinh</button>
-          </div>
-
-          <div id="login-header-area">
-            <h2 style="font-size:24px;font-weight:800;margin-bottom:6px;color:#0f172a">Đăng nhập Giáo viên</h2>
-            <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:24px">Kính chào Thầy/Cô! Đăng nhập để quản lý lớp và tạo đề.</p>
-          </div>
-
-          <div id="login-err" style="display:none;background:var(--red-soft);border:1px solid #fca5a5;border-radius:12px;padding:12px 16px;font-size:13px;color:var(--red);font-weight:500;margin-bottom:16px"></div>
-
-          <!-- Login Input Fields -->
-          <div class="stack gap-14" id="login-fields">
-            <div class="field">
-              <label class="label">Tên đăng nhập</label>
-              <div class="input-group">
-                <span class="input-icon">👤</span>
-                <input id="l-user" type="text" placeholder="Nhập tài khoản..." value="dinhvanthanh" autofocus/>
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Mật khẩu</label>
-              <div class="input-group">
-                <span class="input-icon">🔒</span>
-                <input id="l-pass" type="password" placeholder="Nhập mật khẩu..." value="Admin@2024!"/>
-              </div>
-            </div>
-            <button id="l-btn" class="btn btn-primary btn-lg w-full" style="margin-top:6px">
-              🚀 Đăng nhập hệ thống
+      <div class="login-form-panel">
+        <div class="login-form-inner">
+          <!-- Role Selector Tabs -->
+          <div class="login-role-tabs">
+            <button class="login-tab active" id="tab-login-teacher" onclick="App.switchLoginForm('teacher')">
+              &#128104;&#8205;&#127979; Gi&#225;o vi&#234;n
+            </button>
+            <button class="login-tab" id="tab-login-student" onclick="App.switchLoginForm('student')">
+              &#127890; H&#7885;c sinh
             </button>
           </div>
 
-          <!-- Register Student Option -->
-          <div id="student-register-prompt" style="display:none;margin-top:16px;text-align:center">
-            <span style="font-size:13.5px;color:var(--ink-soft)">Chưa có tài khoản học sinh? </span>
-            <a href="javascript:void(0)" onclick="App.showStudentRegisterModal()" style="font-size:13.5px;font-weight:700;color:#2563eb">Đăng ký ngay tại đây!</a>
+          <!-- Error box -->
+          <div id="login-err" style="display:none;background:var(--red-soft);border:1px solid #fca5a5;border-radius:12px;padding:12px 16px;font-size:13px;color:var(--red);font-weight:500;margin-bottom:16px"></div>
+
+          <!-- ===== TEACHER LOGIN PANEL ===== -->
+          <div id="panel-teacher-login">
+            <div style="margin-bottom:20px">
+              <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;color:#0f172a">&#272;&#259;ng nh&#7853;p Gi&#225;o vi&#234;n</h2>
+              <p style="color:var(--ink-soft);font-size:13px">K&#237;nh ch&#224;o Th&#7847;y/C&#244;! &#272;&#259;ng nh&#7853;p &#273;&#7875; qu&#7843;n l&yacute; l&#7899;p v&agrave; t&#7841;o &#273;&#7873;.</p>
+            </div>
+            <div class="stack gap-14">
+              <div class="field">
+                <label class="label">T&#234;n &#273;&#259;ng nh&#7853;p</label>
+                <div class="input-group">
+                  <span class="input-icon">&#128100;</span>
+                  <input id="l-user" type="text" placeholder="Nh&#7853;p t&agrave;i kho&#7843;n..." value="dinhvanthanh" autofocus autocomplete="username"/>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">M&#7853;t kh&#7849;u</label>
+                <div class="input-group">
+                  <span class="input-icon">&#128274;</span>
+                  <input id="l-pass" type="password" placeholder="Nh&#7853;p m&#7853;t kh&#7849;u..." value="Admin@2024!" autocomplete="current-password"/>
+                </div>
+              </div>
+              <button id="l-btn" class="btn btn-primary btn-lg w-full" style="margin-top:6px">
+                &#128272; &#272;&#259;ng nh&#7853;p h&#7879; th&#7889;ng
+              </button>
+            </div>
+            <div style="margin-top:16px;padding:12px;background:var(--surface-2);border-radius:10px;border:1px solid var(--line)">
+              <p style="font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">T&agrave;i kho&#7843;n m&#7851;u</p>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;font-size:12px;cursor:pointer"
+                   onclick="App.quickLogin('dinhvanthanh','Admin@2024!','teacher')">
+                <span>&#128104;&#8205;&#127979; <strong>dinhvanthanh</strong> / Admin@2024!</span>
+                <span class="tag tag-nb" style="font-size:10px">Th&#7847;y Th&agrave;nh</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Quick Accounts -->
-          <div style="margin-top:24px;padding:14px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line)">
-            <p style="font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">Tài khoản chuẩn</p>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px;cursor:pointer"
-                 onclick="App.quickLogin('dinhvanthanh','Admin@2024!','teacher')">
-              <span>👨‍🏫 <strong>dinhvanthanh</strong> / Admin@2024!</span>
-              <span class="tag tag-nb" style="font-size:10px">Thầy Thành</span>
+          <!-- ===== STUDENT PANEL (Login + Register Tabs) ===== -->
+          <div id="panel-student" style="display:none">
+            <!-- Sub-tabs: Dang nhap / Dang ky -->
+            <div class="login-subtabs">
+              <button class="login-subtab active" id="subtab-login" onclick="App.switchStudentSubTab('login')">
+                &#128273; &#272;&#259;ng nh&#7853;p
+              </button>
+              <button class="login-subtab" id="subtab-register" onclick="App.switchStudentSubTab('register')">
+                &#9999;&#65039; &#272;&#259;ng k&yacute; m&#7899;i
+              </button>
             </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12.5px;cursor:pointer"
-                 onclick="App.quickLogin('nguyenvanan','123','student')">
-              <span>🎒 <strong>nguyenvanan</strong> / 123</span>
-              <span class="tag tag-th" style="font-size:10px">HS Lớp 7</span>
+
+            <!-- Student Login Form -->
+            <div id="student-login-form">
+              <div style="margin-bottom:16px">
+                <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;color:#059669">&#272;&#259;ng nh&#7853;p H&#7885;c sinh</h2>
+                <p style="color:var(--ink-soft);font-size:13px">Ch&agrave;o em! &#272;&#259;ng nh&#7853;p &#273;&#7875; h&#7885;c t&#7915; v&#7921;ng, luy&#7879;n nghe v&agrave; l&agrave;m b&agrave;i thi.</p>
+              </div>
+              <div class="stack gap-12">
+                <div class="field">
+                  <label class="label">T&#234;n &#273;&#259;ng nh&#7853;p <span style="color:#ef4444">*</span></label>
+                  <div class="input-group">
+                    <span class="input-icon">&#127890;</span>
+                    <input id="sl-user" type="text" placeholder="Nh&#7853;p t&#234;n &#273;&#259;ng nh&#7853;p..." autocomplete="username"/>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">M&#7853;t kh&#7849;u <span style="color:#ef4444">*</span></label>
+                  <div class="input-group">
+                    <span class="input-icon">&#128274;</span>
+                    <input id="sl-pass" type="password" placeholder="Nh&#7853;p m&#7853;t kh&#7849;u..." autocomplete="current-password"/>
+                  </div>
+                </div>
+                <button id="sl-btn" class="btn w-full" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff;font-weight:700;padding:13px;border-radius:12px;font-size:15px;margin-top:4px">
+                  &#128640; &#272;&#259;ng nh&#7853;p h&#7885;c ngay
+                </button>
+              </div>
+              <div style="margin-top:12px;padding:10px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0">
+                <p style="font-size:11px;font-weight:700;color:#15803d;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">T&agrave;i kho&#7843;n m&#7851;u h&#7885;c sinh</p>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:12px;cursor:pointer"
+                     onclick="App.quickLoginStudent('nguyenvanan','123')">
+                  <span>&#127890; <strong>nguyenvanan</strong> / 123</span>
+                  <span class="tag tag-th" style="font-size:10px">HS L&#7899;p 7</span>
+                </div>
+              </div>
+              <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--ink-soft)">
+                Ch&#432;a c&oacute; t&agrave;i kho&#7843;n?
+                <a href="javascript:void(0)" onclick="App.switchStudentSubTab('register')" style="color:#2563eb;font-weight:700">&#272;&#259;ng k&yacute; ngay!</a>
+              </p>
+            </div>
+
+            <!-- Student Register Form -->
+            <div id="student-register-form" style="display:none">
+              <div style="margin-bottom:14px">
+                <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;color:#7c3aed">&#272;&#259;ng k&yacute; t&agrave;i kho&#7843;n m&#7899;i</h2>
+                <p style="color:var(--ink-soft);font-size:13px">T&#7841;o t&agrave;i kho&#7843;n mi&#7877;n ph&iacute; &#273;&#7875; b&#7855;t &#273;&#7847;u h&#7885;c ti&#7871;ng Anh! &#127873; +100 &#273;i&#7875;m th&#432;&#7903;ng.</p>
+              </div>
+              <div class="stack gap-10">
+                <div class="field">
+                  <label class="label">H&#7885; v&agrave; t&#234;n h&#7885;c sinh <span style="color:#ef4444">*</span></label>
+                  <input id="reg-name" type="text" placeholder="Vd: Ho&agrave;ng Tu&#7845;n Ki&#7879;t" autocomplete="name"/>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div class="field">
+                    <label class="label">Kh&#7889;i l&#7899;p</label>
+                    <select id="reg-grade">
+                      <option value="6">L&#7899;p 6</option>
+                      <option value="7" selected>L&#7899;p 7</option>
+                      <option value="8">L&#7899;p 8</option>
+                      <option value="9">L&#7899;p 9</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="label">L&#7899;p h&#7885;c</label>
+                    <input id="reg-class" type="text" placeholder="7A1" value="7A1"/>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">T&#234;n &#273;&#259;ng nh&#7853;p <span style="color:#ef4444">*</span></label>
+                  <div class="input-group">
+                    <span class="input-icon">&#128100;</span>
+                    <input id="reg-username" type="text" placeholder="tuankiet7a (kh&ocirc;ng d&#7845;u, kh&ocirc;ng kho&#7843;ng tr&#7855;ng)" autocomplete="username"/>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">M&#7853;t kh&#7849;u <span style="color:#ef4444">*</span></label>
+                  <div class="input-group">
+                    <span class="input-icon">&#128274;</span>
+                    <input id="reg-password" type="password" placeholder="T&#7889;i thi&#7875;u 3 k&yacute; t&#7921;..." autocomplete="new-password"/>
+                  </div>
+                </div>
+                <button id="reg-btn" class="btn w-full" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-weight:700;padding:13px;border-radius:12px;font-size:15px;margin-top:4px">
+                  &#10024; T&#7841;o t&agrave;i kho&#7843;n ngay
+                </button>
+              </div>
+              <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--ink-soft)">
+                &#272;&atilde; c&oacute; t&agrave;i kho&#7843;n?
+                <a href="javascript:void(0)" onclick="App.switchStudentSubTab('login')" style="color:#059669;font-weight:700">&#272;&#259;ng nh&#7853;p</a>
+              </p>
             </div>
           </div>
         </div>
@@ -751,31 +852,43 @@ const App = {
   switchLoginForm(role) {
     const btnT = document.getElementById('tab-login-teacher');
     const btnS = document.getElementById('tab-login-student');
-    const header = document.getElementById('login-header-area');
-    const uInput = document.getElementById('l-user');
-    const pInput = document.getElementById('l-pass');
-    const regPrompt = document.getElementById('student-register-prompt');
+    const panelTeacher = document.getElementById('panel-teacher-login');
+    const panelStudent = document.getElementById('panel-student');
+    const errBox = document.getElementById('login-err');
+    if (errBox) errBox.style.display = 'none';
 
     if (role === 'teacher') {
       btnT?.classList.add('active');
       btnS?.classList.remove('active');
-      header.innerHTML = `
-        <h2 style="font-size:24px;font-weight:800;margin-bottom:6px;color:#0f172a">Đăng nhập Giáo viên</h2>
-        <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:24px">Kính chào Thầy/Cô! Đăng nhập để quản lý lớp và tạo đề.</p>`;
-      uInput.value = 'dinhvanthanh';
-      pInput.value = 'Admin@2024!';
-      regPrompt.style.display = 'none';
+      if (panelTeacher) panelTeacher.style.display = 'block';
+      if (panelStudent) panelStudent.style.display = 'none';
       this.state.userRole = 'teacher';
     } else {
       btnS?.classList.add('active');
       btnT?.classList.remove('active');
-      header.innerHTML = `
-        <h2 style="font-size:24px;font-weight:800;margin-bottom:6px;color:#059669">Đăng nhập Học sinh</h2>
-        <p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:24px">Chào mừng em! Đăng nhập để học từ vựng, luyện nghe và làm bài thi.</p>`;
-      uInput.value = 'nguyenvanan';
-      pInput.value = '123';
-      regPrompt.style.display = 'block';
+      if (panelTeacher) panelTeacher.style.display = 'none';
+      if (panelStudent) panelStudent.style.display = 'block';
       this.state.userRole = 'student';
+      this.bindStudentForms();
+    }
+  },
+
+  switchStudentSubTab(tab) {
+    const loginForm = document.getElementById('student-login-form');
+    const registerForm = document.getElementById('student-register-form');
+    const subtabLogin = document.getElementById('subtab-login');
+    const subtabRegister = document.getElementById('subtab-register');
+    if (tab === 'login') {
+      if (loginForm) loginForm.style.display = 'block';
+      if (registerForm) registerForm.style.display = 'none';
+      subtabLogin?.classList.add('active');
+      subtabRegister?.classList.remove('active');
+    } else {
+      if (loginForm) loginForm.style.display = 'none';
+      if (registerForm) registerForm.style.display = 'block';
+      subtabLogin?.classList.remove('active');
+      subtabRegister?.classList.add('active');
+      setTimeout(() => document.getElementById('reg-name')?.focus(), 50);
     }
   },
 
@@ -786,22 +899,103 @@ const App = {
     document.getElementById('l-btn')?.click();
   },
 
+  quickLoginStudent(user, pass) {
+    this.switchLoginForm('student');
+    setTimeout(() => {
+      const uEl = document.getElementById('sl-user');
+      const pEl = document.getElementById('sl-pass');
+      if (uEl) uEl.value = user;
+      if (pEl) pEl.value = pass;
+      document.getElementById('sl-btn')?.click();
+    }, 120);
+  },
+
+  bindStudentForms() {
+    setTimeout(() => {
+      // Student Login
+      const slBtn = document.getElementById('sl-btn');
+      if (slBtn && !slBtn._bound) {
+        slBtn._bound = true;
+        const doStudentLogin = () => {
+          const u = document.getElementById('sl-user')?.value?.trim();
+          const p = document.getElementById('sl-pass')?.value;
+          if (!u || !p) {
+            const err = document.getElementById('login-err');
+            if (err) { err.textContent = 'Vui long nhap ten dang nhap va mat khau!'; err.style.display = 'block'; }
+            return;
+          }
+          const student = Auth.loginStudent(u, p);
+          if (student) {
+            this.state.user = student;
+            this.state.view = 'student-hub';
+            this.render();
+          } else {
+            const err = document.getElementById('login-err');
+            if (err) { err.textContent = 'Sai ten dang nhap hoac mat khau hoc sinh. Kiem tra lai!'; err.style.display = 'block'; }
+          }
+        };
+        slBtn.addEventListener('click', doStudentLogin);
+        document.getElementById('sl-pass')?.addEventListener('keydown', e => { if (e.key === 'Enter') doStudentLogin(); });
+      }
+      // Student Register
+      const regBtn = document.getElementById('reg-btn');
+      if (regBtn && !regBtn._bound) {
+        regBtn._bound = true;
+        const doRegister = () => {
+          const name = document.getElementById('reg-name')?.value?.trim();
+          const username = document.getElementById('reg-username')?.value?.trim();
+          const password = document.getElementById('reg-password')?.value;
+          const grade = parseInt(document.getElementById('reg-grade')?.value) || 7;
+          const cls = document.getElementById('reg-class')?.value?.trim() || '7A1';
+          if (!name || !username || !password) { alert('Vui long dien day du cac thong tin bat buoc (*)'); return; }
+          if (password.length < 3) { alert('Mat khau can it nhat 3 ky tu'); return; }
+          const res = Auth.registerStudent({ name, username, password, grade, class: cls, school: 'Trường THCS Đồng Yên' });
+          if (res.ok) {
+            const self = this;
+            UI.showModal(
+              '🎉 ĐĂNG KÝ THÀNH CÔNG!',
+              `<div style="text-align:center; padding:10px 0 16px;">
+                <div style="font-size:48px; margin-bottom:8px;">✅</div>
+                <h3 style="color:#059669; margin:0 0 8px; font-size:20px; font-weight:800;">Đăng Ký Tài Khoản Thành Công!</h3>
+                <p style="color:#475569; font-size:14px; margin-bottom:16px;">Chúc mừng em <b>${esc(name)}</b> đã tạo tài khoản học tập thành công!</p>
+                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px; text-align:left; font-size:13px; line-height:1.8;">
+                  <div>👤 <b>Họ và tên:</b> ${esc(name)}</div>
+                  <div>🏫 <b>Lớp học:</b> ${esc(cls)} (Khối ${grade})</div>
+                  <div>🔑 <b>Tên đăng nhập:</b> <span style="font-family:monospace; color:#2563eb; font-weight:bold; font-size:14px;">${esc(username)}</span></div>
+                  <div>🔒 <b>Mật khẩu:</b> <span style="font-family:monospace; color:#d97706; font-weight:bold; font-size:14px;">${esc(password)}</span></div>
+                </div>
+                <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:10px; padding:10px; margin-top:12px; color:#92400e; font-size:12px; text-align:left;">
+                  💡 <b>Lưu ý:</b> Em hãy chụp màn hình hoặc ghi nhớ Tên đăng nhập và Mật khẩu trên để vào học mỗi ngày nhé!
+                </div>
+              </div>`,
+              [
+                {
+                  label: '🚀 Bắt Đầu Vào Học Ngay',
+                  cls: 'btn-primary',
+                  action: () => {
+                    UI.closeModal();
+                    self.state.user = res.student;
+                    self.state.userRole = 'student';
+                    self.state.view = 'student-hub';
+                    self.render();
+                  }
+                }
+              ]
+            );
+          } else {
+            alert(res.msg);
+          }
+        };
+        regBtn.addEventListener('click', doRegister);
+        document.getElementById('reg-password')?.addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
+      }
+    }, 120);
+  },
+
   bindLogin() {
     const doLogin = () => {
       const u = document.getElementById('l-user').value.trim();
       const p = document.getElementById('l-pass').value;
-
-      if (this.state.userRole === 'student') {
-        const student = Auth.loginStudent(u, p);
-        if (student) {
-          this.state.user = student;
-          this.state.view = 'student-hub';
-          this.render();
-          return;
-        }
-      }
-
-      // Đăng nhập giáo viên
       const user = Auth.login(u, p);
       if (user) {
         this.state.user = user;
@@ -810,88 +1004,17 @@ const App = {
         this.render();
       } else {
         const err = document.getElementById('login-err');
-        err.textContent = '❌ Sai tên đăng nhập hoặc mật khẩu. Vui lòng kiểm tra lại.';
+        err.textContent = 'Sai ten dang nhap hoac mat khau. Vui long kiem tra lai.';
         err.style.display = 'block';
       }
     };
-
     document.getElementById('l-btn')?.addEventListener('click', doLogin);
     document.getElementById('l-pass')?.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   },
 
-  // ── Đăng ký tài khoản Học sinh ──────────────────────────────────
   showStudentRegisterModal() {
-    const classes = Auth.getClasses();
-    const bodyHtml = `
-      <div class="stack gap-12">
-        <div class="field">
-          <label class="label">Họ và tên học sinh <span style="color:#ef4444">*</span></label>
-          <input id="reg-name" type="text" placeholder="Ví dụ: Hoàng Tuấn Kiệt" autofocus />
-        </div>
-        <div class="grid grid-2 gap-12">
-          <div class="field">
-            <label class="label">Khối lớp</label>
-            <select id="reg-grade">
-              <option value="6">Lớp 6 Global Success</option>
-              <option value="7" selected>Lớp 7 Global Success</option>
-              <option value="8">Lớp 8 Global Success</option>
-              <option value="9">Lớp 9 Global Success</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="label">Lớp học / Mã lớp</label>
-            <input id="reg-class" type="text" placeholder="Ví dụ: 7A1 hoặc mã DY7A1" value="7A1" />
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Trường học</label>
-          <input id="reg-school" type="text" value="Trường THCS Đồng Yên" />
-        </div>
-        <div class="grid grid-2 gap-12">
-          <div class="field">
-            <label class="label">Tên đăng nhập <span style="color:#ef4444">*</span></label>
-            <input id="reg-username" type="text" placeholder="tuankiet7a" />
-          </div>
-          <div class="field">
-            <label class="label">Mật khẩu <span style="color:#ef4444">*</span></label>
-            <input id="reg-password" type="password" placeholder="Tối thiểu 3 ký tự..." />
-          </div>
-        </div>
-      </div>
-    `;
-
-    UI.showModal('🎒 Đăng ký tài khoản Học sinh', bodyHtml, [
-      {
-        label: 'Tạo tài khoản ngay',
-        cls: 'btn-primary',
-        action: () => {
-          const name = document.getElementById('reg-name')?.value?.trim();
-          const username = document.getElementById('reg-username')?.value?.trim();
-          const password = document.getElementById('reg-password')?.value;
-          const grade = parseInt(document.getElementById('reg-grade')?.value) || 7;
-          const cls = document.getElementById('reg-class')?.value?.trim() || '7A1';
-          const school = document.getElementById('reg-school')?.value?.trim() || 'Trường THCS Đồng Yên';
-
-          if (!name || !username || !password) {
-            alert('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
-            return;
-          }
-
-          const res = Auth.registerStudent({ name, username, password, grade, class: cls, school });
-          if (res.ok) {
-            UI.closeModal();
-            UI.toast('🎉 Chúc mừng em đã đăng ký tài khoản thành công! Tặng em 100 điểm thưởng.', 'success', 4500);
-            this.state.user = res.student;
-            this.state.userRole = 'student';
-            this.state.view = 'student-hub';
-            this.render();
-          } else {
-            alert(res.msg);
-          }
-        }
-      },
-      { label: 'Hủy', cls: 'btn-outline', action: () => UI.closeModal() }
-    ]);
+    this.switchLoginForm('student');
+    this.switchStudentSubTab('register');
   },
 
   logout() {

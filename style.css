@@ -1791,3 +1791,172 @@ html[data-theme="dark"] .collocation-tag {
   text-decoration: line-through;
   pointer-events: none;
 }
+
+
+/* ================================================================
+   LOGIN PAGE - MOBILE RESPONSIVE (Enhanced)
+   ================================================================ */
+
+/* Layout wrapper */
+.login-page-wrap {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg);
+}
+
+/* Desktop hero panel */
+.login-hero-panel {
+  flex: 1;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0284c7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* Form panel (right side on desktop, full width on mobile) */
+.login-form-panel {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 28px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+.login-form-inner {
+  width: 100%;
+  max-width: 390px;
+}
+
+/* Role tabs (Teacher / Student) */
+.login-role-tabs {
+  display: flex;
+  background: var(--surface-2);
+  border-radius: 14px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+}
+.login-tab {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.login-tab.active {
+  background: #fff;
+  color: #1e40af;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+}
+
+/* Student sub-tabs (Login / Register) */
+.login-subtabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 0;
+}
+.login-subtab {
+  flex: 1;
+  padding: 9px 10px;
+  border: none;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.login-subtab.active {
+  color: #059669;
+  border-bottom-color: #059669;
+}
+#subtab-register.active {
+  color: #7c3aed;
+  border-bottom-color: #7c3aed;
+}
+
+/* Mobile header (visible only on phones) */
+.login-mobile-header {
+  display: none;
+  text-align: center;
+  padding: 28px 20px 16px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #0284c7 100%);
+  color: #fff;
+}
+
+/* ================================================================
+   MOBILE RESPONSIVE - Login page full redesign
+   ================================================================ */
+@media (max-width: 768px) {
+  .login-page-wrap {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  /* Hide desktop hero, show mobile header */
+  .login-hero-panel {
+    display: none !important;
+  }
+  .login-mobile-header {
+    display: block;
+  }
+  /* Form panel takes full width */
+  .login-form-panel {
+    width: 100%;
+    flex: 1;
+    padding: 20px 16px 32px;
+    align-items: flex-start;
+  }
+  .login-form-inner {
+    max-width: 100%;
+  }
+  /* Bigger touch targets */
+  .login-tab {
+    font-size: 13px;
+    padding: 10px 8px;
+  }
+  .login-subtab {
+    font-size: 13px;
+    padding: 8px 8px;
+  }
+  input, select {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    min-height: 44px;
+  }
+  .input-group input {
+    min-height: 44px;
+  }
+  .btn-lg, #l-btn, #sl-btn, #reg-btn {
+    min-height: 48px;
+    font-size: 16px !important;
+  }
+  /* Stack grade/class fields on very small screens */
+}
+@media (max-width: 400px) {
+  #reg-grade, #reg-class {
+    font-size: 14px !important;
+  }
+  .login-role-tabs {
+    gap: 2px;
+  }
+  .login-tab {
+    font-size: 12px;
+    padding: 9px 6px;
+  }
+}
