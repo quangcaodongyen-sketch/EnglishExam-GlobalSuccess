@@ -1395,42 +1395,70 @@ const App = {
 
   // ── Danh sách Đề thi cho Học sinh làm bài ────────────────────────
   renderStudentExamsList() {
-    const exams = Auth.getPublishedExams();
+    const allExams = Auth.getPublishedExams();
+    const filter = this.state.studentExamFilter || 'all';
+    const filtered = allExams.filter(e => {
+      if (filter === 'all') return true;
+      if (filter === '6') return String(e.grade) === '6';
+      if (filter === '7') return String(e.grade) === '7';
+      if (filter === '8') return String(e.grade) === '8';
+      if (filter === '9') return String(e.grade) === '9';
+      return true;
+    });
+
+    const g6Count = allExams.filter(e => String(e.grade) === '6').length;
+    const g8Count = allExams.filter(e => String(e.grade) === '8').length;
 
     return `
-    <div class="page-body slide-up">
-      <div class="section-header">
+    <div class="page-body slide-up" style="max-width:1250px;margin:0 auto">
+      <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px">
         <div>
-          <div class="section-title">✍️ Phòng thi Trực tuyến & Bài tập Giáo viên giao</div>
-          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Chọn đề thi để làm bài trực tiếp trên điện thoại hoặc máy tính</div>
+          <div class="section-title" style="font-size:20px;font-weight:900;color:#1e3a8a">✍️ PHÒNG THI TRỰC TUYẾN – BÀI KIỂM TRA GIỮA KỲ 1 ONLINE</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Đề thi chuẩn Công văn 7991/BGDĐT (Khối 6 & Khối 8 đủ 6 mã đề) – Bấm nút để làm bài trực tiếp trên máy tính hoặc điện thoại</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ${filter === 'all' ? 'btn-primary' : 'btn-outline'}" onclick="App.setStudentExamFilter('all')" style="font-weight:700">
+            🌟 Tất cả (${allExams.length} Đề)
+          </button>
+          <button class="btn ${filter === '6' ? 'btn-primary' : 'btn-outline'}" onclick="App.setStudentExamFilter('6')" style="font-weight:700;${filter === '6' ? 'background:#2563eb;color:#fff' : ''}">
+            📘 Tiếng Anh 6 Giữa Kì 1 (${g6Count} Mã đề)
+          </button>
+          <button class="btn ${filter === '8' ? 'btn-primary' : 'btn-outline'}" onclick="App.setStudentExamFilter('8')" style="font-weight:700;${filter === '8' ? 'background:#059669;color:#fff' : ''}">
+            📗 Tiếng Anh 8 Giữa Kì 1 (${g8Count} Mã đề)
+          </button>
         </div>
       </div>
 
       <div class="grid grid-3 gap-16">
-        ${exams.map(e => `
-        <div class="card" style="border:1.5px solid var(--line);padding:20px;display:flex;flex-direction:column;justify-content:space-between">
+        ${filtered.map(e => `
+        <div class="card" style="border:1.5px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 3px 12px rgba(0,0,0,0.04);transition:all 0.2s">
           <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <span class="badge badge-g${e.grade}">Lớp ${e.grade} Global Success</span>
-              <span class="tag ${e.isOpen ? 'tag-nb' : 'tag-vdc'}">${e.isOpen ? 'Đang mở' : 'Đã đóng'}</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <span class="badge badge-g${e.grade}" style="font-weight:800;font-size:12px">Khối ${e.grade} Global Success</span>
+              <span class="tag tag-nb" style="font-weight:800;background:#dbeafe;color:#1e40af;font-size:12px">Mã đề: ${e.examCode || '601'}</span>
             </div>
-            <h3 style="font-size:16px;font-weight:800;color:#0f172a;line-height:1.5;margin-bottom:6px">${esc(e.title)}</h3>
-            <div style="font-size:12.5px;color:#64748b">
-              Thời gian: <b>${e.examTime} phút</b> · Số câu: <b>${e.sections?.reduce((s, sec) => s + sec.questions.length, 0) || 20} câu</b>
-            </div>
-            <div style="font-size:12px;color:#475569;margin-top:4px">
-              Giáo viên: <b>${esc(e.teacherName || 'Thầy Đinh Văn Thành')}</b>
+            <h3 style="font-size:15px;font-weight:800;color:#0f172a;line-height:1.45;margin-bottom:10px">${esc(e.title)}</h3>
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#475569;margin-bottom:14px;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0">
+              <div>⏱️ Thời gian làm bài: <b>${e.examTime} phút</b></div>
+              <div>📝 Cấu trúc: <b>36 câu trắc nghiệm + 1 câu viết (10.0đ)</b></div>
+              <div>🎧 Âm thanh: <b>Có Audio Listening US/UK (nghe 2 lần)</b></div>
+              <div>🏫 Đơn vị: <b>${esc(e.schoolName || 'TRƯỜNG THCS ĐỒNG YÊN')}</b></div>
             </div>
           </div>
 
-          <div style="margin-top:20px">
-            <button class="btn btn-primary w-full" onclick="App.openStudentExamDirect('${e.id}')" ${!e.isOpen ? 'disabled' : ''}>
-              ${e.isOpen ? '🚀 Bắt đầu làm bài thi' : '🔒 Đề đã kết thúc'}
+          <div style="margin-top:10px">
+            <button class="btn btn-primary w-full" style="font-weight:800;padding:12px;border-radius:10px;font-size:14px;box-shadow:0 3px 10px rgba(37,99,235,0.3)" onclick="App.openStudentExamDirect('${e.id}')">
+              🚀 Bắt đầu làm bài thi (Mã ${e.examCode || ''})
             </button>
           </div>
         </div>`).join('')}
       </div>
     </div>`;
+  },
+
+  setStudentExamFilter(filter) {
+    this.state.studentExamFilter = filter;
+    this.render();
   },
 
   openStudentExamDirect(examId) {
@@ -5512,12 +5540,21 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
           <!-- View Tabs -->
           <div class="tabs" style="padding:3px;flex-wrap:wrap;gap:4px">
-            <button class="tab-btn ${activeTab === 'exam1' ? 'active' : ''}" onclick="App.setOfficialTab('exam1')">
-              👨‍🎓 Đề Mã 1 (${code1})
-            </button>
-            <button class="tab-btn ${activeTab === 'exam2' ? 'active' : ''}" onclick="App.setOfficialTab('exam2')">
-              🔀 Đề Mã 2 (${code2})
-            </button>
+            ${(suite && suite.codes && suite.codes.length > 2) ? suite.codes.map((c, idx) => {
+              const isAct = activeTab === ('exam' + c) || (idx === 0 && activeTab === 'exam1') || (idx === 1 && activeTab === 'exam2');
+              return `
+                <button class="tab-btn ${isAct ? 'active' : ''}" onclick="App.setOfficialTab('exam${c}')">
+                  📝 Đề Mã ${c}
+                </button>
+              `;
+            }).join('') : `
+              <button class="tab-btn ${activeTab === 'exam1' ? 'active' : ''}" onclick="App.setOfficialTab('exam1')">
+                👨‍🎓 Đề Mã 1 (${code1})
+              </button>
+              <button class="tab-btn ${activeTab === 'exam2' ? 'active' : ''}" onclick="App.setOfficialTab('exam2')">
+                🔀 Đề Mã 2 (${code2})
+              </button>
+            ` }
             <button class="tab-btn ${activeTab === 'solutions' ? 'active' : ''}" onclick="App.setOfficialTab('solutions')">
               👩‍🏫 Đáp Án 4 Cột & Lời Giải
             </button>
@@ -5535,6 +5572,9 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
 
           <!-- Quick Action Buttons -->
           <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="App.startOnlineOfficialExamCurrent()" class="btn" style="background:#7c3aed;color:#fff;font-weight:800;box-shadow:0 3px 10px rgba(124,58,237,0.3)" title="Bắt đầu làm bài thi trực tuyến ngay">
+              🚀 LÀM BÀI THI ONLINE NGAY
+            </button>
             <a href="${item.p}" download="${item.f}" class="btn btn-primary" style="text-decoration:none;font-weight:700">
               📥 Tải File Gốc (.docx)
             </a>
@@ -5593,8 +5633,22 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
       </div>`;
     }
 
-    const curSections = tab === 'exam2' ? suite.sections_code2 : suite.sections_code1;
-    const curCode = tab === 'exam2' ? suite.code2 : suite.code1;
+    let curCode = suite.code1 || '601';
+    let curSections = suite.sections_code1 || [];
+
+    if (tab === 'exam2') {
+      curCode = suite.code2 || '602';
+      curSections = suite.sections_code2 || suite.sections_code1 || [];
+    } else if (tab && tab.startsWith('exam_')) {
+      curCode = tab.replace('exam_', '');
+      curSections = suite[`sections_code${curCode}`] || suite.sections_code1 || [];
+    } else if (tab && tab.startsWith('exam') && tab !== 'exam1') {
+      const customCode = tab.replace('exam', '');
+      if (suite[`sections_code${customCode}`]) {
+        curCode = customCode;
+        curSections = suite[`sections_code${customCode}`];
+      }
+    }
     const examTitle = `BÀI KIỂM TRA ĐÁNH GIÁ ${suite.termTitle}`;
 
     // ĐỀ CƯƠNG ÔN TẬP 6 TRANG A4
@@ -5671,7 +5725,7 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
     }
 
     // TAB 1 & 2: Đề thi Mã 1 hoặc Mã 2
-    if (tab === 'exam1' || tab === 'exam2') {
+    if (tab === 'exam1' || tab === 'exam2' || (tab && tab.startsWith('exam')) || tab === undefined) {
       let globalQNum = 1;
       return `
       <div class="exam-preview-wrap">

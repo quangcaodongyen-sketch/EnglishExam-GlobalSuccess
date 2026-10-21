@@ -151,9 +151,31 @@ const Auth = (() => {
     localStorage.setItem(STORAGE_KEYS.CUSTOM_QUESTIONS, JSON.stringify(qs));
   }
 
-  // ── Published Exams (Chia sẻ link làm bài) ──────────────────
+  // ── Published Exams (Chia sẻ link làm bài & Đề thi trực tuyến) ──────────────────
   function getPublishedExams() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.PUBLISHED_EXAMS) || '[]');
+    let customList = [];
+    try {
+      customList = JSON.parse(localStorage.getItem(STORAGE_KEYS.PUBLISHED_EXAMS) || '[]');
+    } catch (e) {
+      customList = [];
+    }
+
+    // Tự động tích hợp 12 Bài Kiểm Tra Giữa Kì 1 Online Chuẩn CV 7991 (Khối 6 & Khối 8)
+    let defaultExams = [];
+    if (typeof ONLINE_MIDTERM_EXAMS !== 'undefined' && Array.isArray(ONLINE_MIDTERM_EXAMS)) {
+      defaultExams = ONLINE_MIDTERM_EXAMS;
+    } else if (typeof window !== 'undefined' && Array.isArray(window.ONLINE_MIDTERM_EXAMS)) {
+      defaultExams = window.ONLINE_MIDTERM_EXAMS;
+    }
+
+    const customIds = new Set(customList.map(e => e.id));
+    const merged = [...customList];
+    for (const defExam of defaultExams) {
+      if (!customIds.has(defExam.id)) {
+        merged.push(defExam);
+      }
+    }
+    return merged;
   }
   function getPublishedExam(id) {
     const exam = getPublishedExams().find(e => e.id === id) || null;
