@@ -94,60 +94,169 @@ function gradeTag(grade) {
   return `<span class="badge badge-g${grade}">Lớp ${grade} Global Success</span>`;
 }
 
-// ── Audio Engine (AI Speech Synthesis & Audio Player) ──────────────
+// ── Audio Engine (AI Speech Synthesis & Audio Player - Smart Listening Pro Standard) ──
 const AudioEngine = {
   speaking: false,
   utterance: null,
   audioEl: null,
 
-  playAudioUrl(url, onEnd) {
-    if (!url) return false;
+  playAudioUrl(url, onEnd, fallbackScript = '') {
+    if (!url) {
+      if (fallbackScript) return this.playScript(fallbackScript, 0.78, onEnd);
+      return false;
+    }
+    this.stop();
     if (!this.audioEl) this.audioEl = new Audio();
-    this.audioEl.src = url;
+    
+    let cleanUrl = url.trim().replace(/^\.\//, '');
+    this.audioEl.src = cleanUrl;
+    
     this.audioEl.onended = () => {
       this.speaking = false;
       if (onEnd) onEnd();
     };
-    this.audioEl.play().catch(e => {
-      console.warn('Audio play error:', e);
-      UI.toast('Chuyển sang giọng đọc AI bản ngữ chuẩn', 'info');
-    });
+
+    this.audioEl.onerror = (e) => {
+      console.warn('Audio URL error, falling back to Neural SpeechSynthesis:', cleanUrl, e);
+      this.speaking = false;
+      if (fallbackScript) {
+        if (typeof UI !== 'undefined' && UI.toast) {
+          UI.toast('Đang phát giọng đọc AI bản ngữ chuẩn Smart Listening...', 'info');
+        }
+        this.playScript(fallbackScript, 0.78, onEnd);
+      } else if (onEnd) {
+        onEnd();
+      }
+    };
+
+    const playPromise = this.audioEl.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        this.speaking = true;
+      }).catch(err => {
+        console.warn('Audio play error, falling back to Neural SpeechSynthesis:', err);
+        this.speaking = false;
+        if (fallbackScript) {
+          if (typeof UI !== 'undefined' && UI.toast) {
+            UI.toast('Đang phát giọng đọc AI bản ngữ chuẩn Smart Listening...', 'info');
+          }
+          this.playScript(fallbackScript, 0.78, onEnd);
+        } else if (onEnd) {
+          onEnd();
+        }
+      });
+    }
     this.speaking = true;
     return true;
   },
 
-  playScript(text, rate = 0.88, onEnd) {
+  playScript(text, rate = 0.78, onEnd) {
     if (!('speechSynthesis' in window)) {
-      UI.toast('Trình duyệt không hỗ trợ Web Speech API', 'warn');
+      if (typeof UI !== 'undefined' && UI.toast) {
+        UI.toast('Trình duyệt không hỗ trợ Web Speech API', 'warn');
+      }
       return false;
     }
-    window.speechSynthesis.cancel();
+    this.stop();
     if (!text || !text.trim()) {
-      UI.toast('Chưa có nội dung âm thanh để phát', 'warn');
+      if (typeof UI !== 'undefined' && UI.toast) {
+        UI.toast('Chưa có nội dung âm thanh để phát', 'warn');
+      }
       return false;
     }
 
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    utter.rate = rate; // Tốc độ điều chỉnh linh hoạt
-    utter.pitch = 1.0;
+    // Tách dòng và loại bỏ 100% tiêu đề, nhãn bài nghe & tên nhân vật trước khi đọc
+    const cleanLines = text
+      .split('\n')
+      .map(line => {
+        return line
+          .replace(/^[•\s\t*-]+/, '')
+          .replace(/^(Transcript\s+bài\s+nghe\s+)?(Part|Phần)\s*\d+[^:\n]*:\s*/i, '')
+          .replace(/^[A-Za-z0-9\s'.-]+:\s*/, '')
+          .replace(/^(Nam|Mai|Linda|Mi|Phong|Lan|Hoa|Tom|Peter|Mary|John|David|Jason|Hannah|Mark|Trang|Doctor|Nick|Speaker\s*\w*|Person\s*\w*|Boy|Girl|Man|Woman|Interviewer|Interviewee|Teacher|Student\s*\w*)[,\s:.-]+/i, '')
+          .replace(/^(Hi|Hello|Good morning|Good afternoon)\s+(Nam|Mai|Linda|Mi|Phong|Lan|Hoa|Tom|Peter|Mary|John|David|Jason|Hannah|Mark|Trang)[!.,\s]*/i, '')
+          .trim();
+      })
+      .filter(line => line.length > 0 && !line.toLowerCase().includes('transcript bài nghe'));
 
-    const voices = window.speechSynthesis.getVoices();
-    const enVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('English')));
-    if (enVoice) utter.voice = enVoice;
+    if (cleanLines.length === 0) {
+      this.speaking = false;
+      if (onEnd) onEnd();
+      return false;
+    }
 
+    let currentIndex = 0;
     this.speaking = true;
-    utter.onend = () => {
-      this.speaking = false;
-      if (onEnd) onEnd();
-    };
-    utter.onerror = () => {
-      this.speaking = false;
-      if (onEnd) onEnd();
+
+    const speakNext = () => {
+      if (currentIndex >= cleanLines.length) {
+        this.speaking = false;
+        if (onEnd) onEnd();
+        return;
+      }
+
+      const utter = new SpeechSynthesisUtterance(cleanLines[currentIndex]);
+      utter.lang = 'en-US';
+      // Tốc độ 0.78x: Chậm rãi, dõng dạc, tròn vành rõ chữ chuẩn sư phạm cho học sinh THCS
+      utter.rate = rate || 0.78;
+      utter.volume = 1.0;
+
+      // Tìm giọng đọc bản ngữ chuẩn cao cấp (Natural/Neural/Online) tương đồng Smart Listening Pro
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        const enVoices = voices.filter(v => v.lang.startsWith('en'));
+        
+        const femaleKeywords = [
+          'Ava Online (Natural)', 'Jenny Online (Natural)', 'Aria Online (Natural)', 
+          'Libby Online (Natural)', 'Google US English', 'Jenny', 'Ava', 'Zira'
+        ];
+        const maleKeywords = [
+          'Andrew Online (Natural)', 'Guy Online (Natural)', 'Ryan Online (Natural)', 
+          'Google UK English Male', 'Andrew', 'Guy', 'David'
+        ];
+
+        const isFemaleTurn = currentIndex % 2 === 0;
+        const targetKeywords = isFemaleTurn ? femaleKeywords : maleKeywords;
+
+        let chosenVoice = null;
+        for (const kw of targetKeywords) {
+          chosenVoice = enVoices.find(v => v.name.toLowerCase().includes(kw.toLowerCase()));
+          if (chosenVoice) break;
+        }
+
+        if (!chosenVoice) {
+          chosenVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Online')));
+        }
+
+        if (chosenVoice) {
+          utter.voice = chosenVoice;
+        } else if (enVoices.length >= 2) {
+          utter.voice = isFemaleTurn ? enVoices[1] : enVoices[0];
+        } else if (enVoices.length === 1) {
+          utter.voice = enVoices[0];
+        }
+      } catch (e) {}
+
+      utter.pitch = currentIndex % 2 === 0 ? 1.0 : 0.97;
+
+      utter.onend = () => {
+        currentIndex++;
+        setTimeout(speakNext, 480);
+      };
+
+      utter.onerror = (e) => {
+        if (e.error !== 'canceled') {
+          console.warn('Speech error:', e);
+        }
+        this.speaking = false;
+        if (onEnd) onEnd();
+      };
+
+      this.utterance = utter;
+      window.speechSynthesis.speak(utter);
     };
 
-    this.utterance = utter;
-    window.speechSynthesis.speak(utter);
+    speakNext();
     return true;
   },
 
@@ -167,57 +276,40 @@ const AudioEngine = {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
       if (type === 'success') {
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-        notes.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.35);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.08);
-          osc.stop(ctx.currentTime + idx * 0.08 + 0.35);
-        });
-      } else if (type === 'celebrate') {
-        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-        notes.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.5);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.1);
-          osc.stop(ctx.currentTime + idx * 0.1 + 0.5);
-        });
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
-        }
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.1);
+        osc.frequency.setValueAtTime(783.99, now + 0.2);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.start(now);
+        osc.stop(now + 0.45);
+      } else if (type === 'complete') {
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.setValueAtTime(739.99, now + 0.12);
+        osc.frequency.setValueAtTime(880.00, now + 0.24);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc.start(now);
+        osc.stop(now + 0.6);
       } else {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(220, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.22);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.22);
+        osc.frequency.setValueAtTime(329.63, now);
+        osc.frequency.setValueAtTime(293.66, now + 0.12);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
       }
-    } catch (e) {
-      // AudioContext not started
-    }
+    } catch (e) {}
   }
 };
 
-// ── Application Core ──────────────────────────────────────────────
 const App = {
   state: {
     user: null, // Giáo viên hoặc Học sinh đã đăng nhập
@@ -1414,7 +1506,7 @@ const App = {
       <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px">
         <div>
           <div class="section-title" style="font-size:20px;font-weight:900;color:#1e3a8a">✍️ PHÒNG THI TRỰC TUYẾN – BÀI KIỂM TRA GIỮA KỲ 1 ONLINE</div>
-          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Đề thi chuẩn Công văn 7991/BGDĐT (Khối 6 & Khối 8 đủ 6 mã đề) – Bấm nút để làm bài trực tiếp trên máy tính hoặc điện thoại</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Đề thi chuẩn Công văn 7991/BGDĐT (Khối 6: 2 mã đề 601, 602 & Khối 8: 2 mã đề 801, 802) – Bấm nút để làm bài trực tiếp trên máy tính hoặc điện thoại</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn ${filter === 'all' ? 'btn-primary' : 'btn-outline'}" onclick="App.setStudentExamFilter('all')" style="font-weight:700">
@@ -3693,7 +3785,7 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
         });
       } else {
         const textToRead = wiz.audioScript || 'Hello students, this is the English listening test.';
-        AudioEngine.playScript(textToRead, 0.88, () => {
+        AudioEngine.playScript(textToRead, 0.78, () => {
           this.state.previewAudioPlaying = false;
           this.renderPage();
         });
@@ -4368,9 +4460,9 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
       AudioEngine.playAudioUrl(exam.audioUrl, () => {
         this.state.studentAudioPlaying = false;
         this.renderStudentExamView();
-      });
+      }, exam.audioScript || '');
     } else {
-      AudioEngine.playScript(exam.audioScript || 'Listening exam track', 0.88, () => {
+      AudioEngine.playScript(exam.audioScript || 'Listening exam track', 0.78, () => {
         this.state.studentAudioPlaying = false;
         this.renderStudentExamView();
       });
@@ -6183,7 +6275,7 @@ ${esc(suite.fullAudioScript)}
         oState.audioPlaying = false;
         this.renderPage();
       }, () => {
-        AudioEngine.playScript(suite.fullAudioScript || 'Listening Comprehension', 0.88, () => {
+        AudioEngine.playScript(suite.fullAudioScript || 'Listening Comprehension', 0.78, () => {
           oState.audioPlaying = false;
           this.renderPage();
         });

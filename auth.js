@@ -153,14 +153,7 @@ const Auth = (() => {
 
   // ── Published Exams (Chia sẻ link làm bài & Đề thi trực tuyến) ──────────────────
   function getPublishedExams() {
-    let customList = [];
-    try {
-      customList = JSON.parse(localStorage.getItem(STORAGE_KEYS.PUBLISHED_EXAMS) || '[]');
-    } catch (e) {
-      customList = [];
-    }
-
-    // Tự động tích hợp 12 Bài Kiểm Tra Giữa Kì 1 Online Chuẩn CV 7991 (Khối 6 & Khối 8)
+    // Luôn ưu tiên nạp ĐÚNG 4 Bài Kiểm Tra Giữa Kì 1 Chuẩn Xác từ online_midterm_exams_data.js
     let defaultExams = [];
     if (typeof ONLINE_MIDTERM_EXAMS !== 'undefined' && Array.isArray(ONLINE_MIDTERM_EXAMS)) {
       defaultExams = ONLINE_MIDTERM_EXAMS;
@@ -168,14 +161,18 @@ const Auth = (() => {
       defaultExams = window.ONLINE_MIDTERM_EXAMS;
     }
 
-    const customIds = new Set(customList.map(e => e.id));
-    const merged = [...customList];
-    for (const defExam of defaultExams) {
-      if (!customIds.has(defExam.id)) {
-        merged.push(defExam);
-      }
+    if (defaultExams.length > 0) {
+      // Chỉ giữ đúng các đề thi chính thức được cấp phép (4 mã đề 601, 602, 801, 802)
+      return defaultExams;
     }
-    return merged;
+
+    let customList = [];
+    try {
+      customList = JSON.parse(localStorage.getItem(STORAGE_KEYS.PUBLISHED_EXAMS) || '[]');
+    } catch (e) {
+      customList = [];
+    }
+    return customList;
   }
   function getPublishedExam(id) {
     const exam = getPublishedExams().find(e => e.id === id) || null;
