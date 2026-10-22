@@ -4345,6 +4345,30 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
                   ${sec.questions ? `<span class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700">${sec.questions.length} câu</span>` : ''}
                 </div>
 
+                ${(sec.audioUrl || (sec.skill === 'listening' && (sIdx === 0 ? exam.audioUrlPart1 : exam.audioUrlPart2))) ? `
+                <div class="part-audio-player-box" style="background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(30,58,138,0.14));border:1.5px solid #3b82f6;border-radius:14px;padding:12px 16px;margin:10px 0 16px;box-shadow:0 3px 10px rgba(0,0,0,0.04)">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span style="font-size:18px">🎧</span>
+                      <span style="font-weight:800;color:#1e3a8a;font-size:13.5px">File nghe chuẩn: ${esc(subTitle.split('.')[0] || 'Bài nghe')}</span>
+                      <span style="font-size:11.5px;color:#475569;background:#e0f2fe;padding:2px 8px;border-radius:6px;font-weight:700">Kéo thanh trượt để nghe lại từng từ</span>
+                    </div>
+                  </div>
+                  <audio controls controlsList="nodownload" src="${sec.audioUrl || (sIdx === 0 ? exam.audioUrlPart1 : exam.audioUrlPart2)}" style="width:100%;height:38px;outline:none"></audio>
+                </div>` : ''}
+
+                ${(sec.audioUrl || (sec.skill === 'listening' && (sIdx === 0 ? exam.audioUrlPart1 : exam.audioUrlPart2))) ? `
+                <div class="part-audio-player-box" style="background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(30,58,138,0.14));border:1.5px solid #3b82f6;border-radius:14px;padding:12px 16px;margin:10px 0 16px;box-shadow:0 3px 10px rgba(0,0,0,0.04)">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span style="font-size:18px">🎧</span>
+                      <span style="font-weight:800;color:#1e3a8a;font-size:13.5px">File nghe chuẩn: ${esc(subTitle.split('.')[0] || 'Bài nghe')}</span>
+                      <span style="font-size:11.5px;color:#475569;background:#e0f2fe;padding:2px 8px;border-radius:6px;font-weight:700">Kéo thanh trượt để nghe lại từng từ</span>
+                    </div>
+                  </div>
+                  <audio controls controlsList="nodownload" src="${sec.audioUrl || (sIdx === 0 ? exam.audioUrlPart1 : exam.audioUrlPart2)}" style="width:100%;height:38px;outline:none"></audio>
+                </div>` : ''}
+
                 ${sec.passage ? `
                 <div style="font-size:13.5px;line-height:1.65;color:#1e293b;background:#f8fafc;border:1.5px dashed #0284c7;border-radius:10px;padding:14px 18px;margin-bottom:14px">
                   <div style="font-weight:800;color:#0369a1;margin-bottom:6px;display:flex;align-items:center;gap:6px">
