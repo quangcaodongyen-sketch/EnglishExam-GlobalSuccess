@@ -4214,6 +4214,107 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
     this.renderStudentExamView();
   },
 
+  shuffleArray(arr) {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  },
+
+  shuffleSingleQuestionOptions(q) {
+    const oldOpts = q.options || [];
+    const oldAns = String(q.answer || q.correctAnswer || '').trim().toUpperCase();
+    if (!oldOpts || oldOpts.length <= 1) return q;
+
+    if (oldOpts.some(o => /true|false|đúng|sai/i.test(String(o)))) {
+      return q;
+    }
+
+    const items = [];
+    let correctContent = null;
+
+    oldOpts.forEach(opt => {
+      const s = String(opt).trim();
+      let letter = '';
+      let content = s;
+      const match = s.match(/^([A-Ea-e])[\.\:\)]\s*(.*)$/);
+      if (match) {
+        letter = match[1].toUpperCase();
+        content = match[2].trim();
+      }
+      items.push(content);
+      if (letter && letter === oldAns) {
+        correctContent = content;
+      } else if (!letter && content.toLowerCase() === oldAns.toLowerCase()) {
+        correctContent = content;
+      }
+    });
+
+    if (!correctContent) return q;
+
+    const shuffledItems = this.shuffleArray(items);
+    const letters = ['A', 'B', 'C', 'D', 'E'];
+    const newOpts = shuffledItems.map((it, idx) => `${letters[idx]}. ${it}`);
+    const newAnsIdx = shuffledItems.indexOf(correctContent);
+    const newAns = newAnsIdx !== -1 ? letters[newAnsIdx] : oldAns;
+
+    q.options = newOpts;
+    q.answer = newAns;
+    q.correctAnswer = newAns;
+
+    if (q.explanation && typeof q.explanation === 'string') {
+      q.explanation = q.explanation.replace(/🎯 ĐÁP ÁN ĐÚNG:\s*[A-Ea-e]/i, `🎯 ĐÁP ÁN ĐÚNG: ${newAns}`);
+    }
+
+    return q;
+  },
+
+  shuffleStudentExam(rawExam) {
+    if (!rawExam) return rawExam;
+    const exam = JSON.parse(JSON.stringify(rawExam));
+    let globalNum = 1;
+
+    (exam.sections || []).forEach(sec => {
+      const title = (sec.name || sec.title || '').toLowerCase();
+      const isPart2 = title.includes('part 2') || title.includes('true') || sec.id === 'sec_2';
+      const isPart1 = title.includes('part 1') || sec.id === 'sec_1';
+      const isCloze = title.includes('part 4') || sec.id === 'sec_4';
+      const isWriting = title.includes('part 8') || sec.type === 'writing' || sec.skill === 'writing';
+
+      if (isWriting) return;
+
+      let questions = sec.questions || [];
+
+      if (isPart2) {
+        // TUYỆT ĐỐI KHÔNG ĐẢO PART 2: Giữ nguyên 100% thứ tự câu hỏi và các lựa chọn A. True, B. False
+        questions.forEach(q => {
+          q.num = String(globalNum++);
+        });
+        return;
+      }
+
+      if (isPart1 || isCloze) {
+        // Giữ nguyên thứ tự câu theo mạch nghe / ô trống đọc hiểu, nhưng ĐẢO CÁC PHƯƠNG ÁN (A, B, C, D)
+        questions.forEach(q => {
+          this.shuffleSingleQuestionOptions(q);
+          q.num = String(globalNum++);
+        });
+        return;
+      }
+
+      // Các phần còn lại: ĐẢO CẢ THỨ TỰ CÂU HỎI VÀ ĐẢO CẢ ĐÁP ÁN A, B, C, D
+      sec.questions = this.shuffleArray(questions).map(q => {
+        this.shuffleSingleQuestionOptions(q);
+        q.num = String(globalNum++);
+        return q;
+      });
+    });
+
+    return exam;
+  },
+
   startStudentExam() {
     const name = document.getElementById('st-name')?.value?.trim();
     const cls = document.getElementById('st-class')?.value?.trim();
@@ -4223,6 +4324,7 @@ ${esc(wiz.audioScript || (suite ? suite.fullAudioScript : ''))}
       return;
     }
     this.state.studentInfo = { name, class: cls, id };
+    this.state.studentExam = this.shuffleStudentExam(this.state.studentExam);
     this.state.studentStarted = true;
     this.state.studentAnswers = {};
     this.state.studentAudioPlays = 0;
