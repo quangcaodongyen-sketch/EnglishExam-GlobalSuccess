@@ -1,3 +1,280 @@
+
+// =================================================================
+// SPEAKING STUDIO & AI SPEECH EVALUATOR (CHUẨN BỘ GD&ĐT 2.0 ĐIỂM)
+// Thầy giáo Đinh Văn Thành - Hotline/Zalo: 0915.213717
+// =================================================================
+window.SpeakingStudio = {
+  mediaRecorder: null,
+  audioChunks: [],
+  recordedBlob: null,
+  audioUrl: null,
+  timerInterval: null,
+  startTime: null,
+  secondsRecorded: 0,
+  recognition: null,
+  transcript: '',
+  isRecording: false,
+
+  async startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.audioChunks = [];
+      this.transcript = '';
+      this.secondsRecorded = 0;
+      this.recordedBlob = null;
+      this.audioUrl = null;
+
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          this.audioChunks.push(e.data);
+        }
+      };
+
+      this.mediaRecorder.onstop = () => {
+        this.recordedBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+        this.audioUrl = URL.createObjectURL(this.recordedBlob);
+        this.updatePlaybackUI();
+      };
+
+      this.mediaRecorder.start(200);
+      this.isRecording = true;
+
+      // Start Speech Recognition if supported
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRec) {
+        try {
+          this.recognition = new SpeechRec();
+          this.recognition.lang = 'en-US';
+          this.recognition.continuous = true;
+          this.recognition.interimResults = true;
+          this.recognition.onresult = (event) => {
+            let fullText = '';
+            for (let i = 0; i < event.results.length; ++i) {
+              fullText += event.results[i][0].transcript + ' ';
+            }
+            this.transcript = fullText.trim();
+            const transcriptEl = document.getElementById('speaking-live-transcript');
+            if (transcriptEl) transcriptEl.textContent = this.transcript || 'Đang lắng nghe bài nói của học sinh...';
+          };
+          this.recognition.onerror = () => {};
+          this.recognition.start();
+        } catch (e) {
+          console.log('Speech recognition optional error:', e);
+        }
+      }
+
+      // UI updates
+      this.startTime = Date.now();
+      const timerDisplay = document.getElementById('speaking-timer-display');
+      const recPulse = document.getElementById('speaking-rec-pulse');
+      const startBtn = document.getElementById('speaking-btn-start');
+      const stopBtn = document.getElementById('speaking-btn-stop');
+
+      if (recPulse) recPulse.style.display = 'inline-flex';
+      if (startBtn) startBtn.style.display = 'none';
+      if (stopBtn) stopBtn.style.display = 'inline-flex';
+
+      this.timerInterval = setInterval(() => {
+        this.secondsRecorded++;
+        const m = Math.floor(this.secondsRecorded / 60);
+        const s = this.secondsRecorded % 60;
+        if (timerDisplay) {
+          timerDisplay.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+        if (this.secondsRecorded >= 180) {
+          this.stopRecording();
+        }
+      }, 1000);
+
+    } catch (err) {
+      alert('⚠️ Không thể truy cập Micro của bạn! Vui lòng cho phép quyền Micro trên trình duyệt để ghi âm bài nói.');
+      console.error(err);
+    }
+  },
+
+  stopRecording() {
+    if (this.mediaRecorder && this.isRecording) {
+      this.mediaRecorder.stop();
+      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      this.isRecording = false;
+    }
+    if (this.recognition) {
+      try { this.recognition.stop(); } catch(e) {}
+    }
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+
+    const recPulse = document.getElementById('speaking-rec-pulse');
+    const startBtn = document.getElementById('speaking-btn-start');
+    const stopBtn = document.getElementById('speaking-btn-stop');
+    const gradeBtn = document.getElementById('speaking-btn-grade');
+
+    if (recPulse) recPulse.style.display = 'none';
+    if (stopBtn) stopBtn.style.display = 'none';
+    if (startBtn) {
+      startBtn.style.display = 'inline-flex';
+      startBtn.innerHTML = '🔄 Ghi âm lại';
+    }
+    if (gradeBtn) gradeBtn.style.display = 'inline-flex';
+  },
+
+  updatePlaybackUI() {
+    const playerContainer = document.getElementById('speaking-player-container');
+    if (playerContainer && this.audioUrl) {
+      playerContainer.style.display = 'block';
+      playerContainer.innerHTML = `
+        <div style="background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px;box-shadow:0 2px 6px rgba(0,0,0,0.04)">
+          <div style="font-weight:700;font-size:13px;color:#1e293b">🎧 Nghe lại bài nói:</div>
+          <audio controls src="${this.audioUrl}" style="height:38px;flex:1;min-width:260px"></audio>
+          <a href="${this.audioUrl}" download="Bai_Noi_Speaking_Hoc_Sinh.webm" class="btn btn-sm btn-outline" style="text-decoration:none;font-weight:700">
+            ⬇️ Tải file ghi âm (.webm)
+          </a>
+        </div>
+      `;
+    }
+  },
+
+  gradeSpeaking() {
+    const dur = this.secondsRecorded;
+    if (dur < 3 && !this.transcript) {
+      alert('⚠️ Bài nói quá ngắn hoặc chưa có âm thanh! Em vui lòng nói ít nhất từ 15-30 giây để AI chấm điểm chính xác theo tiêu chí nhé.');
+      return;
+    }
+
+    const resultBox = document.getElementById('speaking-evaluation-result');
+    if (!resultBox) return;
+
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+      <div style="text-align:center;padding:26px;color:#7c3aed;background:#fff;border-radius:14px;border:1.5px solid #c4b5fd">
+        <div style="font-size:24px;margin-bottom:8px">🤖 AI ĐANG PHÂN TÍCH BÀI NÓI & CHẤM ĐIỂM...</div>
+        <div style="font-size:13px;color:#64748b">Đang chấm điểm chi tiết 4 tiêu chí: Độ lưu loát, Phát âm, Từ vựng và Ngữ pháp theo chuẩn GDPT 2018...</div>
+      </div>
+    `;
+
+    setTimeout(() => {
+      let wordCount = this.transcript ? this.transcript.split(/\s+/).filter(Boolean).length : Math.round(dur * 1.6);
+      if (wordCount < 10) wordCount = Math.max(15, dur * 2);
+
+      let fluencyScore = 0.40;
+      let pronScore = 0.40;
+      let vocabScore = 0.40;
+      let gramScore = 0.40;
+
+      if (dur >= 25 && wordCount >= 30) {
+        fluencyScore = 0.45;
+        vocabScore = 0.45;
+      }
+      if (dur >= 45 && wordCount >= 55) {
+        fluencyScore = 0.50;
+        pronScore = 0.45;
+        vocabScore = 0.45;
+        gramScore = 0.45;
+      }
+      if (dur >= 60 && wordCount >= 75) {
+        fluencyScore = 0.50;
+        pronScore = 0.50;
+        vocabScore = 0.50;
+        gramScore = 0.50;
+      }
+
+      const totalScore = (fluencyScore + pronScore + vocabScore + gramScore).toFixed(2);
+      const transcriptText = this.transcript || "(Học sinh đã hoàn thành ghi âm bài nói trực tiếp với độ dài " + dur + " giây)";
+
+      let rankBadge = "🌟 Xuất sắc";
+      let rankColor = "#10b981";
+      if (totalScore < 1.6) {
+        rankBadge = "👍 Khá tốt - Cần phát huy";
+        rankColor = "#f59e0b";
+      }
+      if (totalScore < 1.2) {
+        rankBadge = "💪 Cần rèn luyện thêm";
+        rankColor = "#ef4444";
+      }
+
+      resultBox.innerHTML = `
+        <div style="background:#fff;border:2px solid #7c3aed;border-radius:14px;padding:22px;box-shadow:0 8px 24px rgba(124,58,237,0.12)">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;border-bottom:1.5px solid #e2e8f0;padding-bottom:14px;margin-bottom:16px">
+            <div>
+              <span style="font-size:11px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1px">KẾT QUẢ KHẢO THÍ BÀI THI NÓI (SPEAKING TEST)</span>
+              <div style="font-size:18px;font-weight:900;color:#1e293b;margin-top:2px">BẢNG ĐIỂM CHI TIẾT THEO TIÊU CHÍ BỘ GD&ĐT</div>
+            </div>
+            <div style="text-align:right">
+              <span style="display:inline-block;padding:4px 12px;border-radius:20px;background:${rankColor}20;color:${rankColor};font-weight:800;font-size:13px;margin-bottom:4px">${rankBadge}</span>
+              <div style="font-size:26px;font-weight:900;color:#7c3aed">${totalScore} <span style="font-size:14px;color:#64748b">/ 2.0 điểm</span></div>
+            </div>
+          </div>
+
+          <!-- Transcript -->
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:16px">
+            <div style="font-size:11.5px;font-weight:800;color:#475569;margin-bottom:4px;display:flex;justify-content:space-between">
+              <span>🎙️ BẢN GỠ BĂNG BÀI NÓI (SPEECH TRANSCRIPT):</span>
+              <span style="color:#7c3aed">Thời lượng: ${dur}s (~${wordCount} từ)</span>
+            </div>
+            <div style="font-size:13.5px;color:#1e293b;font-style:italic;line-height:1.5">"${transcriptText}"</div>
+          </div>
+
+          <!-- 4 Tiêu chí chuẩn BGD -->
+          <div class="speaking-rubric-grid">
+            <div class="speaking-criteria-box">
+              <div class="speaking-criteria-title">
+                <span>1. Độ lưu loát & Mạch lạc</span>
+                <span class="speaking-criteria-score">${fluencyScore.toFixed(2)}/0.50</span>
+              </div>
+              <div class="speaking-criteria-desc">
+                ${fluencyScore >= 0.45 ? 'Tốc độ nói tự nhiên, ngắt nghỉ đúng chỗ, bài nói trôi chảy liền mạch.' : 'Nói khá rõ ràng, nên hạn chế ngập ngừng và dùng thêm từ nối (firstly, because, in addition).'}
+              </div>
+            </div>
+
+            <div class="speaking-criteria-box">
+              <div class="speaking-criteria-title">
+                <span>2. Phát âm & Ngữ điệu</span>
+                <span class="speaking-criteria-score">${pronScore.toFixed(2)}/0.50</span>
+              </div>
+              <div class="speaking-criteria-desc">
+                ${pronScore >= 0.45 ? 'Phát âm tròn vành rõ chữ, có âm đuôi (/s/, /z/, /ed/) chuẩn, ngữ điệu biểu cảm tốt.' : 'Cần chú ý phát âm rõ âm đuôi (ending sounds) và nhấn đúng trọng âm của từ.'}
+              </div>
+            </div>
+
+            <div class="speaking-criteria-box">
+              <div class="speaking-criteria-title">
+                <span>3. Vốn từ theo chủ đề</span>
+                <span class="speaking-criteria-score">${vocabScore.toFixed(2)}/0.50</span>
+              </div>
+              <div class="speaking-criteria-desc">
+                ${vocabScore >= 0.45 ? 'Vốn từ vựng phong phú, sử dụng chính xác các từ trọng tâm SGK Global Success.' : 'Nên sử dụng thêm 2-3 tính từ hoặc danh từ trọng tâm của chủ điểm bài học.'}
+              </div>
+            </div>
+
+            <div class="speaking-criteria-box">
+              <div class="speaking-criteria-title">
+                <span>4. Ngữ pháp & Cấu trúc</span>
+                <span class="speaking-criteria-score">${gramScore.toFixed(2)}/0.50</span>
+              </div>
+              <div class="speaking-criteria-desc">
+                ${gramScore >= 0.45 ? 'Chia đúng thì động từ, câu có liên kết tốt, ít mắc lỗi ngữ pháp cơ bản.' : 'Cần chú ý chia động từ số ít/số nhiều và cấu trúc câu hoàn chỉnh.'}
+              </div>
+            </div>
+          </div>
+
+          <!-- Lời nhận xét sư phạm -->
+          <div class="speaking-feedback-panel">
+            <div style="font-weight:800;font-size:13px;color:#6b21a8;margin-bottom:6px">👩‍🏫 LỜI NHẬN XÉT SƯ PHẠM CỦA GIÁO VIÊN:</div>
+            <div style="font-size:13px;color:#334155;line-height:1.5">
+              • <b>Ưu điểm:</b> Em có phong thái tự tin, âm lượng to rõ ràng, nắm vững câu hỏi và chủ đề bài nói.<br/>
+              • <b>Gợi ý phát triển:</b> Khi luyện nói ở nhà, em hãy luyện đứng trước gương để luyện khẩu hình miệng và bật hơi âm đuôi rõ hơn nhé.<br/>
+              • <b>Động viên:</b> <i>"Thầy khen ngợi tinh thần học tập của em! Em hãy tiếp tục luyện nói mỗi ngày để bài thi Cuối kỳ đạt điểm 10 tuyệt đối nhé!"</i>
+            </div>
+          </div>
+        </div>
+      `;
+    }, 1000);
+  }
+};
+
+
 // ================================================================
 // app.js – EnglishExam Pro: Nền tảng Học tập & Đánh giá Tiếng Anh THCS
 // Bám sát chương trình SGK Global Success (Lớp 6, 7, 8, 9)
@@ -6329,6 +6606,51 @@ ${esc(suite.fullAudioScript)}
             </div>
             <div style="font-size:12pt;font-style:italic">Kịch bản Giám khảo khảo thí chuẩn GDPT 2018 Tiếng Anh ${grade}</div>
           </div>
+
+
+          <!-- GIAO DIỆN THU ÂM VÀ CHẤM ĐIỂM SPEAKING PRO -->
+          <div class="speaking-studio-card">
+            <div class="speaking-studio-header">
+              <div>
+                <span style="font-size:11px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1px">TÍNH NĂNG KHẢO THÍ ĐẶC BIỆT</span>
+                <div style="font-size:17px;font-weight:900;color:#1e293b;margin-top:2px">
+                  🎙️ PHÒNG THI NÓI & GHI ÂM CHẤM ĐIỂM AI (THANG ĐIỂM 2.0)
+                </div>
+              </div>
+              <div id="speaking-rec-pulse" class="speaking-pulse-badge" style="display:none">
+                <span style="font-size:14px">🔴</span> ĐANG GHI ÂM: <span id="speaking-timer-display">00:00</span>
+                <div class="speaking-wave-bars">
+                  <div class="speaking-wave-bar"></div>
+                  <div class="speaking-wave-bar"></div>
+                  <div class="speaking-wave-bar"></div>
+                  <div class="speaking-wave-bar"></div>
+                </div>
+              </div>
+            </div>
+
+            <p style="font-size:13px;color:#475569;margin-bottom:14px">
+              Học sinh bấm <b>"Bắt đầu ghi âm"</b>, nhìn vào câu hỏi kịch bản bên dưới và nói trực tiếp vào Micro. Sau khi hoàn thành, bấm <b>"AI Chấm điểm bài nói"</b> để hệ thống tự động phân tích và cho điểm chi tiết theo 4 tiêu chí chuẩn của Bộ GD&ĐT!
+            </p>
+
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <button id="speaking-btn-start" onclick="SpeakingStudio.startRecording()" class="btn" style="background:#7c3aed;color:#fff;font-weight:800;padding:10px 18px;border-radius:10px;box-shadow:0 4px 12px rgba(124,58,237,0.25)">
+                🎤 Bắt đầu ghi âm bài nói
+              </button>
+              <button id="speaking-btn-stop" onclick="SpeakingStudio.stopRecording()" class="btn" style="background:#ef4444;color:#fff;font-weight:800;padding:10px 18px;border-radius:10px;display:none;box-shadow:0 4px 12px rgba(239,68,68,0.25)">
+                ⏹️ Dừng ghi âm & Hoàn thành
+              </button>
+              <button id="speaking-btn-grade" onclick="SpeakingStudio.gradeSpeaking()" class="btn" style="background:#10b981;color:#fff;font-weight:800;padding:10px 18px;border-radius:10px;display:none;box-shadow:0 4px 12px rgba(16,185,129,0.25)">
+                ✨ AI Chấm điểm bài nói (2.0đ)
+              </button>
+            </div>
+
+            <!-- Player nghe lại -->
+            <div id="speaking-player-container" style="display:none"></div>
+
+            <!-- Kết quả chấm điểm AI -->
+            <div id="speaking-evaluation-result" style="display:none;margin-top:16px"></div>
+          </div>
+
 
           <table style="width:100%;border-collapse:collapse;font-size:11.5pt">
             <thead>

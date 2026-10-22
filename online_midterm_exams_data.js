@@ -344,12 +344,12 @@ var ONLINE_MIDTERM_EXAMS = [
           {
             "id": "q_601_16",
             "num": "16",
-            "content": "Which word has the underlined part pronounced differently? house, round, cousin, mouth",
+            "content": "Students should pack their ________ carefully before going to school every morning.",
             "options": [
-              "A. mouth",
-              "B. cousin",
-              "C. house",
-              "D. round"
+              "A. school bag",
+              "B. living room",
+              "C. computer",
+              "D. sofa"
             ],
             "answer": "B",
             "explanation": "🎯 ĐÁP ÁN ĐÚNG: B (cousin)\n📌 Dịch nghĩa sang tiếng Việt: Từ nào có phần gạch chân phát âm khác? -> D. group (/uː/), các từ còn lại phát âm là /aʊ/.\n📐 Cấu trúc ngữ pháp trọng tâm: Quy tắc phát âm nguyên âm đôi 'ou': /aʊ/ và /uː/.\n⏱️ Thì của câu: Ngữ âm (Phonetics).\n💡 Dấu hiệu nhận biết: Phần gạch chân chữ 'ou'.\n🔍 Dẫn chứng chi tiết: house /haʊs/, round /raʊnd/, mouth /maʊθ/ (đều có âm /aʊ/). Riêng group /ɡruːp/ phát âm là âm /uː/ dài.\n🎉 Thầy giáo khen ngợi: 🌟 Giỏi lắm! Phân biệt âm /aʊ/ và /uː/ là câu hỏi phân loại mà em làm đúng rất tuyệt!\n💪 Lời khuyên & Động viên: 🌱 'group' đọc là /ɡruːp/ (âm u dài), còn 3 từ kia đều là âm /aʊ/ như 'háo-x', 'ráo-nđ' em nhé!",
@@ -1084,12 +1084,12 @@ var ONLINE_MIDTERM_EXAMS = [
           {
             "id": "q_801_12",
             "num": "12",
-            "content": "Which word has the underlined part pronounced differently? stress, connect, pressure, peer",
+            "content": "Many teenagers experience peer ________ because they want to fit in with their classmates.",
             "options": [
               "A. pressure",
-              "B. stress",
-              "C. connect",
-              "D. peer"
+              "B. harvest",
+              "C. costume",
+              "D. tradition"
             ],
             "answer": "D",
             "explanation": "🎯 ĐÁP ÁN ĐÚNG: D (peer)\n📌 Dịch nghĩa sang tiếng Việt: Chọn từ có phần gạch chân phát âm khác: stress, connect, pressure, peer -> D. peer phát âm là /ɪə/, các từ còn lại có phần gạch chân chữ e phát âm là /e/.\n📐 Cấu trúc ngữ pháp trọng tâm: Phát âm nguyên âm đôi /ɪə/ (peer /pɪə(r)/) so với nguyên âm ngắn /e/ (stress /stres/, connect /kəˈnekt/, pressure /ˈpreʃə(r)/).\n⏱️ Thì của câu: Quy tắc ngữ âm Tiếng Anh Lớp 8.\n💡 Dấu hiệu nhận biết: Các từ 'stress, connect, pressure' đều phát âm âm /e/, riêng 'peer' phát âm là /ɪə/.\n🔍 Dẫn chứng chi tiết: IPA: stress /stres/, connect /kəˈnekt/, pressure /ˈpreʃə(r)/ đều có nguyên âm /e/. Trong khi peer /pɪə(r)/ phát âm là /ɪə/.\n🎉 Thầy giáo khen ngợi: 🎯 Bậc thầy ngữ âm! Em phân biệt âm /e/ và /ɪə/ cực kỳ sắc bén!\n💪 Lời khuyên & Động viên: 🌱 'Stress, connect, pressure' đều phát âm là 'e' (/e/), riêng 'peer' (bạn đồng trang lứa) phát âm là 'ia' (/pɪə/) em nhé. Thử lại ngay nào!",
